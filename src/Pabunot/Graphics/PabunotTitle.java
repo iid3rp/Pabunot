@@ -1,4 +1,6 @@
-package Pabunot;
+package Pabunot.Graphics;
+
+import Pabunot.Utils.AndyBold;
 
 import javax.swing.*;
 import java.awt.*;

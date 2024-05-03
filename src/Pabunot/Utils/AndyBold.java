@@ -1,4 +1,6 @@
-package Pabunot;
+package Pabunot.Utils;
+
+import Pabunot.InitialFrame;
 
 import java.awt.*;
 import java.io.File;
