@@ -1,6 +1,8 @@
 package Pabunot;
 
-import Pabunot.Graphics.*;
+import Pabunot.Graphics.PabunotTitle;
+import Pabunot.Graphics.Snow;
+import Pabunot.Graphics.TrailLabel;
 import Pabunot.Pabunot.PabunotGrid;
 import Pabunot.Pabunot.PabunotGridPane;
 import Pabunot.Utils.AndyBold;
@@ -8,20 +10,8 @@ import Pabunot.Utils.Intention;
 import Pabunot.Utils.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -60,6 +50,9 @@ public class InitialFrame extends JFrame implements Runnable
     private JLabel exit;
     private JLabel closeApplication;
 
+    private JTextArea area;
+    private boolean fpsUnlocked = true;
+
     public InitialFrame()
     {
         super();
@@ -70,21 +63,37 @@ public class InitialFrame extends JFrame implements Runnable
         glassPane = createGlassPane();
         pabunotTitle = createTitle();
         start = createStart();
+
         settings = createSettings();
         exit = createExit();
         closeApplication = createClose();
         framesPerSecond = createFPS();
 
+        area = createTextArea();
+
         add(panel);
         add(glassPane);
         setContentPane(panel);
         setGlassPane(glassPane);
+        //panel.add(area);
 
         glassPane.setVisible(true);
 
-        bunot = new PabunotGridPane(this, new PabunotGrid(20, 20, "Hello World!", 12345,
-                Objects.requireNonNull(InitialFrame.class.getResource("Resources/yellow.png")).getPath()));
+        bunot = new PabunotGridPane(this, new PabunotGrid(10, 15, "Hello World!", 12345,
+                Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath()));
         addComponents();
+    }
+
+    private JTextArea createTextArea()
+    {
+        JTextArea area = new JTextArea();
+        area.setLayout(null);
+        area.setBackground(new Color(0, 0, 0, 0));
+        area.setForeground(Color.white);
+        area.setBounds(200, 200, 500, 200);
+        area.setFont(AndyBold.createFont(20));
+        area.setDoubleBuffered(true);
+        return area;
     }
 
     private JLabel createFPS()
@@ -362,44 +371,62 @@ public class InitialFrame extends JFrame implements Runnable
         while (isRunning)
 
         {
-            long currentTime = System.nanoTime();
-            long passedTime = currentTime - prevTime;
-            prevTime = currentTime;
-            unprocessedSeconds += passedTime / 1_000_000_000.0;
+            while(isRunning)
+            {
+                long currentTime = System.nanoTime();
+                long passedTime = currentTime - prevTime;
+                prevTime = currentTime;
+                unprocessedSeconds += passedTime / 1_000_000_000.0;
 
-            while(unprocessedSeconds > secondsTick) {
-                unprocessedSeconds -= secondsTick;
-                tickCount++;
+                while(unprocessedSeconds > secondsTick)
+                {
+                    unprocessedSeconds -= secondsTick;
+                    tickCount++;
 
-                // the wave thingies
-                moveTrail(currentTime);
-                labels.wave(currentTime);
-                labels2.wave(currentTime);
-                snow.render(currentTime);
-
-                //rendering
-                frames++;
-                panel.repaint();
-
-                if(tickCount % refreshRate == 0) {
-                    fps = frames;
-                    framesPerSecond.setText("FPS Counter: " + fps);
-                    prevTime += 1000;
-                    tickCount = 0;
-                    frames = 0;
-                    if(seconds % 3 == 2)
+                    if(tickCount % refreshRate == 0)
                     {
-                        for(JLabel l : labels)
+                        fps = frames;
+                        framesPerSecond.setText("FPS Counter (Unlocked): " + fps);
+                        prevTime += 1000;
+                        frames = 0;
+                        tickCount = 0;
+                        if(seconds % 3 == 2)
                         {
-                            panel.remove(l);
+                            for(JLabel l : labels)
+                            {
+                                panel.remove(l);
+                            }
+                            labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, Tip.colors);
+                            for(JLabel l : labels)
+                            {
+                                panel.add(l);
+                            }
                         }
-                        labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, Tip.colors);
-                        for(JLabel l : labels)
-                        {
-                            panel.add(l);
-                        }
+                        seconds++;
                     }
-                    seconds++;
+                    snow.render(currentTime);
+                    if(!fpsUnlocked)
+                    {
+                        try {
+                            // the wave thingies
+                            moveTrail(currentTime);
+                            labels.wave(currentTime);
+                            labels2.wave(currentTime);
+                            panel.repaint();
+                            frames++;
+                        }
+                        catch(Exception ignored) {}
+                    }
+                }
+
+                if(fpsUnlocked)
+                {
+                    // the wave thingies
+                    moveTrail(currentTime);
+                    labels.wave(currentTime);
+                    labels2.wave(currentTime);
+                    panel.repaint();
+                    frames++;
                 }
             }
         }
@@ -504,12 +531,13 @@ public class InitialFrame extends JFrame implements Runnable
         y = (int) -((e.getY() * 36) / getHeight());
 
         snowMultiplierX = (int) ((e.getX() / getWidth()) * 4);
-        snowMultiplierY = (int) ((e.getY() / getHeight()) * 3);
+        snowMultiplierY = (int) ((e.getY() / getHeight()) * 2);
     }
 
     private void initializeComponent()
     {
         setSize(new Dimension(1280, 720));
+        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);

@@ -82,7 +82,7 @@ public class PabunotGridPane extends JPanel
         setOpaque(false);
         setSize(new Dimension(width, height));
         setDoubleBuffered(true);
-        setBackground(new Color(0, 0,0, 0));
+        setBackground(new Color(0, 0,0, 127));
         System.out.println("rendering...");
     }
 
@@ -115,7 +115,8 @@ public class PabunotGridPane extends JPanel
             {
                 if(isEntered[0])
                 {
-                    g.setColor(Color.GRAY);
+                    g.drawImage(grid.grid[i - 1].image, 0, 0, null);
+                    g.setColor(new Color(0, 0 ,0, 127));
                     g.fillRect(0, 0, paperLength, paperLength);
                 }
                 else
@@ -127,7 +128,6 @@ public class PabunotGridPane extends JPanel
                         System.out.println(i);
                     }
                 }
-                System.out.println("ren");
             }
         };
         label.setLayout(null);

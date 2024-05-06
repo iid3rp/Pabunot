@@ -10,26 +10,27 @@ import java.util.Random;
 public class Snow extends BufferedImage
 {
     private Random random;
-    private ArrayList<Confetti> confetti;
+    private ArrayList<Confetti> confettiList;
 
     public Snow()
     {
         super(1280, 720, BufferedImage.TYPE_INT_ARGB);
         random = new Random();
-        confetti = new ArrayList<>();
+        confettiList = new ArrayList<>();
         for(int i = 0; i < 400; i++)
         {
-            confetti.add(new Confetti(random.nextInt(720)));
+            confettiList.add(new Confetti(random.nextInt(720)));
         }
     }
 
     public void moveSnowflakes()
     {
-        for (Confetti c : confetti)
+        for (Confetti c : confettiList)
         {
-            if(c.position.y + c.speedY <= 720) {
+            if(c.position.y + c.speedY <= 720)
+            {
                 c.position.translate((int) (c.speedX + InitialFrame.snowMultiplierX - 2),
-                        (int) (c.speedY + InitialFrame.snowMultiplierY)); // Move snowflake down
+                        (int) (c.speedY + InitialFrame.snowMultiplierY));
             }
         }
     }
@@ -41,12 +42,12 @@ public class Snow extends BufferedImage
         g2d1.fillRect(0, 0, getWidth(), getHeight());
         if(currentTime % 50 == 0)
         {
-            confetti.add(new Confetti());
-            confetti.removeFirst();
+            confettiList.add(new Confetti());
+            confettiList.removeFirst();
         }
 
         Graphics2D g2d = createGraphics();
-        for (Confetti c : confetti)
+        for (Confetti c : confettiList)
         {
             g2d.setColor(c.color);
             g2d.fillRect(c.position.x - 250, c.position.y - 10, c.length, c.length); // Draw snowflake

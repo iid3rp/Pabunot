@@ -80,7 +80,7 @@ public class TrailLabel extends ArrayList<JLabel>
         int height = metrics.getHeight();
         label.setBounds(((1280 / 2) - (metrics.stringWidth(stringSequence) / 2)) + letterLength, 100 + letterDepth, width, height);
         letterLength += metrics.stringWidth(s) + 1;
-        System.out.println((1280 / 2) - (metrics.stringWidth(stringSequence) / 2));
+        // System.out.println((1280 / 2) - (metrics.stringWidth(stringSequence) / 2)); // debuggers
         return label;
     }
 
