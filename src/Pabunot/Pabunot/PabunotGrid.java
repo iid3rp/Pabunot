@@ -11,22 +11,22 @@ public class PabunotGrid
     private String title;
     private long serial;
 
-    public PabunotGrid(int x, int y, String title, long serial)
+    public PabunotGrid(int x, int y, String title, long serial, String theme)
     {
         grid = new Pabunot[x * y];
         this.x = x;
         this.y = y;
         this.title = title;
         this.serial = serial;
-        setPabunot();
+        setPabunot(theme);
     }
 
-    private void setPabunot()
+    private void setPabunot(String theme)
     {
         int index = 0;
         for(int i : new RandomRange(1, x * y))
         {
-            grid[index++] = new Pabunot(i);
+            grid[index++] = new Pabunot(i, theme);
         }
     }
 

@@ -1,10 +1,17 @@
 package Pabunot.Pabunot;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 public class Pabunot
 {
 
     private int value;
     private boolean isPicked;
+
+    protected Image image;
 
     public int getValue()
     {
@@ -13,6 +20,17 @@ public class Pabunot
 
     public Pabunot(int value)
     {
+        this.value = value;
+        isPicked = false;
+    }
+    public Pabunot(int value, String s)
+    {
+        try {
+            image = ImageIO.read(new File(s));
+        }
+        catch(IOException e) {
+            throw new RuntimeException(e);
+        }
         this.value = value;
         isPicked = false;
     }

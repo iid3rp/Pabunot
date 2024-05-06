@@ -6,50 +6,82 @@ import Pabunot.Utils.AndyBold;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-@Deprecated
 public class TrailLabel extends ArrayList<JLabel>
 {
-    char[] sequence;
+    public char[] sequence;
+    public String stringSequence;
+    public Color[] colors;
     private int startX;
     private int startY;
     private int x;
-    private int y;
+    private int endY;
+
+    private static int i;
+
+    private int letterLength;
+    private int letterDepth;
+
     public TrailLabel(String s, int size, int startY, int endY)
     {
-
-    }
-
-    public TrailLabel(String s, int size, int x, int y, int startY, int endY)
-    {
+        //default color will be rainbow :3
+        letterLength = 0;
+        stringSequence = s;
         sequence = s.toCharArray();
+        colors = TrailLabel.rainbow;
         this.startY = startY;
-        this.y = endY;
-        createLabel(size, x, y, startY, endY);
-    }
-
-    private void createLabel(int size, int x, int y, int startY, int endY)
-    {
-        int previousWidth = 0;
-        int currentWidth;
+        this.endY = endY;
         for(char c : sequence)
         {
-            JLabel label = new JLabel();
-            label.setLayout(null);
-            label.setText(c + "");
-            label.setForeground(Color.white);
-            label.setFont(AndyBold.createFont(size));
-            FontMetrics metrics = label.getFontMetrics(label.getFont());
-            int width = metrics.stringWidth(Arrays.toString(sequence).toUpperCase());
-            int height = metrics.getHeight();
-            currentWidth = metrics.stringWidth(label.getText().toUpperCase());
-            label.setBounds((1280 / 2) - (metrics.stringWidth(Arrays.toString(sequence)) / 2) + previousWidth, y, previousWidth + currentWidth, height);
-            previousWidth += currentWidth;
-            System.out.println(previousWidth);
-
-            add(label);
+            JLabel letter = createLetter(c + "", size);
+            add(letter);
         }
+    }
+
+    public TrailLabel(String s, int size, int startY, int endY, Color[] colors)
+    {
+        letterLength = 0;
+        stringSequence = s;
+        sequence = s.toCharArray();
+        this.startY = startY;
+        this.endY = endY;
+        this.colors = colors;
+        for(char c : sequence)
+        {
+            JLabel letter = createLetter(c + "", size);
+            add(letter);
+        }
+    }
+
+    private static Color[] rainbow =
+    {
+            new Color(255, 89, 89),
+            new Color(255, 137, 73),
+            new Color(255, 217, 88),
+            new Color(115, 255, 74),
+            new Color(87, 166, 253),
+            new Color(142, 63, 255),
+            new Color(255, 73, 255)
+    };
+
+    public JLabel createLetter(String s, int size)
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText(s);
+        label.setDoubleBuffered(true); // very important!!!
+
+        assert colors != null;
+        label.setForeground(colors[i++ % colors.length]);
+
+        label.setFont(AndyBold.createFont(size));
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(s.toUpperCase() + 10);
+        int height = metrics.getHeight();
+        label.setBounds(((1280 / 2) - (metrics.stringWidth(stringSequence) / 2)) + letterLength, 100 + letterDepth, width, height);
+        letterLength += metrics.stringWidth(s) + 1;
+        System.out.println((1280 / 2) - (metrics.stringWidth(stringSequence) / 2));
+        return label;
     }
 
     public void wave(long currentTime)
@@ -57,7 +89,7 @@ public class TrailLabel extends ArrayList<JLabel>
         int index = 0;
         for(JLabel l : this)
         {
-            l.setLocation(PabunotTitle.p.getX(), (int) InitialFrame.sineEaseY(currentTime, 1_000_000_000, startY, y, index, this.size() - index++));
+            l.setLocation(l.getX(), (int) InitialFrame.sineEaseY(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
         }
     }
 }

@@ -53,22 +53,15 @@ public class PabunotGridPane extends JPanel
             for(int j = 0; j < y; j++)
             {
                 try {
-                    JLabel paper = createPaper(grid.grid[index++].getValue());
-
+                    JLabel paper = createPaper(grid.grid[index].getValue());
+                    grid.grid[index].image = grid.grid[index].image.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
                     paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
-                    // System.out.println(i * paperLength + " " + j * paperLength);
                     add(paper);
+                    index++;
                 }
-                catch(IndexOutOfBoundsException ignored) { /* System.out.println(index); */ }
+                catch(IndexOutOfBoundsException ignored) {  System.out.println(index);  }
             }
         }
-    }
-
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        g.clearRect(0, 0, getWidth(), getHeight());
     }
 
     private void initializeComponent(int x, int y)
@@ -85,9 +78,12 @@ public class PabunotGridPane extends JPanel
             width = paperLength * y;
             height = paperLength * x;
         }
-        setSize(new Dimension(width, height));
         setLayout(null);
+        setOpaque(false);
+        setSize(new Dimension(width, height));
         setDoubleBuffered(true);
+        setBackground(new Color(0, 0,0, 0));
+        System.out.println("rendering...");
     }
 
     private void addPapers(RandomRange range)
@@ -101,7 +97,7 @@ public class PabunotGridPane extends JPanel
                     JLabel paper = createPaper(range.get(index++));
 
                     paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
-                    // System.out.println(i * paperLength + " " + j * paperLength);
+                    // System.out.println(i * paperLength + " " + j * paperLength); // debuggers
                     add(paper);
                 }
                 catch(IndexOutOfBoundsException ignored) { /* System.out.println(index); */ }
@@ -117,26 +113,26 @@ public class PabunotGridPane extends JPanel
             @Override
             public void paintComponent(Graphics g)
             {
-                super.paintComponent(g);
-                if(this.isEnabled()) {
-                    if(isEntered[0]) {
-                        g.setColor(Color.GRAY);
-                        g.fillRect(0, 0, paperLength, paperLength);
-                    }
-                    else
-                    {
-                        g.setColor(new Color(i * 1000000));
-                        g.fillRect(0, 0, paperLength, paperLength);
-                    }
+                if(isEntered[0])
+                {
+                    g.setColor(Color.GRAY);
+                    g.fillRect(0, 0, paperLength, paperLength);
                 }
                 else
                 {
-                    g.setColor(Color.white);
-                    g.fillRect(0, 0, paperLength, paperLength);
+                    try {
+                        g.drawImage(grid.grid[i - 1].image, 0, 0, null);
+                    }
+                    catch(Exception e) {
+                        System.out.println(i);
+                    }
                 }
+                System.out.println("ren");
             }
         };
         label.setLayout(null);
+        label.setDoubleBuffered(true);
+        label.setOpaque(false);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -144,10 +140,10 @@ public class PabunotGridPane extends JPanel
             {
                 if(label.isEnabled()) {
                     System.out.println("You picked number " + i);
-                    label.setFont(new Font("Comic Sans MS", Font.BOLD, 10));
                     label.setEnabled(false);
                     frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
                     grid.grid[i - 1].setPicked(true);
+                    remove(label);
                     validateChecking();
                 }
             }
@@ -191,4 +187,7 @@ public class PabunotGridPane extends JPanel
         }
         frame.panel.remove(this);
     }
+
+    @Override
+    public void paintComponent(Graphics ignored) {} // avoid repainting...
 }
