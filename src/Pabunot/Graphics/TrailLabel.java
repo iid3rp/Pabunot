@@ -29,6 +29,7 @@ public class TrailLabel extends ArrayList<JLabel>
         stringSequence = s;
         sequence = s.toCharArray();
         colors = TrailLabel.rainbow;
+        this.startX = Short.MAX_VALUE;
         this.startY = startY;
         this.endY = endY;
         for(char c : sequence)
@@ -43,6 +44,23 @@ public class TrailLabel extends ArrayList<JLabel>
         letterLength = 0;
         stringSequence = s;
         sequence = s.toCharArray();
+        this.startX = Short.MAX_VALUE;
+        this.startY = startY;
+        this.endY = endY;
+        this.colors = colors;
+        for(char c : sequence)
+        {
+            JLabel letter = createLetter(c + "", size);
+            add(letter);
+        }
+    }
+
+    public TrailLabel(String s, int size, int x, int startY, int endY, Color[] colors)
+    {
+        letterLength = 0;
+        stringSequence = s;
+        sequence = s.toCharArray();
+        this.startX = x;
         this.startY = startY;
         this.endY = endY;
         this.colors = colors;
@@ -78,7 +96,10 @@ public class TrailLabel extends ArrayList<JLabel>
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(s.toUpperCase() + 10);
         int height = metrics.getHeight();
-        label.setBounds(((1280 / 2) - (metrics.stringWidth(stringSequence) / 2)) + letterLength, 100 + letterDepth, width, height);
+
+        this.startX = startX == Short.MAX_VALUE? (1280 / 2) - ((metrics.stringWidth(stringSequence) / 2)) : startX;
+
+        label.setBounds(startX + letterLength, startY + letterDepth, width, height);
         letterLength += metrics.stringWidth(s) + 1;
         // System.out.println((1280 / 2) - (metrics.stringWidth(stringSequence) / 2)); // debuggers
         return label;

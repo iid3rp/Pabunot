@@ -8,6 +8,7 @@ public class Tip
     {
         "Dyk: The pabunots are only randomly generated once when generated..",
         "Dyk: You are ACTUALLY reading this label for so long LOL",
+        "Dyk: This label refreshes every six seconds. Find them all labels!",
         "Tip: Close your eyes and guess whatever.. (yeah!)",
         "Tip: Dive into the world of pabunot and see if the prize lies within.",
         "Tip: Eliminate possibilities through step by step.",

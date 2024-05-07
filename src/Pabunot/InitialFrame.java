@@ -3,6 +3,7 @@ package Pabunot;
 import Pabunot.Graphics.PabunotTitle;
 import Pabunot.Graphics.Snow;
 import Pabunot.Graphics.TrailLabel;
+import Pabunot.Interface.PabunotMakingPane;
 import Pabunot.Pabunot.PabunotGrid;
 import Pabunot.Pabunot.PabunotGridPane;
 import Pabunot.Utils.AndyBold;
@@ -41,6 +42,7 @@ public class InitialFrame extends JFrame implements Runnable
     public JPanel glassPane;
     public int fps;
     private JLabel framesPerSecond;
+    private PabunotMakingPane createPabunot;
 
     int x = 0;
     int y = 0;
@@ -51,7 +53,7 @@ public class InitialFrame extends JFrame implements Runnable
     private JLabel closeApplication;
 
     private JTextArea area;
-    private boolean fpsUnlocked = true;
+    private boolean fpsUnlocked = false;
 
     public InitialFrame()
     {
@@ -63,6 +65,7 @@ public class InitialFrame extends JFrame implements Runnable
         glassPane = createGlassPane();
         pabunotTitle = createTitle();
         start = createStart();
+        createPabunot = new PabunotMakingPane(frame, "BSIT-BTM Pabunot");
 
         settings = createSettings();
         exit = createExit();
@@ -73,13 +76,14 @@ public class InitialFrame extends JFrame implements Runnable
 
         add(panel);
         add(glassPane);
-        setContentPane(panel);
+        // setContentPane(panel);
+        setContentPane(createPabunot);
         setGlassPane(glassPane);
-        //panel.add(area);
+        // panel.add(area);
 
         glassPane.setVisible(true);
 
-        bunot = new PabunotGridPane(this, new PabunotGrid(10, 15, "Hello World!", 12345,
+        bunot = new PabunotGridPane(this, new PabunotGrid(15, 10, "Hello World!", 12345,
                 Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath()));
         addComponents();
     }
@@ -386,11 +390,11 @@ public class InitialFrame extends JFrame implements Runnable
                     if(tickCount % refreshRate == 0)
                     {
                         fps = frames;
-                        framesPerSecond.setText("FPS Counter (Unlocked): " + fps);
+                        framesPerSecond.setText("FPS Counter " + (fpsUnlocked ? "(Unlocked): " : "(locked):") + fps);
                         prevTime += 1000;
                         frames = 0;
                         tickCount = 0;
-                        if(seconds % 3 == 2)
+                        if(seconds % 6 == 0)
                         {
                             for(JLabel l : labels)
                             {
@@ -412,7 +416,12 @@ public class InitialFrame extends JFrame implements Runnable
                             moveTrail(currentTime);
                             labels.wave(currentTime);
                             labels2.wave(currentTime);
+
+                            createPabunot.title.wave(currentTime);
                             panel.repaint();
+
+
+                            renderOtherComponents();
                             frames++;
                         }
                         catch(Exception ignored) {}
@@ -425,12 +434,15 @@ public class InitialFrame extends JFrame implements Runnable
                     moveTrail(currentTime);
                     labels.wave(currentTime);
                     labels2.wave(currentTime);
+                    createPabunot.title.wave(currentTime);
                     panel.repaint();
                     frames++;
                 }
             }
         }
     }
+
+    private void renderOtherComponents() {}
 
     private void moveTrail(long currentTime)
     {

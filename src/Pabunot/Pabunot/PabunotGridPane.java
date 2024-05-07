@@ -41,7 +41,7 @@ public class PabunotGridPane extends JPanel
         this.grid = grid;
         initializeComponent(x, y);
         addPapers(grid);
-        setLocation((1280 / 2) - (getWidth() / 2), (720 / 2) - (getHeight() / 2));
+        setBounds((1280 / 2) - (getWidth() / 2), (720 / 2) - (getHeight() / 2), getWidth(), getHeight());
 
     }
 
@@ -59,7 +59,7 @@ public class PabunotGridPane extends JPanel
                     add(paper);
                     index++;
                 }
-                catch(IndexOutOfBoundsException ignored) {  System.out.println(index);  }
+                catch(IndexOutOfBoundsException e) {  System.out.println(index + ", dummy");  }
             }
         }
     }
@@ -68,20 +68,14 @@ public class PabunotGridPane extends JPanel
     {
         paperLength = (600 / Math.max(x, y));
         int width, height;
-        if(x > y)
         {
             width = paperLength * x;
             height = paperLength * y;
         }
-        else
-        {
-            width = paperLength * y;
-            height = paperLength * x;
-        }
         setLayout(null);
         setOpaque(false);
-        setSize(new Dimension(width, height));
         setDoubleBuffered(true);
+        setSize(new Dimension(width, height));
         setBackground(new Color(0, 0,0, 127));
         System.out.println("rendering...");
     }
