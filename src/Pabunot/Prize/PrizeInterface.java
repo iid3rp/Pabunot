@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class PrizeInterface extends JPanel
 {
-    public static final int WIDTH = 300;
-    public static final int HEIGHT = 50;
+    public static final int WIDTH = 400;
+    public static final int HEIGHT = 60;
     private final JLabel title;
     private final JLabel description;
     Prize prize;
@@ -20,6 +20,23 @@ public class PrizeInterface extends JPanel
         initializeComponent();
         title = createTitle(prize.getTitle());
         description = createDescription(prize.getDescription());
+
+        add(title);
+        add(description);
+    }
+
+    private JLabel createTitle(String title)
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText(title);
+        label.setFont(AndyBold.createFont(30));
+        label.setForeground(new Color(0, 0,0));
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText().toUpperCase());
+        int height = metrics.getHeight();
+        label.setBounds(5, 5, 300, height);
+        return label;
     }
 
     private JLabel createDescription(String desc)
@@ -30,31 +47,15 @@ public class PrizeInterface extends JPanel
         label.setFont(AndyBold.createFont(20));
         label.setForeground(new Color(0, 0,0, 127));
         FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth("100 / 100");
         int height = metrics.getHeight();
-        label.setBounds(245, 255, width, height);
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        return label;
-    }
-
-    private JLabel createTitle(String title)
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText(title);
-        label.setFont(AndyBold.createFont(20));
-        label.setForeground(new Color(0, 0,0, 127));
-        FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth("100 / 100");
-        int height = metrics.getHeight();
-        label.setBounds(245, 255, width, height);
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setBounds(5, 35, 300, height);
         return label;
     }
 
     private void initializeComponent()
     {
-        setSize(new Dimension(WIDTH, HEIGHT));
         setLayout(null);
+        setBackground(new Color(255, 255, 255, 60));
+        setSize(new Dimension(WIDTH, HEIGHT));
     }
 }

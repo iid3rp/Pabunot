@@ -30,7 +30,7 @@ public class InitialFrame extends JFrame implements Runnable
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
     public static int refreshRate = dm.getRefreshRate();
-    Snow snow;
+    public Snow snow;
     private JLabel pabunotTitle;
     public int reference;
     public static boolean isRunning = true;
@@ -44,8 +44,8 @@ public class InitialFrame extends JFrame implements Runnable
     private JLabel framesPerSecond;
     private PabunotMakingPane createPabunot;
 
-    int x = 0;
-    int y = 0;
+    public int x = 0;
+    public int y = 0;
 
     private JLabel start;
     private JLabel settings;
@@ -419,6 +419,7 @@ public class InitialFrame extends JFrame implements Runnable
 
                             createPabunot.title.wave(currentTime);
                             panel.repaint();
+                            createPabunot.repaint();
 
 
                             renderOtherComponents();
@@ -436,6 +437,7 @@ public class InitialFrame extends JFrame implements Runnable
                     labels2.wave(currentTime);
                     createPabunot.title.wave(currentTime);
                     panel.repaint();
+                    createPabunot.repaint();
                     frames++;
                 }
             }

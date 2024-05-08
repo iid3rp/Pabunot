@@ -3,18 +3,16 @@ package Pabunot.Prize;
 import Pabunot.InitialFrame;
 import Pabunot.Utils.Intention;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class PrizeListPane extends JScrollPane
 {
     private static final int width = PrizeInterface.WIDTH;
     private static final int height = PrizeInterface.HEIGHT;
-    PrizeList list;
+    public PrizeList list;
     private JPanel container;
     private int size;
     private boolean nothing;
@@ -29,34 +27,43 @@ public class PrizeListPane extends JScrollPane
      * REFER THE CONSTRUCTOR BELOW
      *</editor-fold>
      * */
-    public PrizeListPane(PrizeList list, InitialFrame frame)
+    public PrizeListPane(InitialFrame frame)
     {
         super();
-        if(list != null)
-        {
-            size = list.size();
-            this.list = list;
-            this.frame = frame;
-            initializeComponent(frame);
-            container.setSize(new Dimension(width, ((height) * list.size()) + list.size()));
-            container.setPreferredSize(new Dimension(width, ((height) * list.size()) + size));
-            // add components into the container here :3
-            addComponents();
+        size = 0;
+        list = new PrizeList();
+        this.frame = frame;
+        initializeComponent(frame);
+        container.setSize(new Dimension(width, ((height) * list.size()) + list.size()));
+        container.setPreferredSize(new Dimension(width, ((height) * list.size()) + size));
+        // add components into the container here :3
+        addComponents();
 
-            setViewportView(container);
-            getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-            setSize(new Dimension(width, 720));
-            setDoubleBuffered(true);
-            setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            addMouseWheelListener(e ->
+        setViewportView(container);
+        getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+        getViewport().setOpaque(false);
+        getVerticalScrollBar().setVisible(false);
+        getHorizontalScrollBar().setVisible(false);
+        setSize(new Dimension(width, 400));
+        setDoubleBuffered(true);
+        setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
             {
-                // Increase scroll sensitivity by multiplying the scroll distance
-                double unitsToScroll = e.getWheelRotation() * e.getScrollAmount() * 5; // Adjust multiplier as needed
-                JScrollBar verticalScrollBar = getVerticalScrollBar();
-                verticalScrollBar.setValue((int) (verticalScrollBar.getValue() + unitsToScroll));
-            });
-        }
+                frame.parallaxMove(new Point(getX() + e.getX(),  getY() + e.getY()));
+            }
+        });
+
+        addMouseWheelListener(e ->
+        {
+            // Increase scroll sensitivity by multiplying the scroll distance
+            double unitsToScroll = e.getWheelRotation() * e.getScrollAmount() * 5; // Adjust multiplier as needed
+            JScrollBar verticalScrollBar = getVerticalScrollBar();
+            verticalScrollBar.setValue((int) (verticalScrollBar.getValue() + unitsToScroll));
+        });
     }
 
     public void initializeComponent(InitialFrame frame)
@@ -65,33 +72,10 @@ public class PrizeListPane extends JScrollPane
         container = new JPanel();
         container.setLayout(null);
         container.setLocation(0, 0);
-        container.setBackground(Color.white);
+        container.setOpaque(false);
+        setBackground(new Color(255, 255, 255, 60));
+        setOpaque(false);
         container.setDoubleBuffered(true);
-    }
-
-    public JLabel addBankDesign()
-    {
-        BufferedImage x;
-        try {
-            x = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/bankie.png")));
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-        JLabel label = new JLabel()
-        {
-            @Override
-            public void paintComponent(Graphics g)
-            {
-                super.paintComponent(g);
-                g.drawImage(x, 0, 0, null);
-            }
-        };
-        label.setLayout(null);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        label.setBounds((1080 / 2) - (x.getWidth() / 2) + 10, 300, x.getWidth(), x.getHeight());
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        return label;
     }
 
 
@@ -220,6 +204,3 @@ public class PrizeListPane extends JScrollPane
         this.size = size;
     }
 }
-
-
-

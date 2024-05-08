@@ -71,7 +71,7 @@ public class TrailLabel extends ArrayList<JLabel>
         }
     }
 
-    private static Color[] rainbow =
+    public static Color[] rainbow =
     {
             new Color(255, 89, 89),
             new Color(255, 137, 73),
