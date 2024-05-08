@@ -44,7 +44,7 @@ public class PrizeListPane extends JScrollPane
         getViewport().setOpaque(false);
         getVerticalScrollBar().setVisible(false);
         getHorizontalScrollBar().setVisible(false);
-        setSize(new Dimension(width, 400));
+        setSize(new Dimension(width, 300));
         setDoubleBuffered(true);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -78,50 +78,6 @@ public class PrizeListPane extends JScrollPane
         container.setDoubleBuffered(true);
     }
 
-
-    private JLabel createNotFound(int x, int y, int size, int font, String text)
-    {
-        JLabel label = new JLabel();
-        label.setForeground(Color.BLACK);
-        label.setLayout(null);
-        label.setText(text);
-        label.setFont(new Font("Segoe UI", font, size));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-
-        if(x == -1)
-        {
-            if(y == -1)
-            {
-                label.setBounds((getWidth() / 2) - (width / 2), (getHeight() / 2) - (height / 2), width, height);
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-                label.setVerticalAlignment(SwingConstants.CENTER);
-            }
-            else
-            {
-                label.setBounds((getWidth() / 2) - (width / 2), y, width, height);
-                label.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-        }
-        else
-        {
-            if(y == -1)
-            {
-                label.setBounds((getWidth() / 2) - (width / 2), (getHeight() / 2) - (height / 2), width, height);
-                label.setVerticalAlignment(SwingConstants.CENTER);
-            }
-            else
-            {
-                label.setBounds(x, y, width, height);
-            }
-
-        }
-
-        return label;
-    }
-
-
     public void addComponents()
     {
         int index = 0; // iterator
@@ -129,45 +85,13 @@ public class PrizeListPane extends JScrollPane
         {
             for(Prize p : list)
             {
-                PrizeInterface bankInterface = new PrizeInterface(p);
+                PrizeInterface bankInterface = new PrizeInterface(p, list, this);
                 bankInterface.setBounds(0, (PrizeInterface.HEIGHT * index++), bankInterface.getWidth(), bankInterface.getHeight());
                 container.add(bankInterface);
             }
             nothing = false;
             container.repaint();
             repaint();
-        }
-    }
-
-
-    public JLabel createEmptyList()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setForeground(Color.black);
-        label.setText("This bank seems empty!");
-        label.setFont(new Font("Segoe UI", Font.BOLD, 55));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText().toUpperCase());
-        int height = metrics.getHeight();
-        label.setBounds((container.getWidth() / 2) - (width / 2), 100, width, height);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setVisible(true);
-        return label;
-    }
-
-    public void replaceAccount(Prize b)
-    {
-        if(b != null)
-        {
-            for(int i = 0; i < list.size(); i++)
-            {
-                if(b.getSerial() == list.get(i).getSerial())
-                {
-                    list.set(i, b);
-                }
-            }
-            restore();
         }
     }
 

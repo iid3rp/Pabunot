@@ -11,8 +11,21 @@ import Pabunot.Utils.Intention;
 import Pabunot.Utils.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -72,18 +85,18 @@ public class InitialFrame extends JFrame implements Runnable
         closeApplication = createClose();
         framesPerSecond = createFPS();
 
-        area = createTextArea();
+        //area = createTextArea();
 
         add(panel);
         add(glassPane);
-        // setContentPane(panel);
+        setContentPane(panel);
         setContentPane(createPabunot);
         setGlassPane(glassPane);
         // panel.add(area);
 
         glassPane.setVisible(true);
 
-        bunot = new PabunotGridPane(this, new PabunotGrid(15, 10, "Hello World!", 12345,
+        bunot = new PabunotGridPane(this, new PabunotGrid(40, 40, "Hello World!", 12345,
                 Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath()));
         addComponents();
     }
@@ -550,7 +563,10 @@ public class InitialFrame extends JFrame implements Runnable
 
     private void initializeComponent()
     {
-        setSize(new Dimension(1280, 720));
+        setPreferredSize(new Dimension(1280, 720));
+        setSize(getPreferredSize());
+        setMinimumSize(getPreferredSize());
+        setMaximumSize(getPreferredSize());
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
