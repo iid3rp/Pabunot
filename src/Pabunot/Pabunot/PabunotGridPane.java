@@ -179,7 +179,7 @@ public class PabunotGridPane extends JPanel
         {
             if(!p.isPicked()) return;
         }
-        frame.panel.remove(this);
+        frame.contentPanel.remove(this);
     }
 
     @Override

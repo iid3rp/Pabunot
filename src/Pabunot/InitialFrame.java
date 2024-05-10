@@ -1,6 +1,5 @@
 package Pabunot;
 
-import Pabunot.Graphics.PabunotTitle;
 import Pabunot.Graphics.Snow;
 import Pabunot.Graphics.TrailLabel;
 import Pabunot.Interface.PabunotMakingPane;
@@ -11,21 +10,8 @@ import Pabunot.Utils.Intention;
 import Pabunot.Utils.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -36,8 +22,14 @@ import java.util.Random;
 
 public class InitialFrame extends JFrame implements Runnable
 {
+    public static int WIDTH = 1280;
+    public static int HEIGHT = 720;
     public static double snowMultiplierX;
     public static double snowMultiplierY;
+    private final JLabel start;
+    private final JLabel settings;
+    private final JLabel exit;
+    private final TrailLabel titleLabel;
     public Image mainBackground;
     @Intention InitialFrame frame = this;
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -45,10 +37,9 @@ public class InitialFrame extends JFrame implements Runnable
     public static DisplayMode dm = gd.getDisplayMode();
     public static int refreshRate = dm.getRefreshRate();
     public Snow snow;
-    private JLabel pabunotTitle;
     public int reference;
     public static boolean isRunning = true;
-    public JPanel panel;
+    public JPanel contentPanel;
     public boolean isDragging;
     public Point offset;
     PabunotGridPane bunot;
@@ -57,14 +48,11 @@ public class InitialFrame extends JFrame implements Runnable
     public int fps;
     private JLabel framesPerSecond;
     private PabunotMakingPane createPabunot;
+    public TrailLabel labels = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, Tip.colors);
+    public TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
 
-    public int x = 0;
-    public int y = 0;
-
-    private JLabel start;
-    private JLabel settings;
-    private JLabel exit;
-    private JLabel closeApplication;
+    public static int x = 0;
+    public static int y = 0;
 
     private JTextArea area;
     private boolean fpsUnlocked = false;
@@ -72,46 +60,27 @@ public class InitialFrame extends JFrame implements Runnable
     public InitialFrame()
     {
         super();
-        PabunotTitle.setFonts();
         initializeComponent();
         snow = new Snow();
-        panel = createPanel();
+        contentPanel = createContentPanel();
         glassPane = createGlassPane();
-        pabunotTitle = createTitle();
-        start = createStart();
+        framesPerSecond = createFPS();
         createPabunot = new PabunotMakingPane(frame, "BSIT-BTM Pabunot");
-
+        start = createStart();
         settings = createSettings();
         exit = createExit();
-        closeApplication = createClose();
-        framesPerSecond = createFPS();
+        titleLabel = new TrailLabel("Pabunot!", 150, 100, 120, TrailLabel.rainbow);
 
-        //area = createTextArea();
-
-        //add(panel);
         add(glassPane);
-        //setContentPane(panel);
+        //setContentPane(contentPanel);
         setContentPane(createPabunot);
         setGlassPane(glassPane);
-        // panel.add(area);
 
         glassPane.setVisible(true);
 
         bunot = new PabunotGridPane(this, new PabunotGrid(40, 40, "Hello World!", 12345,
                 Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath()));
         addComponents();
-    }
-
-    private JTextArea createTextArea()
-    {
-        JTextArea area = new JTextArea();
-        area.setLayout(null);
-        area.setBackground(new Color(0, 0, 0, 0));
-        area.setForeground(Color.white);
-        area.setBounds(200, 200, 500, 200);
-        area.setFont(AndyBold.createFont(20));
-        area.setDoubleBuffered(true);
-        return area;
     }
 
     private JLabel createFPS()
@@ -128,7 +97,7 @@ public class InitialFrame extends JFrame implements Runnable
         return label;
     }
 
-    private JLabel createClose()
+    private JLabel createGitLabel()
     {
         JLabel label = new JLabel();
         label.setLayout(null);
@@ -175,173 +144,17 @@ public class InitialFrame extends JFrame implements Runnable
         return label;
     }
 
-    private JLabel createStart()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("Start Game!");
-        label.setForeground(Color.white);
-        label.setFont(AndyBold.createFont(50));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 350, width, height);
-        label.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                panel.add(bunot);
-                panel.remove(start);
-                panel.remove(settings);
-                panel.remove(exit);
-                panel.remove(PabunotTitle.p);
-                panel.remove(PabunotTitle.a);
-                panel.remove(PabunotTitle.b);
-                panel.remove(PabunotTitle.u);
-                panel.remove(PabunotTitle.n);
-                panel.remove(PabunotTitle.o);
-                panel.remove(PabunotTitle.t);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                label.setForeground(Color.green);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                label.setForeground(Color.white);
-            }
-        });
-
-        label.addMouseMotionListener(new MouseMotionAdapter()
-        {
-            @Override
-            public void mouseMoved(MouseEvent e)
-            {
-                parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
-            }
-        });
-        return label;
-    }
-
-    private JLabel createSettings()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("Settings");
-        label.setForeground(Color.white);
-        label.setFont(AndyBold.createFont(50));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 420, width, height);
-        label.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                System.out.println("Coming soon!");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                label.setForeground(new Color(15, 123, 218));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                label.setForeground(Color.white);
-            }
-        });
-
-        label.addMouseMotionListener(new MouseMotionAdapter()
-        {
-            @Override
-            public void mouseMoved(MouseEvent e)
-            {
-                parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
-            }
-        });
-        return label;
-    }
-
-    private JLabel createExit()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("Exit");
-        label.setForeground(Color.white);
-        label.setFont(AndyBold.createFont(50));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 490, width, height);
-        label.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                dispose();
-                System.exit(0);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                label.setForeground(Color.RED);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                label.setForeground(Color.white);
-            }
-        });
-
-        label.addMouseMotionListener(new MouseMotionAdapter()
-        {
-            @Override
-             public void mouseMoved(MouseEvent e)
-             {
-                 parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
-             }
-        });
-        return label;
-    }
-
-    public Color[] colors =
-    {
-        new Color(80, 255, 80)
-    };
-
-    TrailLabel labels = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, Tip.colors);
-    TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
     public void addComponents()
     {
-        panel.add(PabunotTitle.p);
-        panel.add(PabunotTitle.a);
-        panel.add(PabunotTitle.b);
-        panel.add(PabunotTitle.u);
-        panel.add(PabunotTitle.n);
-        panel.add(PabunotTitle.o);
-        panel.add(PabunotTitle.t);
-        panel.add(start);
-        panel.add(settings);
-        panel.add(exit);
-        panel.add(closeApplication);
-        panel.add(framesPerSecond);
-
-        for(JLabel l : labels)
+        contentPanel.add(framesPerSecond);
+        contentPanel.add(createGitLabel());
+        for(JLabel l : titleLabel)
         {
-            panel.add(l);
+            contentPanel.add(l);
         }
-        //panel.add(bunot);
+        contentPanel.add(start);
+        contentPanel.add(settings);
+        contentPanel.add(exit);
     }
 
     private JPanel createGlassPane()
@@ -362,20 +175,6 @@ public class InitialFrame extends JFrame implements Runnable
         return panel;
     }
 
-    private JLabel createTitle()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("Pabunot");
-        label.setForeground(Color.white);
-        label.setFont(AndyBold.createFont(150));
-        FontMetrics metrics = getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 100, width, height);
-        return label;
-    }
-
     @Override
     public void run()
     {
@@ -386,71 +185,60 @@ public class InitialFrame extends JFrame implements Runnable
         int tickCount = 0;
         boolean ticked = false;
         int seconds = 0;
-        while (isRunning)
-
-        {
-            while(isRunning)
-            {
+        while(isRunning) {
+            while(isRunning) {
                 long currentTime = System.nanoTime();
                 long passedTime = currentTime - prevTime;
                 prevTime = currentTime;
                 unprocessedSeconds += passedTime / 1_000_000_000.0;
 
-                while(unprocessedSeconds > secondsTick)
-                {
+                while(unprocessedSeconds > secondsTick) {
                     unprocessedSeconds -= secondsTick;
                     tickCount++;
 
-                    if(tickCount % refreshRate == 0)
-                    {
+                    if(tickCount % refreshRate == 0) {
                         fps = frames;
                         framesPerSecond.setText("FPS Counter " + (fpsUnlocked ? "(Unlocked): " : "(locked):") + fps);
                         prevTime += 1000;
                         frames = 0;
                         tickCount = 0;
-                        if(seconds % 6 == 0)
-                        {
-                            for(JLabel l : labels)
-                            {
-                                panel.remove(l);
+                        if(seconds % 6 == 0) {
+                            for(JLabel l : labels) {
+                                contentPanel.remove(l);
                             }
-                            labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, Tip.colors);
-                            for(JLabel l : labels)
-                            {
-                                panel.add(l);
+                            labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690,
+                                    Tip.colors);
+                            for(JLabel l : labels) {
+                                contentPanel.add(l);
                             }
                         }
                         seconds++;
                     }
                     snow.render(currentTime);
-                    if(!fpsUnlocked)
-                    {
+                    if(!fpsUnlocked) {
                         try {
-                            // the wave thingies
-                            moveTrail(currentTime);
+                            titleLabel.wave(currentTime);
                             labels.wave(currentTime);
                             labels2.wave(currentTime);
-
                             createPabunot.title.wave(currentTime);
-                            panel.repaint();
+                            contentPanel.repaint();
                             createPabunot.repaint();
 
-
-                            renderOtherComponents();
                             frames++;
                         }
-                        catch(Exception ignored) {}
+                        catch(Exception ignored) {
+                        }
                     }
                 }
 
-                if(fpsUnlocked)
-                {
+                if(fpsUnlocked) {
+
+                    titleLabel.wave(currentTime);
                     // the wave thingies
-                    moveTrail(currentTime);
                     labels.wave(currentTime);
                     labels2.wave(currentTime);
                     createPabunot.title.wave(currentTime);
-                    panel.repaint();
+                    contentPanel.repaint();
                     createPabunot.repaint();
                     frames++;
                 }
@@ -458,20 +246,7 @@ public class InitialFrame extends JFrame implements Runnable
         }
     }
 
-    private void renderOtherComponents() {}
-
-    private void moveTrail(long currentTime)
-    {
-        PabunotTitle.p.setLocation(PabunotTitle.p.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 6, 0));
-        PabunotTitle.a.setLocation(PabunotTitle.a.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 5, 1));
-        PabunotTitle.b.setLocation(PabunotTitle.b.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 4, 2));
-        PabunotTitle.u.setLocation(PabunotTitle.u.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 3, 3));
-        PabunotTitle.n.setLocation(PabunotTitle.n.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 2, 4));
-        PabunotTitle.o.setLocation(PabunotTitle.o.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 1, 5));
-        PabunotTitle.t.setLocation(PabunotTitle.t.getX(), (int) sineEaseY(currentTime, 1_000_000_000, 100, 115, 0, 6));
-    }
-
-    private JPanel createPanel()
+    private JPanel createContentPanel()
     {
         JPanel panel = new JPanel()
         {
@@ -488,6 +263,7 @@ public class InitialFrame extends JFrame implements Runnable
             @Override
             public void paintComponent(Graphics g)
             {
+                super.paintComponent(g);
                 g.drawImage(mainBackground, x, y, null);
                 g.setColor(new Color(0, 0, 0, 120));
                 g.fillRect(0, 0, getWidth(), getHeight());
@@ -552,18 +328,18 @@ public class InitialFrame extends JFrame implements Runnable
         return panel;
     }
 
-    public void parallaxMove(Point e)
+    public static void parallaxMove(Point e)
     {
-        x = (int) -((e.getX() * 48) / getWidth());
-        y = (int) -((e.getY() * 36) / getHeight());
+        x = (int) -((e.getX() * 48) / WIDTH);
+        y = (int) -((e.getY() * 36) / HEIGHT);
 
-        snowMultiplierX = (int) ((e.getX() / getWidth()) * 4);
-        snowMultiplierY = (int) ((e.getY() / getHeight()) * 2);
+        snowMultiplierX = (int) ((e.getX() / WIDTH) * 4);
+        snowMultiplierY = (int) ((e.getY() / HEIGHT) * 2);
     }
 
     private void initializeComponent()
     {
-        setPreferredSize(new Dimension(1280, 720));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setSize(getPreferredSize());
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
@@ -587,6 +363,136 @@ public class InitialFrame extends JFrame implements Runnable
         double easingCosine = (Math.cos(currentTime * Math.PI * 2 / duration) + 1) / 2;
         double easing = ((easingSine * delaySine) + (easingCosine * delayCosine)) / (delaySine + delayCosine);
         return (startY + (endY - startY) * easing);
+    }
+
+    private JLabel createStart()
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText("Start Game!");
+        label.setForeground(Color.white);
+        label.setFont(AndyBold.createFont(50));
+        FontMetrics metrics = getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText());
+        int height = metrics.getHeight();
+        label.setBounds((getWidth() / 2) - (width / 2), 350, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                System.out.println("Coming soon!");
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(Color.green);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(Color.white);
+            }
+        });
+
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
+            }
+        });
+        return label;
+    }
+
+    private JLabel createSettings()
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText("Settings");
+        label.setForeground(Color.white);
+        label.setFont(AndyBold.createFont(50));
+        FontMetrics metrics = getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText());
+        int height = metrics.getHeight();
+        label.setBounds((getWidth() / 2) - (width / 2), 420, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                System.out.println("Coming soon!");
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(new Color(15, 123, 218));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(Color.white);
+            }
+        });
+
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
+            }
+        });
+        return label;
+    }
+
+    private JLabel createExit()
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText("Exit");
+        label.setForeground(Color.white);
+        label.setFont(AndyBold.createFont(50));
+        FontMetrics metrics = getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText());
+        int height = metrics.getHeight();
+        label.setBounds((getWidth() / 2) - (width / 2), 490, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                frame.dispose();
+                System.exit(0);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(Color.RED);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(Color.white);
+            }
+        });
+
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(), label.getY() + e.getY()));
+            }
+        });
+        return label;
     }
 
     public void start()

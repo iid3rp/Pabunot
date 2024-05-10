@@ -1,6 +1,7 @@
 package Pabunot.StreamIO;
 
 import Pabunot.Utils.Intention;
+import Pabunot.Utils.Log;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -67,38 +68,27 @@ public class FileLogger
         return true;
     }
 
-    public @Intention boolean add(Log log, BankAccountList list, BankAccount2 bank)
+    public @Intention boolean add(Log log)
     {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy | hh:mm:ss a.");
         String currentDateTime = formatter.format(now);
-        String logString;
+        String logString = "";
 
         System.out.println("logged");
         return add(logString);
     }
 
-    public @Intention boolean add(Log log, BankAccountList list, BankAccount2 bank, double amount)
+    public @Intention boolean add(Log log, double amount)
     {
         LocalDateTime now = LocalDateTime.now();
         amount = Math.abs(amount);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy | hh:mm:ss a.");
         String currentDateTime = formatter.format(now);
-        String logString;
+        String logString = "";
         switch(log)
         {
-            case DEPOSIT:
-            {
-                logString = "Deposited $" + amount + "," + bank.getAccountNumber() + "," + list.getTitle() + "," + currentDateTime + "\n";
-                break;
-            }
-            case WITHDRAW:
-            {
-                logString = "Withdrawn $" + amount + "," + bank.getAccountNumber() + "," + list.getTitle() + "," + currentDateTime + "\n";
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected value: " + log);
+
         }
         System.out.println("logged");
         return add(logString);

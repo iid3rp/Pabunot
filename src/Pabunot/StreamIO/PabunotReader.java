@@ -15,12 +15,12 @@ import java.util.InputMismatchException;
  *
  * @author Francis (iid3rp) Madanlo
  */
-public class BankReader
+public class PabunotReader
 {
     /**
      * Constructs a `BankReader` object. (Default constructor with no arguments)
      */
-    public BankReader() {}
+    public PabunotReader() {}
 
     /**
      * This method reads bank data from a specified file and potentially creates a BankAccountPane to store the data.
