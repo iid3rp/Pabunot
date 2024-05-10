@@ -5,6 +5,7 @@ import Pabunot.InitialFrame;
 import Pabunot.Pabunot.Pabunot;
 import Pabunot.Prize.Prize;
 import Pabunot.Prize.PrizeListPane;
+import Pabunot.StreamIO.PabunotMaker;
 import Pabunot.Utils.*;
 
 import javax.imageio.ImageIO;
@@ -19,12 +20,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static Pabunot.Utils.AndyBold.createFont;
-import static java.awt.Color.white;
+import static java.awt.Color.*;
 
-public class PabunotMakingPane extends JPanel implements Runnable
+public class PabunotMakingPane extends JPanel
 {
     private int paperLength;
     @Intention InitialFrame frame;
+    @Intention JPanel panel = this;
     private final JTextField xField;
     private final JTextField yField;
     private final JLabel yLabel;
@@ -32,7 +34,7 @@ public class PabunotMakingPane extends JPanel implements Runnable
     public TrailLabel title;
     public JTextField prizeTitle;
     public JTextArea prizeDescription;
-    public Pabunot theme;
+    public Theme theme;
     public JLabel matrix;
     private JLabel letterLimitDesc;
     private JLabel letterLimitField;
@@ -47,20 +49,27 @@ public class PabunotMakingPane extends JPanel implements Runnable
     public JLabel addY;
     public JLabel decreaseX;
     public JLabel decreaseY;
+    private JCheckBox sameRatio;
     private boolean startProcess;
+    private Image pabunotThemeImage;
+    private JPanel matrixPanel;
+    private JComboBox<String> themeCombo;
 
     public PabunotMakingPane(InitialFrame frame, String titleString)
     {
         super();
         this.frame = frame;
+        theme = Theme.RED_HEARTS;
         initializeComponent();
         title = new TrailLabel(titleString, 40, 20, 20, 25, TrailLabel.rainbow);
+
+        matrixPanel = createMatrixPanel();
         prizeTitle = createPrize();
         prizeDescription = createDescription();
         letterLimitDesc = createLetterLimit();
         letterLimitField = createLetterLimitField();
         addPrize = createAddPrize();
-        matrix = createMatrixPanel(Theme.GRAY_HEARTS);
+        matrix = createMatrixLabel();
         pane = new PrizeListPane(frame);
         pane.setLocation(20, 350);
         startPabunot = createStart();
@@ -72,6 +81,8 @@ public class PabunotMakingPane extends JPanel implements Runnable
         addY = createAddY();
         decreaseX = createDecreaseX();
         decreaseY = createDecreaseY();
+        sameRatio = createSameRatio();
+        themeCombo = createThemeComboBox();
 
         startProcess = true;
 
@@ -81,8 +92,12 @@ public class PabunotMakingPane extends JPanel implements Runnable
             add(l);
         }
 
+        addComponents();
+    }
+
+    private void addComponents()
+    {
         add(prizeTitle);
-        add(matrix);
         add(prizeDescription);
         add(letterLimitDesc);
         add(letterLimitField);
@@ -95,19 +110,54 @@ public class PabunotMakingPane extends JPanel implements Runnable
         add(addY);
         add(decreaseX);
         add(decreaseY);
-        add(createDimensionLabel());
+        add(themeCombo);
         add(pane);
         add(startPabunot);
+        add(sameRatio);
+        add(matrixPanel);
 
 
-        add(createPrizesLabel());
-        start();
+        add(createNormalLabel("Prize Section", 20, 110));
+        add(createNormalLabel("Dimension", 400, 110));
+        add(createNormalLabel("Themes", 400, 320));
+
+        matrixPanel.add(matrix);
+        matrixPanel.add(createDimensionLabel());
     }
 
-    private void start()
+    private JPanel createMatrixPanel()
     {
-        Thread thread = new Thread(this);
-        thread.start();
+        JPanel panel = new JPanel();
+        panel.setSize(new Dimension(600, 600));
+        panel.setBackground(new Color(0, 0, 0, 125));
+        panel.setDoubleBuffered(true);
+        panel.setLayout(null);
+        panel.setLocation(600, (getHeight() - 600) / 2);
+        panel.setVisible(true);
+        return panel;
+    }
+
+    private JCheckBox createSameRatio()
+    {
+        JCheckBox check = new JCheckBox();
+        check.setLayout(null);
+        check.setText("Apply Both");
+        check.setFont(createFont(20));
+        check.setOpaque(false);
+        check.setForeground(white);
+        FontMetrics metrics = check.getFontMetrics(check.getFont());
+        int width = metrics.stringWidth(check.getText());
+        int height = metrics.getHeight();
+        check.setBounds(400, 230, width + 40, height);
+        check.addMouseMotionListener(new MouseMotionAdapter()
+    {
+        @Override
+        public void mouseMoved(MouseEvent e)
+        {
+            frame.parallaxMove(new Point(check.getX() + e.getX(),  check.getY() + e.getY()));
+        }
+    });
+        return check;
     }
 
     private JLabel createAddX()
@@ -115,19 +165,68 @@ public class PabunotMakingPane extends JPanel implements Runnable
         JLabel label = new JLabel();
         label.setLayout(null);
         label.setText("+");
-        label.setFont(AndyBold.createFont(40));
+        label.setFont(createFont(40));
         label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds(430, 10, width, height);
+        label.setBounds(560, 130, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mouseClicked(MouseEvent e)
             {
                 x = x + 1 > 30 ? x : x + 1;
+                y = sameRatio.isSelected() && y + 1 <= 30 ? y + 1 : y;
+                xField.setText("" + x);
+                yField.setText("" + y);
                 matrix.repaint();
+                matrix.revalidate();
+            }
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(Color.orange);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(white);
+            }
+        });
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+            }
+        });
+        return label;
+    }
+    private JLabel createAddY()
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText("+");
+        label.setFont(createFont(40));
+        label.setForeground(white);
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText());
+        int height = metrics.getHeight();
+        label.setBounds(560, 180, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                x = sameRatio.isSelected() && x + 1 <= 30 ? x + 1 : x;
+                y = y + 1 > 30? y : y + 1;
+                xField.setText("" + x);
+                yField.setText("" + y);
+                matrix.repaint();
+                matrix.revalidate();
             }
 
             @Override
@@ -142,38 +241,12 @@ public class PabunotMakingPane extends JPanel implements Runnable
                 label.setForeground(white);
             }
         });
-        return label;
-    }
-    private JLabel createAddY()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("+");
-        label.setFont(AndyBold.createFont(40));
-        label.setForeground(white);
-        FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText());
-        int height = metrics.getHeight();
-        label.setBounds(430, 30, width, height);
-        label.addMouseListener(new MouseAdapter()
+        label.addMouseMotionListener(new MouseMotionAdapter()
         {
             @Override
-            public void mouseClicked(MouseEvent e)
+            public void mouseMoved(MouseEvent e)
             {
-                y = y + 1 > 30? y : y + 1;
-                matrix.repaint();
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                label.setForeground(Color.orange);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                label.setForeground(white);
+                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -184,19 +257,23 @@ public class PabunotMakingPane extends JPanel implements Runnable
         JLabel label = new JLabel();
         label.setLayout(null);
         label.setText("-");
-        label.setFont(AndyBold.createFont(40));
+        label.setFont(createFont(40));
         label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds(400, 10, width, height);
+        label.setBounds(470, 130, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mouseClicked(MouseEvent e)
             {
                 x = x - 1 < 5 ? x : x - 1;
+                y = sameRatio.isSelected() && y - 1 >= 5 ? y - 1 : y;
+                xField.setText("" + x);
+                yField.setText("" + y);
                 matrix.repaint();
+                matrix.revalidate();
             }
 
             @Override
@@ -211,6 +288,14 @@ public class PabunotMakingPane extends JPanel implements Runnable
                 label.setForeground(white);
             }
         });
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+            }
+        });
         return label;
     }
     private JLabel createDecreaseY()
@@ -218,19 +303,23 @@ public class PabunotMakingPane extends JPanel implements Runnable
         JLabel label = new JLabel();
         label.setLayout(null);
         label.setText("-");
-        label.setFont(AndyBold.createFont(40));
+        label.setFont(createFont(40));
         label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds(400, 30, width, height);
+        label.setBounds(470, 180, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                y = y - 1 < 5? y : y - 1;
+                x = sameRatio.isSelected() && x - 1 >= 5 ? x - 1 : x;
+                y = y - 1 < 5 ? y : y - 1;
+                xField.setText("" + x);
+                yField.setText("" + y);
                 matrix.repaint();
+                matrix.revalidate();
             }
 
             @Override
@@ -243,6 +332,14 @@ public class PabunotMakingPane extends JPanel implements Runnable
             public void mouseExited(MouseEvent e)
             {
                 label.setForeground(white);
+            }
+        });
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -258,7 +355,7 @@ public class PabunotMakingPane extends JPanel implements Runnable
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds(600, 10, width, height);
+        label.setBounds((matrixPanel.getWidth() - width) / 2, 10, width, height);
         return label;
     }
 
@@ -266,14 +363,13 @@ public class PabunotMakingPane extends JPanel implements Runnable
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText("Width amount:");
-        label.setFont(createFont(20));
-        label.setForeground(new Color(0, 0,0, 127));
+        label.setText("Width");
+        label.setFont(createFont(25));
+        label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth("100 / 100");
+        int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds(400, 60, width, height);
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setBounds(400, 145, width, height);
         return label;
     }
 
@@ -288,6 +384,26 @@ public class PabunotMakingPane extends JPanel implements Runnable
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
         label.setBounds(20, 720 - height - 10, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                PabunotMaker pm = new PabunotMaker();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(yellow);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(white);
+            }
+        });
         return label;
     }
 
@@ -295,14 +411,13 @@ public class PabunotMakingPane extends JPanel implements Runnable
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText("Height Amount:");
-        label.setFont(createFont(20));
-        label.setForeground(new Color(0, 0,0, 127));
+        label.setText("Height");
+        label.setFont(createFont(25));
+        label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth("100 / 100");
+        int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds(400, 130, width, height);
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setBounds(400, 195, width, height);
         return label;
     }
 
@@ -312,31 +427,110 @@ public class PabunotMakingPane extends JPanel implements Runnable
         field.setLayout(null);
         field.setFont(createFont(30));
         field.setBackground(new Color(0, 0, 0, 125));
-        field.setBounds(500, 100, 50, 20);
+        field.setBounds(500, 140, 50, 30);
         field.setText("10");
+        field.setOpaque(false);
         field.setForeground(new Color(255, 255, 255, 127));
         PlainDocument doc = (PlainDocument) field.getDocument();
-        doc.setDocumentFilter(new TextFilter(DataType.TYPE_STRING, 25));
+        doc.setDocumentFilter(new TextFilter(DataType.TYPE_NUMERICAL, 2));
+        doc.addDocumentListener(new DocumentListener()
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                x = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            x = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {}
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                x = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            x = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {}
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                x = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            x = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {}
+                }
+            }
+        });
+        field.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+            }
+        });
 
         field.addFocusListener(new FocusListener()
         {
             @Override
             public void focusGained(FocusEvent ignored)
             {
-                if(field.getText().equals("Enter prize title:"))
-                {
-                    field.setText("");
-                }
+                field.selectAll();
             }
 
             @Override
             public void focusLost(FocusEvent e)
             {
-                if(field.getText().isEmpty())
-                {
-                    field.setText("Enter prize title:");
-                    field.setForeground(new Color(255, 255, 255, 127));
-                }
+                field.setText("" + x);
             }
         });
         return field;
@@ -348,11 +542,95 @@ public class PabunotMakingPane extends JPanel implements Runnable
         field.setLayout(null);
         field.setFont(createFont(30));
         field.setBackground(new Color(0, 0, 0, 125));
-        field.setBounds(500, 130, 50, 20);
+        field.setBounds(500, 190, 50, 30);
         field.setText("10");
+        field.setOpaque(false);
         field.setForeground(new Color(255, 255, 255, 127));
         PlainDocument doc = (PlainDocument) field.getDocument();
         doc.setDocumentFilter(new TextFilter(DataType.TYPE_STRING, 25));
+        doc.addDocumentListener(new DocumentListener()
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try
+                    {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                y = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            y = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {
+                    }
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try
+                    {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                y = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            y = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {
+                    }
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                if(!field.getText().isEmpty())
+                {
+                    try
+                    {
+                        int n = Integer.parseInt(field.getText());
+                        if(n <= 30)
+                        {
+                            if(n >= 5)
+                            {
+                                y = Integer.parseInt(field.getText());
+                                field.setForeground(white);
+                            }
+                        }
+                        else
+                        {
+                            y = 30;
+                            field.setForeground(Color.red);
+                        }
+                    }
+                    catch(NumberFormatException ignored) {
+                    }
+                }
+            }
+        });
 
         field.addMouseListener(new MouseAdapter()
         {
@@ -363,6 +641,14 @@ public class PabunotMakingPane extends JPanel implements Runnable
                 {
                     field.setText("");
                 }
+            }
+        });
+        field.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
             }
         });
 
@@ -490,18 +776,18 @@ public class PabunotMakingPane extends JPanel implements Runnable
         return label;
     }
 
-    private JLabel createPrizesLabel()
+    private JLabel createNormalLabel(String s, int x, int y)
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText("Prize Section");
+        label.setText(s);
         label.setFont(createFont(20));
         label.setForeground(white);
         label.setDoubleBuffered(true);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds(20, 110, width, height);
+        label.setBounds(x, y, width, height);
         return label;
     }
 
@@ -597,7 +883,78 @@ public class PabunotMakingPane extends JPanel implements Runnable
         return area;
     }
 
-    public JLabel createMatrixPanel(Theme theme)
+    /**
+     * Creates a combo box for selecting a theme.
+     * @return the created combo box
+     */
+    public JComboBox<String> createThemeComboBox()
+    {
+        final String[] themes = new String[]
+        {
+            "Red hearts",
+            "Orange hearts",
+            "Yellow hearts",
+            "Green hearts",
+            "Blue hearts",
+            "Purple hearts",
+            "Pink hearts",
+            "Gray hearts",
+            "Rainbow hearts"
+        };
+        JComboBox<String> combo = new JComboBox<>(themes);
+        combo.setLayout(null);
+        combo.setBackground(white);
+        combo.setBounds(400, 350, 150, 30);
+        combo.setFont(createFont(20));
+        combo.setForeground(black);
+        combo.addActionListener(new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+
+                frame.requestFocus();
+            }
+        });
+        combo.addItemListener(e ->
+        {
+            if(e.getStateChange() == ItemEvent.SELECTED)
+            {
+                theme = switch(e.getItem().toString())
+                {
+                    case "Red hearts" -> Theme.RED_HEARTS;
+                    case "Orange hearts" -> Theme.ORANGE_HEARTS;
+                    case "Yellow hearts" -> Theme.YELLOW_HEARTS;
+                    case "Green hearts" -> Theme.GREEN_HEARTS;
+                    case "Blue hearts" -> Theme.BLUE_HEARTS;
+                    case "Purple hearts" -> Theme.PURPLE_HEARTS;
+                    case "Pink hearts" -> Theme.PINK_HEARTS;
+                    case "Gray hearts" -> Theme.GRAY_HEARTS;
+                    case "Rainbow hearts" -> Theme.RAINBOW_HEARTS;
+                    default -> throw new IllegalStateException("Unexpected value: " + e.getItem().toString());
+                };
+                try {
+                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
+                }
+                catch(IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                matrix.repaint();
+                matrix.revalidate();
+            }
+        });
+        combo.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                frame.parallaxMove(new Point(combo.getX() + e.getX(),  combo.getY() + e.getY()));
+            }
+        });
+        return combo;
+    }
+
+    public JLabel createMatrixLabel()
     {
         final int[] width = new int[1];
         final int[] height = new int[1];
@@ -605,11 +962,10 @@ public class PabunotMakingPane extends JPanel implements Runnable
         paperLength = (metric / Math.max(x, y));
         JLabel label = new JLabel()
         {
-            Image image;
             {
                 try {
-                    image = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
-                    image = image.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
+                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
+                    pabunotThemeImage = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -619,11 +975,12 @@ public class PabunotMakingPane extends JPanel implements Runnable
             public void paintComponent(Graphics g)
             {
                 super.paintComponent(g);
-                paperLength = metric / Math.max(x, y);
+                paperLength = (int) Math.floor((double) metric / Math.max(x, y));
                 width[0] = paperLength * x;
                 height[0] = paperLength * y;
                 setSize(width[0], height[0]);
-                Image io = image.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
+                setLocation((matrixPanel.getWidth() - width[0]) / 2, ((matrixPanel.getHeight() - height[0]) / 2));
+                Image io = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
                 g.setColor(new Color(0, 0, 0, 127));
                 g.fillRect(0, 0, metric, metric);
                 for(int i = 0; i < x; i++)
@@ -642,8 +999,8 @@ public class PabunotMakingPane extends JPanel implements Runnable
 
         label.setLayout(null);
         label.setDoubleBuffered(true);
-        label.setSize(metric, metric);
-        label.setLocation(600, 60);
+        label.setSize(paperLength * x, paperLength * y);
+        label.setLocation((matrixPanel.getWidth() - metric) / 2, (matrixPanel.getHeight() - metric) / 2);
         label.setOpaque(false);
         return label;
     }
@@ -677,12 +1034,6 @@ public class PabunotMakingPane extends JPanel implements Runnable
         int height = metrics.getHeight();
         label.setBounds(0, 0, paperLength, paperLength);
         return label;
-    }
-
-    @Override
-    public void run()
-    {
-
     }
 
     private JTextField createPrize()
@@ -775,8 +1126,8 @@ public class PabunotMakingPane extends JPanel implements Runnable
     {
         try
         {
-            i = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
-            i = i.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+            pabunotThemeImage = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
+            pabunotThemeImage = pabunotThemeImage.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
         }
         catch(IOException e) {
             throw new RuntimeException(e);
@@ -845,13 +1196,10 @@ public class PabunotMakingPane extends JPanel implements Runnable
         });
     }
 
-
-    public Image i;
-
     @Override
     public void paintComponent(Graphics g)
     {
-        g.drawImage(i, frame.x, frame.y, null);
+        g.drawImage(frame.mainBackground, frame.x, frame.y, null);
         g.setColor(new Color(0, 0, 0, 120));
         g.fillRect(0, 0, getWidth(), getHeight());
         g.drawImage(frame.snow, 0, 0, null);

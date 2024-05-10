@@ -32,7 +32,12 @@ public class PabunotGrid
 
     public PabunotGrid()
     {
+        x = 0;
+        y = 0;
+        grid = null;
         size = 0;
+        title = null;
+        serial = 0;
     }
 
     public Pabunot[] getGrid()

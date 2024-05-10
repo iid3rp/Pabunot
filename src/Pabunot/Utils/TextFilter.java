@@ -1,8 +1,9 @@
 package Pabunot.Utils;
+
 import javax.swing.text.AttributeSet;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
 /**
  * <p>This section creates a {@code DocumentFilter} to filter the text and use it in either JTextFields
@@ -18,27 +19,34 @@ import javax.swing.text.Document;
  */
 public class TextFilter extends DocumentFilter
 {
-    public String dataType; // the string equivalent of the enum
+    private long minimumNumber;
+    private long numberLimit;
+    public DataType dataType; // the string equivalent of the enum
     public int characterLimit = 0;
-    
+    private int currentNumber;
+
     public TextFilter()
     {
-        this.dataType = DataType.TYPE_STRING.toString();
+        this.dataType = DataType.TYPE_STRING;
     }   
     
     // constructor with @parameters
     public TextFilter(DataType d)
     {
-        this.dataType = d.toString();
+        this.dataType = d;
         characterLimit = Integer.MAX_VALUE;
+        minimumNumber = Long.MIN_VALUE;
+        numberLimit = Long.MAX_VALUE;
     }
 
     public TextFilter(DataType d, int charLimit)
     {
-        this.dataType = d.toString();
+        this.dataType = d;
         characterLimit = charLimit;
+        minimumNumber = Long.MIN_VALUE;
+        numberLimit = Long.MAX_VALUE;
     }
-    
+
     @Override
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException 
     {
@@ -64,23 +72,23 @@ public class TextFilter extends DocumentFilter
             switch(dataType)
             {
                 // default choice
-                case "TYPE_STRING":
+                case TYPE_STRING:
                 {
                     if(text.length() <= characterLimit)
                         break;
                     else return false;
                 }
                 
-                case "TYPE_NUMERICAL":
+                case TYPE_NUMERICAL:
                 {
-                    Long.parseLong(text);
+                    long x = Long.parseLong(text);
                     if(text.length() <= characterLimit)
                         break;
                     else return false;
                 }
                 
                 // currency based
-                case "TYPE_CURRENCY":
+                case TYPE_CURRENCY:
                 {
                     if(text.length() <= characterLimit)
                     {
@@ -105,7 +113,7 @@ public class TextFilter extends DocumentFilter
 
                     break;
                 }
-                case "TYPE_CHARACTERS_ONLY":
+                case TYPE_CHARACTERS_ONLY:
                 {
                     if(text.length() <= characterLimit)
                     {

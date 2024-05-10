@@ -38,6 +38,7 @@ public class InitialFrame extends JFrame implements Runnable
 {
     public static double snowMultiplierX;
     public static double snowMultiplierY;
+    public Image mainBackground;
     @Intention InitialFrame frame = this;
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
@@ -87,9 +88,9 @@ public class InitialFrame extends JFrame implements Runnable
 
         //area = createTextArea();
 
-        add(panel);
+        //add(panel);
         add(glassPane);
-        setContentPane(panel);
+        //setContentPane(panel);
         setContentPane(createPabunot);
         setGlassPane(glassPane);
         // panel.add(area);
@@ -474,11 +475,10 @@ public class InitialFrame extends JFrame implements Runnable
     {
         JPanel panel = new JPanel()
         {
-            Image i;
             {
                 try {
-                    i = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
-                    i = i.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+                    mainBackground = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
+                    mainBackground = mainBackground.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -488,7 +488,7 @@ public class InitialFrame extends JFrame implements Runnable
             @Override
             public void paintComponent(Graphics g)
             {
-                g.drawImage(i, x, y, null);
+                g.drawImage(mainBackground, x, y, null);
                 g.setColor(new Color(0, 0, 0, 120));
                 g.fillRect(0, 0, getWidth(), getHeight());
                 g.drawImage(snow, 0, 0, null);
