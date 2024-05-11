@@ -5,8 +5,10 @@ import Pabunot.Graphics.TrailLabel;
 import Pabunot.Interface.PabunotMakingPane;
 import Pabunot.Pabunot.PabunotGrid;
 import Pabunot.Pabunot.PabunotGridPane;
+import Pabunot.StreamIO.PabunotMaker;
 import Pabunot.Utils.AndyBold;
 import Pabunot.Utils.Intention;
+import Pabunot.Utils.Theme;
 import Pabunot.Utils.Tip;
 
 import javax.imageio.ImageIO;
@@ -15,6 +17,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
@@ -78,8 +81,7 @@ public class InitialFrame extends JFrame implements Runnable
 
         glassPane.setVisible(true);
 
-        bunot = new PabunotGridPane(this, new PabunotGrid(40, 40, "Hello World!", 12345,
-                Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath()));
+        bunot = new PabunotGridPane(this, new PabunotGrid(40, 40, "Hello World!", 12345, Theme.PINK_HEARTS));
         addComponents();
     }
 
@@ -504,6 +506,7 @@ public class InitialFrame extends JFrame implements Runnable
     public static void main(String[] a)
     {
         InitialFrame frame = new InitialFrame();
+        @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
         frame.start();
     }
 }

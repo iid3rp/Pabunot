@@ -3,6 +3,7 @@ package Pabunot.Interface;
 import Pabunot.Graphics.TrailLabel;
 import Pabunot.InitialFrame;
 import Pabunot.Pabunot.Pabunot;
+import Pabunot.Pabunot.PabunotGrid;
 import Pabunot.Prize.Prize;
 import Pabunot.Prize.PrizeListPane;
 import Pabunot.StreamIO.PabunotMaker;
@@ -54,6 +55,7 @@ public class PabunotMakingPane extends JPanel
     private Image pabunotThemeImage;
     private JPanel matrixPanel;
     private JComboBox<String> themeCombo;
+    private String pabunotTitle;
 
     public PabunotMakingPane(InitialFrame frame, String titleString)
     {
@@ -154,7 +156,7 @@ public class PabunotMakingPane extends JPanel
         @Override
         public void mouseMoved(MouseEvent e)
         {
-            frame.parallaxMove(new Point(check.getX() + e.getX(),  check.getY() + e.getY()));
+            InitialFrame.parallaxMove(new Point(check.getX() + e.getX(),  check.getY() + e.getY()));
         }
     });
         return check;
@@ -200,7 +202,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -246,7 +248,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -293,7 +295,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -339,7 +341,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -389,7 +391,9 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                PabunotMaker pm = new PabunotMaker();
+                PabunotGrid grid = new PabunotGrid(x, y, pabunotTitle, theme, pane.list);
+                PabunotMaker pm = new PabunotMaker(grid);
+                System.out.println(pm);
             }
 
             @Override
@@ -515,7 +519,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
             }
         });
 
@@ -648,7 +652,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
             }
         });
 
@@ -681,7 +685,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
             }
         });
         return field;
@@ -738,7 +742,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
             }
         });
         return label;
@@ -854,7 +858,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(area.getX() + e.getX(),  area.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(area.getX() + e.getX(),  area.getY() + e.getY()));
             }
         });
 
@@ -948,7 +952,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(combo.getX() + e.getX(),  combo.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(combo.getX() + e.getX(),  combo.getY() + e.getY()));
             }
         });
         return combo;
@@ -1092,7 +1096,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
             }
         });
 
@@ -1167,8 +1171,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                frame.x = -24;
-                frame.y = -18;
+                InitialFrame.x = -24;
+                InitialFrame.y = -18;
             }
         });
 
@@ -1191,7 +1195,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(e.getPoint());
+                InitialFrame.parallaxMove(e.getPoint());
             }
         });
     }
@@ -1199,7 +1203,7 @@ public class PabunotMakingPane extends JPanel
     @Override
     public void paintComponent(Graphics g)
     {
-        g.drawImage(frame.mainBackground, frame.x, frame.y, null);
+        g.drawImage(frame.mainBackground, InitialFrame.x, InitialFrame.y, null);
         g.setColor(new Color(0, 0, 0, 120));
         g.fillRect(0, 0, getWidth(), getHeight());
         g.drawImage(frame.snow, 0, 0, null);

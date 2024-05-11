@@ -2,8 +2,13 @@ package Pabunot.StreamIO;
 
 
 import Pabunot.InitialFrame;
+import Pabunot.Interface.PabunotSection;
+import Pabunot.Pabunot.Pabunot;
+import Pabunot.Pabunot.PabunotGrid;
+import Pabunot.Prize.Prize;
+import Pabunot.Prize.PrizeList;
+import Pabunot.Utils.Theme;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,59 +16,91 @@ import java.io.IOException;
 import java.util.InputMismatchException;
 
 /**
- * The `BankReader` class provides functionalities for reading and processing bank data.
+ * The `PabunotReader` class provides functionalities for reading and processing bank data.
  *
  * @author Francis (iid3rp) Madanlo
  */
 public class PabunotReader
 {
     /**
-     * Constructs a `BankReader` object. (Default constructor with no arguments)
+     * Constructs a `PabunotReader` object. (Default constructor with no arguments)
      */
     public PabunotReader() {}
 
     /**
-     * This method reads bank data from a specified file and potentially creates a BankAccountPane to store the data.
-     *
+     * Reads data from a specified file and creates a PabunotSection with a PabunotGrid containing prizes and pabunots.
+     * <p>
+     * Steps:
      * <ul>
-     * <li>Read the bank data from the file</li>
-     * <li>Use a reference InitialFrame for any graphical user interface interaction during the reading process </li>
-     * <li>Create a list object to store the parsed bank data\</li>
-     * <li>Throw an exception if there are issues encountered during file reading, and returns nothing.</li>
+     * <li>Reads configuration data from the file to set up the grid dimensions, title, theme, and serial number.</li>
+     * <li>Processes prize data to populate a PrizeList.</li>
+     * <li>Reads and creates Pabunot objects based on the remaining file content.</li>
+     * <li>Handles exceptions by displaying an error message and returning null if file reading fails.</li>
      * </ul>
-     * </p>
      *
-     * @param frame A reference to an InitialFrame object, used for final UI interaction and reference pointing..
-     * @param file The File object representing the bank data file to be read.
-     * @return a BanlAccountPane containing the processed bank data (the type depends on implementation)
-     *  that turns into a list ScrollPane based Component.
+     * @param frame A reference to an InitialFrame object, used for UI interactions during the reading process.
+     * @param file The File object representing the data file to be read.
+     * @return A PabunotSection containing the constructed PabunotGrid, or null if an error occurs.
      */
-    public Object createListFromBank(InitialFrame frame, File file)
+    public PabunotSection createPabunotFromFile(InitialFrame frame, File file) throws IOException
     {
         try {
+            PrizeList list = new PrizeList();
             // FileWriter ug BufferedReader
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            String[] stuff = reader.readLine().split(",");
+            int x = Integer.parseInt(reader.readLine().split(":")[1]);
+            int y = Integer.parseInt(reader.readLine().split(":")[1]);
+            String title = reader.readLine().split(":")[1];
+            long serial = Long.parseLong(reader.readLine().split(":")[1]);
+            Theme theme = Theme.valueOf(reader.readLine().split(":")[1]);
 
-            String title = stuff[1];
-            long serial = Long.parseLong(stuff[3]);
+            reader.readLine(); // skip
 
-            reader.readLine(); // this is for reference to skip another line...
-
-            // for loop for the iteration of other bank account list
             String line = reader.readLine();
-            while(line != null)
+            while(!line.equals("Pabunot"))
             {
-                String[] items = line.split(",");
-                long number = Long.parseLong(items[3]);
-                double balance = Double.parseDouble(items[4]);
+                String[] s = line.split(":");
+                list.add(new Prize(s[0], s[1]));
+                System.out.println(line);
                 line = reader.readLine();
             }
+
+            reader.readLine(); // skip
+
+            PabunotGrid grid = new PabunotGrid(x, y, title, theme, list);
+
+            line = reader.readLine();
+            while(line != null)
+            {
+                String[] s = line.split(":");
+                grid.add(new Pabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
+                line = reader.readLine();
+            }
+            PabunotSection s = new PabunotSection(grid);
+            System.out.println(s);
+            return s;
+        }
+        catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
+        {
             return null;
         }
-        catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(frame, "File Invalid.");
-            return null;
+    }
+
+    public static void main(String[] args)
+    {
+        InitialFrame frame = new InitialFrame();
+        File file = new File(System.getProperty("user.home") + "\\Pabunot\\4196324261155078\\Pabunot.ini"); // Replace with the actual file path
+
+        PabunotSection section = null;
+        try {
+            section = new PabunotReader().createPabunotFromFile(frame, file);
+        }
+        catch(IOException ignored) {}
+
+        if (section != null) {
+            System.out.println("PabunotSection created successfully!");
+        } else {
+            System.out.println("Failed to create PabunotSection.");
         }
     }
 }

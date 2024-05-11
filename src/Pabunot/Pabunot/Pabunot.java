@@ -14,7 +14,6 @@ public class Pabunot
 
     private int value;
     private boolean isPicked;
-
     protected Image image;
 
     public int getValue()
@@ -28,16 +27,27 @@ public class Pabunot
         isPicked = false;
     }
 
-    public Pabunot(int value, String s)
+    public Pabunot(int value, Theme theme)
     {
         try {
-            image = ImageIO.read(new File(s));
+            image = ImageIO.read(Objects.requireNonNull(selectTheme(theme)));
         }
         catch(IOException e) {
             throw new RuntimeException(e);
         }
         this.value = value;
         isPicked = false;
+    }
+    public Pabunot(int value, boolean isPicked, Theme theme)
+    {
+        try {
+            image = ImageIO.read(Objects.requireNonNull(selectTheme(theme)));
+        }
+        catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.value = value;
+        this.isPicked = isPicked;
     }
 
     public static File selectTheme(Theme theme)
