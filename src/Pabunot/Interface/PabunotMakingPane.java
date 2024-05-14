@@ -139,6 +139,10 @@ public class PabunotMakingPane extends JPanel
         return panel;
     }
 
+    /**
+     * The createSameRatio method creates a checkbox component with the label "Apply Both" and some visual styling.
+     * @return
+     */
     private JCheckBox createSameRatio()
     {
         JCheckBox check = new JCheckBox();
@@ -888,8 +892,8 @@ public class PabunotMakingPane extends JPanel
     }
 
     /**
-     * Creates a combo box for selecting a theme.
-     * @return the created combo box
+     * Creates a list for selecting a theme.
+     * @return the created list
      */
     public JComboBox<String> createThemeComboBox()
     {
@@ -1154,8 +1158,8 @@ public class PabunotMakingPane extends JPanel
             {
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
-                    frame.isDragging = true;
-                    frame.offset = e.getPoint();
+                    InitialFrame.isDragging = true;
+                    InitialFrame.offset = e.getPoint();
                 }
             }
 
@@ -1164,7 +1168,7 @@ public class PabunotMakingPane extends JPanel
             {
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
-                    frame.isDragging = false;
+                    InitialFrame.isDragging = false;
                 }
             }
 
@@ -1181,12 +1185,12 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseDragged(MouseEvent e)
             {
-                if(frame.isDragging)
+                if(InitialFrame.isDragging)
                 {
                     Point currentMouse = e.getLocationOnScreen();
 
-                    int deltaX = currentMouse.x - frame.offset.x;
-                    int deltaY = currentMouse.y - frame.offset.y;
+                    int deltaX = currentMouse.x - InitialFrame.offset.x;
+                    int deltaY = currentMouse.y - InitialFrame.offset.y;
 
                     frame.setLocation(deltaX, deltaY);
                 }
@@ -1203,10 +1207,7 @@ public class PabunotMakingPane extends JPanel
     @Override
     public void paintComponent(Graphics g)
     {
-        g.drawImage(frame.mainBackground, InitialFrame.x, InitialFrame.y, null);
-        g.setColor(new Color(0, 0, 0, 120));
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.drawImage(frame.snow, 0, 0, null);
+        InitialFrame.render(g);
     }
 
 }

@@ -16,8 +16,7 @@ public class PrizeListPane extends JScrollPane
     private JPanel container;
     private int size;
     private boolean nothing;
-    @Intention
-    private InitialFrame frame;
+    @Intention public InitialFrame frame;
 
     /**<editor-fold desc="Description">
      * you need to get the panel's preferred size "daw" because that's going

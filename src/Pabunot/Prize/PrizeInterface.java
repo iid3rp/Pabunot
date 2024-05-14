@@ -3,6 +3,7 @@ package Pabunot.Prize;
 import Pabunot.Utils.AndyBold;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -77,7 +78,7 @@ public class PrizeInterface extends JPanel
         label.setLayout(null);
         label.setText(desc);
         label.setFont(AndyBold.createFont(15));
-        label.setForeground(new Color(0, 0,0, 127));
+        label.setForeground(new Color(126, 126, 126));
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int height = metrics.getHeight();
         label.setBounds(5, 25, 230, height);
@@ -100,7 +101,8 @@ public class PrizeInterface extends JPanel
     private void initializeComponent()
     {
         setLayout(null);
-        setBackground(new Color(255, 255, 255, 60));
+        setBorder(new LineBorder(Color.white));
+        setBackground(new Color(0x00_00_000, true));
         setSize(new Dimension(WIDTH, HEIGHT));
     }
 }

@@ -42,7 +42,7 @@ public class PabunotReader
      * @param file The File object representing the data file to be read.
      * @return A PabunotSection containing the constructed PabunotGrid, or null if an error occurs.
      */
-    public PabunotSection createPabunotFromFile(InitialFrame frame, File file) throws IOException
+    public PabunotSection createPabunotFromFile(InitialFrame frame, File file)
     {
         try {
             PrizeList list = new PrizeList();
@@ -76,7 +76,7 @@ public class PabunotReader
                 grid.add(new Pabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
                 line = reader.readLine();
             }
-            PabunotSection s = new PabunotSection(grid);
+            PabunotSection s = new PabunotSection(frame, grid);
             System.out.println(s);
             return s;
         }
@@ -89,13 +89,10 @@ public class PabunotReader
     public static void main(String[] args)
     {
         InitialFrame frame = new InitialFrame();
-        File file = new File(System.getProperty("user.home") + "\\Pabunot\\4196324261155078\\Pabunot.ini"); // Replace with the actual file path
+        frame.start();
+        File file = new File(System.getProperty("user.home") + "\\Pabunot\\4196324261155078\\Pabunot.ini"); // Replace with the actual path
 
-        PabunotSection section = null;
-        try {
-            section = new PabunotReader().createPabunotFromFile(frame, file);
-        }
-        catch(IOException ignored) {}
+        PabunotSection section = new PabunotReader().createPabunotFromFile(frame, file);
 
         if (section != null) {
             System.out.println("PabunotSection created successfully!");

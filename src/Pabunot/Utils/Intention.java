@@ -1,13 +1,9 @@
 package Pabunot.Utils;
 import java.lang.annotation.*;
 /**
- *
- *   <p>This was intentionally made (pun intended) to put certain fields/methods/constructors in the code to create
- *   a crucial argument, through the design of the stated code, the reason of the action, and how risky this action will be.</p>
- *
- *   <p>This creates an annotation that some things are intentional and cannot
- *   be modified for 'the' certain reason/s and should be asked for permission to modify when collaboration,
- *   code conflict, and code cleaning....</p>
+ * Annotation to mark code elements that should not be altered without permission.
+ * It indicates intentional design choices that are crucial for specific reasons.
+ * Modifications require prior approval due to potential risks and implications.
  *
  * @author Francis (iid3rp) Madanlo
  */
