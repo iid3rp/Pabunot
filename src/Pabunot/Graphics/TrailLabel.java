@@ -110,7 +110,7 @@ public class TrailLabel extends ArrayList<JLabel>
         int index = 0;
         for(JLabel l : this)
         {
-            l.setLocation(l.getX(), (int) InitialFrame.sineEaseY(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
+            l.setLocation(l.getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
         }
     }
 }

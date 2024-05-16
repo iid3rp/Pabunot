@@ -1,7 +1,7 @@
 package Pabunot.StreamIO;
 
-import Pabunot.Pabunot.Pabunot;
-import Pabunot.Pabunot.PabunotGrid;
+import Pabunot.Palabunutan.Palabunot;
+import Pabunot.Palabunutan.PalabunotGrid;
 import Pabunot.Prize.Prize;
 
 import java.io.File;
@@ -16,9 +16,9 @@ public class PabunotMaker
     public File fileName;
     public long serial;
     private Random r = new Random();
-    private PabunotGrid grid;
+    private PalabunotGrid grid;
 
-    public PabunotMaker(PabunotGrid grid)
+    public PabunotMaker(PalabunotGrid grid)
     {
         this.grid = grid;
         title = grid.getTitle();
@@ -57,7 +57,7 @@ public class PabunotMaker
             }
 
             writer.write("Pabunot\n");
-            for(Pabunot p : grid.grid)
+            for(Palabunot p : grid.grid)
             {
                 writer.write(p.getValue() + ":" + p.isPicked() + "\n");
             }

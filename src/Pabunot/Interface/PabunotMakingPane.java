@@ -2,12 +2,15 @@ package Pabunot.Interface;
 
 import Pabunot.Graphics.TrailLabel;
 import Pabunot.InitialFrame;
-import Pabunot.Pabunot.Pabunot;
-import Pabunot.Pabunot.PabunotGrid;
+import Pabunot.Palabunutan.Palabunot;
+import Pabunot.Palabunutan.PalabunotGrid;
 import Pabunot.Prize.Prize;
 import Pabunot.Prize.PrizeListPane;
 import Pabunot.StreamIO.PabunotMaker;
-import Pabunot.Utils.*;
+import Pabunot.Utils.DataType;
+import Pabunot.Utils.Intention;
+import Pabunot.Utils.TextFilter;
+import Pabunot.Utils.Theme;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,6 +26,31 @@ import java.util.Objects;
 import static Pabunot.Utils.AndyBold.createFont;
 import static java.awt.Color.*;
 
+/**
+ * The {@code PabunotMakingPane} class represents a custom JPanel
+ * used for configuring and initiating a Pabunot game.
+ * This panel allows users to set various parameters for the game,
+ * including the dimensions of the grid, theme selection,
+ * and prize management.
+ * It provides interactive components like text fields, buttons, and combo boxes to customize the game setup.
+ *
+ * <p>Key features include:</p>
+ * <ul>
+ *   <li>Setting grid dimensions with interactive increment and decrement buttons.</li>
+ *   <li>Choosing a theme from a predefined list of themes.</li>
+ *   <li>Adding prizes with titles and descriptions.</li>
+ *   <li>Starting the game with the configured settings.</li>
+ * </ul>
+ *
+ * <p>This class extensively uses {@link TrailLabel} for displaying animated text, and interacts with {@link InitialFrame}
+ * to handle user interactions and visual feedback. It also integrates with {@link PrizeListPane} for managing a list of prizes.</p>
+ *
+ * @see JPanel
+ * @see TrailLabel
+ * @see InitialFrame
+ * @see PrizeListPane
+ * @author Francis (iid3rp) Madanlo
+ */
 public class PabunotMakingPane extends JPanel
 {
     private int paperLength;
@@ -140,8 +168,15 @@ public class PabunotMakingPane extends JPanel
     }
 
     /**
-     * The createSameRatio method creates a checkbox component with the label "Apply Both" and some visual styling.
-     * @return
+     * Creates a JCheckBox component styled with specific visual properties.
+     * This checkbox is labeled "Apply Both" and is designed to toggle the application
+     * of a certain setting uniformly across multiple parameters.
+     * The method sets the font size, opacity, and foreground color of the checkbox.
+     * It also positions the checkbox at a specific location on the component it is added to.
+     * Additionally, it includes a mouse motion listener that triggers a parallax movement effect
+     * when the mouse moves over the checkbox.
+     *
+     * @return JCheckBox The styled checkbox component with added functionality.
      */
     private JCheckBox createSameRatio()
     {
@@ -383,7 +418,7 @@ public class PabunotMakingPane extends JPanel
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText("Start Pabunot");
+        label.setText("Save Pabunot");
         label.setFont(createFont(40));
         label.setForeground(white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
@@ -395,7 +430,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                PabunotGrid grid = new PabunotGrid(x, y, pabunotTitle, theme, pane.list);
+                PalabunotGrid grid = new PalabunotGrid(x, y, pabunotTitle, theme, pane.list);
                 PabunotMaker pm = new PabunotMaker(grid);
                 System.out.println(pm);
             }
@@ -942,7 +977,7 @@ public class PabunotMakingPane extends JPanel
                     default -> throw new IllegalStateException("Unexpected value: " + e.getItem().toString());
                 };
                 try {
-                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
+                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
                 }
                 catch(IOException ex) {
                     throw new RuntimeException(ex);
@@ -972,7 +1007,7 @@ public class PabunotMakingPane extends JPanel
         {
             {
                 try {
-                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
+                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
                     pabunotThemeImage = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
@@ -1021,7 +1056,7 @@ public class PabunotMakingPane extends JPanel
             Image i;
             {
                 try {
-                    i = ImageIO.read(Objects.requireNonNull(Pabunot.selectTheme(theme)));
+                    i = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
                     i = i.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {

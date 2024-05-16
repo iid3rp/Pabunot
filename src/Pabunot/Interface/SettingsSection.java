@@ -1,13 +1,13 @@
 package Pabunot.Interface;
 
-import Pabunot.Pabunot.PabunotGridPane;
+import Pabunot.Palabunutan.PalabunotGridPane;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SettingsSection extends JPanel
 {
-    public PabunotGridPane pane;
+    public PalabunotGridPane pane;
     public JLabel randomize;
 
     public SettingsSection()

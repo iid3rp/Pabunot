@@ -1,4 +1,4 @@
-package Pabunot.Pabunot;
+package Pabunot.Palabunutan;
 
 import Pabunot.Prize.PrizeList;
 import Pabunot.Utils.RandomRange;
@@ -7,20 +7,20 @@ import Pabunot.Utils.Theme;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PabunotGrid extends ArrayList<Pabunot>
+public class PalabunotGrid extends ArrayList<Palabunot>
 {
     private int x;
     private int y;
-    public Pabunot[] grid;
+    public Palabunot[] grid;
     public PrizeList list;
     public Theme theme;
     private int size;
     private String title;
     private long serial;
 
-    public PabunotGrid(int x, int y, String title, long serial, Theme theme)
+    public PalabunotGrid(int x, int y, String title, long serial, Theme theme)
     {
-        grid = new Pabunot[x * y];
+        grid = new Palabunot[x * y];
         this.theme = theme;
         this.x = x;
         this.y = y;
@@ -29,9 +29,9 @@ public class PabunotGrid extends ArrayList<Pabunot>
         setPabunot(theme);
     }
 
-    public PabunotGrid(int x, int y, String title, Theme theme, PrizeList list)
+    public PalabunotGrid(int x, int y, String title, Theme theme, PrizeList list)
     {
-        grid = new Pabunot[x * y];
+        grid = new Palabunot[x * y];
         this.theme = theme;
         this.list = list;
         this.x = x;
@@ -46,11 +46,11 @@ public class PabunotGrid extends ArrayList<Pabunot>
         int index = 0;
         for(int i : new RandomRange(1, x * y))
         {
-            grid[index++] = new Pabunot(i, theme);
+            grid[index++] = new Palabunot(i, theme);
         }
     }
 
-    public PabunotGrid()
+    public PalabunotGrid()
     {
         x = 0;
         y = 0;
@@ -60,7 +60,7 @@ public class PabunotGrid extends ArrayList<Pabunot>
         serial = 0;
     }
 
-    public Pabunot[] getGrid()
+    public Palabunot[] getGrid()
     {
         return grid;
     }

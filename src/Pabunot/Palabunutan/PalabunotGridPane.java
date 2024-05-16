@@ -1,4 +1,4 @@
-package Pabunot.Pabunot;
+package Pabunot.Palabunutan;
 
 import Pabunot.InitialFrame;
 import Pabunot.Utils.Intention;
@@ -10,17 +10,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-public class PabunotGridPane extends JPanel
+public class PalabunotGridPane extends JPanel
 {
     @Intention InitialFrame frame;
     @Intention JPanel panel = this;
     private int x;
     private int y;
     private int paperLength;
-    private PabunotGrid grid;
+    private PalabunotGrid grid;
 
 
-    public PabunotGridPane(InitialFrame frame, int x, int y)
+    public PalabunotGridPane(InitialFrame frame, int x, int y)
     {
         super();
         this.x = x;
@@ -32,7 +32,7 @@ public class PabunotGridPane extends JPanel
 
     }
 
-    public PabunotGridPane(InitialFrame frame, PabunotGrid grid)
+    public PalabunotGridPane(InitialFrame frame, PalabunotGrid grid)
     {
         super();
         this.x = grid.getX();
@@ -45,7 +45,7 @@ public class PabunotGridPane extends JPanel
 
     }
 
-    private void addPapers(PabunotGrid grid)
+    private void addPapers(PalabunotGrid grid)
     {
         int index = 0;
         for(int i = 0; i < x; i++)
@@ -167,7 +167,7 @@ public class PabunotGridPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(panel.getX() + label.getX() + e.getX(), panel.getY() + label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(panel.getX() + label.getX() + e.getX(), panel.getY() + label.getY() + e.getY()));
             }
         });
         return label;
@@ -175,7 +175,7 @@ public class PabunotGridPane extends JPanel
 
     private void validateChecking()
     {
-        for(Pabunot p : grid.getGrid())
+        for(Palabunot p : grid.getGrid())
         {
             if(!p.isPicked()) return;
         }

@@ -1,8 +1,8 @@
 package Pabunot.Interface;
 
 import Pabunot.InitialFrame;
-import Pabunot.Pabunot.PabunotGrid;
-import Pabunot.Pabunot.PabunotGridPane;
+import Pabunot.Palabunutan.PalabunotGrid;
+import Pabunot.Palabunutan.PalabunotGridPane;
 import Pabunot.Utils.Intention;
 
 import javax.swing.*;
@@ -13,12 +13,12 @@ import java.awt.event.MouseMotionAdapter;
 
 public class PabunotSection extends JPanel
 {
-    public PabunotGridPane pane;
-    public PabunotGrid grid;
+    public PalabunotGridPane pane;
+    public PalabunotGrid grid;
     public JLabel randomize;
     @Intention InitialFrame frame;
 
-    public PabunotSection(InitialFrame frame, PabunotGrid grid)
+    public PabunotSection(InitialFrame frame, PalabunotGrid grid)
     {
         super();
         this.grid = grid;

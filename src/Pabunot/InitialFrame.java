@@ -3,9 +3,10 @@ package Pabunot;
 import Pabunot.Graphics.Snow;
 import Pabunot.Graphics.TrailLabel;
 import Pabunot.Interface.PabunotMakingPane;
+import Pabunot.Interface.PabunotPickerPanel;
 import Pabunot.Interface.PabunotSection;
-import Pabunot.Pabunot.PabunotGrid;
-import Pabunot.Pabunot.PabunotGridPane;
+import Pabunot.Palabunutan.PalabunotGrid;
+import Pabunot.Palabunutan.PalabunotGridPane;
 import Pabunot.StreamIO.PabunotMaker;
 import Pabunot.Utils.AndyBold;
 import Pabunot.Utils.Intention;
@@ -13,24 +14,8 @@ import Pabunot.Utils.Theme;
 import Pabunot.Utils.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -53,7 +38,7 @@ import java.util.Random;
  * <p>Key functionalities include:</p>
  * <ul>
  *   <li>Setting up the main frame and its properties such as size, visibility, and layout.</li>
- *   <li>Initializing game components like {@link Snow}, {@link TrailLabel}, and {@link PabunotGridPane}.</li>
+ *   <li>Initializing game components like {@link Snow}, {@link TrailLabel}, and {@link PalabunotGridPane}.</li>
  *   <li>Handling the game's rendering loop, which updates animations and UI elements.</li>
  *   <li>Managing user interactions through mouse events and implementing custom cursor settings.</li>
  * </ul>
@@ -65,7 +50,7 @@ import java.util.Random;
  * @see Runnable
  * @see Snow
  * @see TrailLabel
- * @see PabunotGridPane
+ * @see PalabunotGridPane
  *
  * @author Francis (iid3rp) Madanlo
  */
@@ -92,8 +77,8 @@ public class InitialFrame extends JFrame implements Runnable
     public JPanel contentPanel;
     public static boolean isDragging;
     public static Point offset;
-    PabunotGridPane bunot;
-
+    PalabunotGridPane bunot;
+    PabunotPickerPanel picker;
     public JPanel glassPane;
     public int fps;
     private JLabel framesPerSecond;
@@ -116,7 +101,7 @@ public class InitialFrame extends JFrame implements Runnable
         initializeComponent();
         snow = new Snow();
         contentPanel = createContentPanel();
-        pabunotProcess = new PabunotSection(this, new PabunotGrid());
+        pabunotProcess = new PabunotSection(this, new PalabunotGrid());
         glassPane = createGlassPane();
         framesPerSecond = createFPS();
         createPabunot = new PabunotMakingPane(frame, "BSIT-BTM Pabunot");
@@ -126,16 +111,18 @@ public class InitialFrame extends JFrame implements Runnable
         exit = createExit();
         titleLabel = new TrailLabel("Pabunot!", 150, 100, 120, TrailLabel.rainbow);
 
+        picker = new PabunotPickerPanel(this);
         add(glassPane);
         //setContentPane(contentPanel); // the main menu
-        setContentPane(createPabunot); // the pabunot section where do you start making one
+        //setContentPane(createPabunot); // the pabunot section where do you start making one
         //setContentPane(pabunotProcess); // the pabunot section when its starting...
+        setContentPane(picker); // the process when doing the pabunot.
         setGlassPane(glassPane);
         
 
         glassPane.setVisible(true);
 
-        bunot = new PabunotGridPane(this, new PabunotGrid(40, 40, "Hello World!", 12345, Theme.PINK_HEARTS));
+        bunot = new PalabunotGridPane(this, new PalabunotGrid(40, 40, "Hello World!", 12345, Theme.PINK_HEARTS));
         addComponents();
     }
 
@@ -305,10 +292,13 @@ public class InitialFrame extends JFrame implements Runnable
                     }
                     if(!fpsUnlocked) {
                         try {
+                            // waving trail labels...
                             titleLabel.wave(currentTime);
                             labels.wave(currentTime);
                             labels2.wave(currentTime);
                             createPabunot.title.wave(currentTime);
+                            picker.title.wave(currentTime);
+                            // rendering process
                             getContentPane().repaint();
 
                             frames++;
@@ -325,6 +315,7 @@ public class InitialFrame extends JFrame implements Runnable
                     labels.wave(currentTime);
                     labels2.wave(currentTime);
                     createPabunot.title.wave(currentTime);
+                    picker.title.wave(currentTime);
                     getContentPane().repaint();
                     frames++;
                 }
@@ -442,19 +433,11 @@ public class InitialFrame extends JFrame implements Runnable
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setUndecorated(true);
+        setUndecorated(true);
         setVisible(true);
     }
 
-    @Deprecated @Intention(design = "for easing x, but for some reason it's in no use as of now...")
-    public static double sineEaseX(double currentTime, double duration, double startX, double endX, int delaySine, int delayCosine) {
-        double easingSine = (Math.sin(currentTime * Math.PI * 2 / duration) + 1) / 2;
-        double easingCosine = (Math.cos(currentTime * Math.PI * 2 / duration) + 1) / 2;
-        double easing = ((easingSine * delaySine) + (easingCosine * delayCosine)) / (delaySine + delayCosine);
-        return (startX + (endX - startX) * easing);
-    }
-
-    public static double sineEaseY(double currentTime, double duration, double startY, double endY, int delaySine, int delayCosine) {
+    public static double sineEase(double currentTime, double duration, double startY, double endY, int delaySine, int delayCosine) {
         double easingSine = (Math.sin(currentTime * Math.PI * 2 / duration) + 1) / 2;
         double easingCosine = (Math.cos(currentTime * Math.PI * 2 / duration) + 1) / 2;
         double easing = ((easingSine * delaySine) + (easingCosine * delayCosine)) / (delaySine + delayCosine);

@@ -52,7 +52,7 @@ public class PrizeListPane extends JScrollPane
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                frame.parallaxMove(new Point(getX() + e.getX(),  getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(getX() + e.getX(),  getY() + e.getY()));
             }
         });
 

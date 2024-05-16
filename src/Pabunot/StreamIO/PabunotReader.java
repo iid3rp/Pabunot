@@ -3,9 +3,10 @@ package Pabunot.StreamIO;
 
 import Pabunot.InitialFrame;
 import Pabunot.Interface.PabunotSection;
-import Pabunot.Pabunot.Pabunot;
-import Pabunot.Pabunot.PabunotGrid;
+import Pabunot.Palabunutan.Palabunot;
+import Pabunot.Palabunutan.PalabunotGrid;
 import Pabunot.Prize.Prize;
+import Pabunot.Pabunot.Pabunot;
 import Pabunot.Prize.PrizeList;
 import Pabunot.Utils.Theme;
 
@@ -67,18 +68,16 @@ public class PabunotReader
 
             reader.readLine(); // skip
 
-            PabunotGrid grid = new PabunotGrid(x, y, title, theme, list);
+            PalabunotGrid grid = new PalabunotGrid(x, y, title, theme, list);
 
             line = reader.readLine();
             while(line != null)
             {
                 String[] s = line.split(":");
-                grid.add(new Pabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
+                grid.add(new Palabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
                 line = reader.readLine();
             }
-            PabunotSection s = new PabunotSection(frame, grid);
-            System.out.println(s);
-            return s;
+            return new PabunotSection(frame, grid);
         }
         catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
         {
@@ -86,18 +85,46 @@ public class PabunotReader
         }
     }
 
-    public static void main(String[] args)
+    public static Pabunot createPalabunotFromFile(String file)
     {
-        InitialFrame frame = new InitialFrame();
-        frame.start();
-        File file = new File(System.getProperty("user.home") + "\\Pabunot\\4196324261155078\\Pabunot.ini"); // Replace with the actual path
+        try {
+            PrizeList list = new PrizeList();
+            // FileWriter ug BufferedReader
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            int x = Integer.parseInt(reader.readLine().split(":")[1]);
+            int y = Integer.parseInt(reader.readLine().split(":")[1]);
+            String title = reader.readLine().split(":")[1];
+            long serial = Long.parseLong(reader.readLine().split(":")[1]);
+            Theme theme = Theme.valueOf(reader.readLine().split(":")[1]);
 
-        PabunotSection section = new PabunotReader().createPabunotFromFile(frame, file);
+            reader.readLine(); // skip
 
-        if (section != null) {
-            System.out.println("PabunotSection created successfully!");
-        } else {
-            System.out.println("Failed to create PabunotSection.");
+            String line = reader.readLine();
+            while(!line.equals("Pabunot"))
+            {
+                String[] s = line.split(":");
+                list.add(new Prize(s[0], s[1]));
+                System.out.println(line);
+                line = reader.readLine();
+            }
+
+            reader.readLine(); // skip
+
+            PalabunotGrid grid = new PalabunotGrid(x, y, title, theme, list);
+
+            line = reader.readLine();
+            while(line != null)
+            {
+                String[] s = line.split(":");
+                grid.add(new Palabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
+                line = reader.readLine();
+            }
+            reader.close();
+            return new Pabunot(title, grid);
+        }
+        catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
+        {
+            return null;
         }
     }
 }
