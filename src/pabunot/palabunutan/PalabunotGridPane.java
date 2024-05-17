@@ -179,7 +179,7 @@ public class PalabunotGridPane extends JPanel
         {
             if(!p.isPicked()) return;
         }
-        frame.contentPanel.remove(this);
+        frame.mainMenu.remove(this);
     }
 
     @Override

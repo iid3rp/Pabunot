@@ -5,33 +5,17 @@ import pabunot.graphics.TrailLabel;
 import pabunot.interfaces.PabunotMakingPane;
 import pabunot.interfaces.PabunotPickerPanel;
 import pabunot.interfaces.PabunotSection;
+import pabunot.interfaces.TrailTitlePanel;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.palabunutan.PalabunotGridPane;
 import pabunot.streamio.PabunotMaker;
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
-import pabunot.util.Theme;
 import pabunot.util.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -86,24 +70,27 @@ public class InitialFrame extends JFrame implements Runnable
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
-    public static int refreshRate = dm.getRefreshRate() * 3;
+    public static int refreshRate = 144;
     public static Snow snow;
     public int reference;
     public static boolean isRunning = true;
+    public JPanel mainMenu;
     public JPanel contentPanel;
     public static boolean isDragging;
     public static Point offset;
     PalabunotGridPane bunot;
-    PabunotPickerPanel picker;
+    public PabunotPickerPanel picker;
     public JPanel glassPane;
     public int fps;
     private JLabel framesPerSecond;
-    private PabunotMakingPane createPabunot;
+    public PabunotMakingPane createPabunot;
     public TrailLabel labels = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, TrailLabel.rainbow);
     public TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
 
     public static int x = 0;
+
     public static int y = 0;
+    public TrailTitlePanel titlePanel;
 
     private JTextArea area;
     private boolean fpsUnlocked = false;
@@ -117,29 +104,109 @@ public class InitialFrame extends JFrame implements Runnable
         initializeComponent();
         snow = new Snow();
         contentPanel = createContentPanel();
+        mainMenu = createMainMenu();
         pabunotProcess = new PabunotSection(this, new PalabunotGrid());
         glassPane = createGlassPane();
         framesPerSecond = createFPS();
-        createPabunot = new PabunotMakingPane(frame, "BSIT-BTM Pabunot");
+        titlePanel = new TrailTitlePanel(this);
 
         start = createStart();
         settings = createSettings();
         exit = createExit();
         titleLabel = new TrailLabel("Pabunot!", 150, 100, 120, TrailLabel.rainbow);
 
+        // bunot = new PalabunotGridPane(this, new PalabunotGrid(40, 40, "Hello World!", Theme.PINK_HEARTS));
+        addComponents();
+
         picker = new PabunotPickerPanel(this);
-        add(glassPane);
-        //setContentPane(contentPanel); // the main menu
-        //setContentPane(createPabunot); // the pabunot section where do you start making one
-        //setContentPane(pabunotProcess); // the pabunot section when its starting...
-        setContentPane(picker); // the process when doing the pabunot.
+        setContentPane(contentPanel);
+        getContentPane().add(picker);
+        getContentPane().add(mainMenu);
+        getContentPane().add(titlePanel);
         setGlassPane(glassPane);
         
 
         glassPane.setVisible(true);
+    }
 
-        bunot = new PalabunotGridPane(this, new PalabunotGrid(40, 40, "Hello World!", Theme.PINK_HEARTS));
-        addComponents();
+    private JPanel createContentPanel()
+    {
+        JPanel panel = new JPanel()
+        {
+            {
+                try {
+                    mainBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
+                    mainMiddleGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleGround.png")));
+                    mainBackGround = mainBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+                    mainMiddleGround = mainMiddleGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void paintComponent(Graphics g)
+            {
+                InitialFrame.render(g);
+            }
+        };
+        panel.addMouseListener(new MouseAdapter()
+        {
+
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    isDragging = true;
+                    offset = e.getPoint();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    isDragging = false;
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                x = -24;
+                y = -18;
+            }
+
+        });
+        panel.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+                if (isDragging)
+                {
+                    Point currentMouse = e.getLocationOnScreen();
+
+                    int deltaX = currentMouse.x - offset.x;
+                    int deltaY = currentMouse.y - offset.y;
+
+                    setLocation(deltaX, deltaY);
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                parallaxMove(e.getPoint());
+            }
+        });
+        panel.setLayout(null);
+        panel.setDoubleBuffered(true);
+        panel.setSize(getWidth(), getHeight());
+        return panel;
     }
 
     private Cursor createCursor()
@@ -225,19 +292,19 @@ public class InitialFrame extends JFrame implements Runnable
 
     public void addComponents()
     {
-        contentPanel.add(framesPerSecond);
-        contentPanel.add(createGitLabel());
+        mainMenu.add(framesPerSecond);
+        mainMenu.add(createGitLabel());
         for(JLabel l : titleLabel)
         {
-            contentPanel.add(l);
+            mainMenu.add(l);
         }
         for(JLabel l : labels)
         {
-            contentPanel.add(l);
+            mainMenu.add(l);
         }
-        contentPanel.add(start);
-        contentPanel.add(settings);
-        contentPanel.add(exit);
+        mainMenu.add(start);
+        mainMenu.add(settings);
+        mainMenu.add(exit);
     }
 
     private JPanel createGlassPane()
@@ -292,11 +359,11 @@ public class InitialFrame extends JFrame implements Runnable
                         tickCount = 0;
                         if(seconds % 6 == 0) {
                             for(JLabel l : labels) {
-                                contentPanel.remove(l);
+                                mainMenu.remove(l);
                             }
                             labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, TrailLabel.rainbow);
                             for(JLabel l : labels) {
-                                contentPanel.add(l);
+                                mainMenu.add(l);
                             }
                         }
                         seconds++;
@@ -312,8 +379,14 @@ public class InitialFrame extends JFrame implements Runnable
                             titleLabel.wave(currentTime);
                             labels.wave(currentTime);
                             labels2.wave(currentTime);
-                            createPabunot.title.wave(currentTime);
                             picker.title.wave(currentTime);
+                            titlePanel.title.wave(currentTime);
+
+                            if(createPabunot != null)
+                            {
+                                createPabunot.title.wave(currentTime);
+                            }
+
                             // rendering process
                             getContentPane().repaint();
 
@@ -326,42 +399,30 @@ public class InitialFrame extends JFrame implements Runnable
 
                 if(fpsUnlocked) {
 
-                    titleLabel.wave(currentTime);
                     // the wave thingies
+                    titleLabel.wave(currentTime);
+
                     labels.wave(currentTime);
                     labels2.wave(currentTime);
-                    createPabunot.title.wave(currentTime);
                     picker.title.wave(currentTime);
+                    titlePanel.title.wave(currentTime);
+
+                    if(createPabunot != null)
+                    {
+                        createPabunot.title.wave(currentTime);
+                    }
+
                     getContentPane().repaint();
+                    //getGlassPane().repaint();
                     frames++;
                 }
             }
         }
     }
 
-    private JPanel createContentPanel()
+    private JPanel createMainMenu()
     {
-        JPanel panel = new JPanel()
-        {
-            {
-                try {
-                    mainBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
-                    mainMiddleGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleGround.png")));
-                    mainBackGround = mainBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
-                    mainMiddleGround = mainMiddleGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
-                }
-                catch(IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override
-            public void paintComponent(Graphics g)
-            {
-                super.paintComponent(g);
-                InitialFrame.render(g);
-            }
-        };
+        JPanel panel = new JPanel();
         panel.addMouseListener(new MouseAdapter()
         {
 
@@ -415,6 +476,7 @@ public class InitialFrame extends JFrame implements Runnable
             }
         });
         panel.setLayout(null);
+        panel.setOpaque(false);
         panel.setDoubleBuffered(true);
         panel.setSize(getWidth(), getHeight());
         return panel;
@@ -425,7 +487,7 @@ public class InitialFrame extends JFrame implements Runnable
         g.drawImage(mainBackGround, x, y, null);
         g.drawImage(snow, 0, 0, null);
         g.drawImage(mainMiddleGround, (x * -1) - 48, (y * -1) - 36, null);
-        g.setColor(new Color(0, 0, 0, 140));
+        g.setColor(new Color(0, 0, 0, 90));
         g.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
@@ -476,7 +538,9 @@ public class InitialFrame extends JFrame implements Runnable
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                System.out.println("Coming soon!");
+                mainMenu.setVisible(false);
+                picker.setVisible(true);
+                repaint();
             }
 
             @Override

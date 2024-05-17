@@ -58,7 +58,7 @@ public class PabunotReader
             reader.readLine(); // skip
 
             String line = reader.readLine();
-            while(!line.equals("pabunot"))
+            while(!line.equalsIgnoreCase("pabunot"))
             {
                 String[] s = line.split(":");
                 list.add(new Prize(s[0], s[1]));
@@ -85,6 +85,25 @@ public class PabunotReader
         }
     }
 
+    /**
+     * Creates a {@code Pabunot} object from a file. This method reads the file to configure and populate a {@code PalabunotGrid} with {@code Palabunot} objects and associated prizes.
+     * <p>
+     * Steps involved:
+     * <ul>
+     * <li>Initialize a {@code PrizeList}.</li>
+     * <li>Open and read the file using a {@code BufferedReader}.</li>
+     * <li>Extract grid dimensions, title, serial number, and theme from the file.</li>
+     * <li>Read and add prizes to the {@code PrizeList} until the "pabunot" marker is encountered.</li>
+     * <li>Create a {@code PalabunotGrid} with the read configuration and prizes.</li>
+     * <li>Read and add {@code Palabunot} objects to the grid.</li>
+     * <li>Close the reader and return the constructed {@code Pabunot}.</li>
+     * </ul>
+     * <p>
+     * If any errors occur during file reading or processing, such as {@link InputMismatchException}, {@link IOException}, or {@link ArrayIndexOutOfBoundsException}, the method returns {@code null}.
+     *
+     * @param file the path to the data file as a {@code String}
+     * @return a {@code Pabunot} object containing the configured grid and prizes, or {@code null} if an error occurs
+     */
     public static Pabunot createPalabunotFromFile(String file)
     {
         try {
@@ -100,7 +119,7 @@ public class PabunotReader
             reader.readLine(); // skip
 
             String line = reader.readLine();
-            while(!line.equals("pabunot"))
+            while(!line.equalsIgnoreCase("pabunot"))
             {
                 String[] s = line.split(":");
                 list.add(new Prize(s[0], s[1]));
@@ -124,6 +143,7 @@ public class PabunotReader
         }
         catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
         {
+            System.out.println("Invalid file format");
             return null;
         }
     }

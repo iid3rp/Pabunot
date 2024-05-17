@@ -8,6 +8,6 @@ public class Pabunot extends PalabunotGrid
 {
     public Pabunot(int x, int y, String title, PrizeList list, Theme theme)
     {
-        super(x, y, title, theme);
+        super(x, y, title, list, theme);
     }
 }

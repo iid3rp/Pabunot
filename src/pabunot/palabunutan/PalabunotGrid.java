@@ -18,6 +18,7 @@ public class PalabunotGrid extends ArrayList<Palabunot>
     private String title;
     private long serial;
 
+    @Deprecated
     public PalabunotGrid(int x, int y, String title, Theme theme)
     {
         grid = new Palabunot[x * y];

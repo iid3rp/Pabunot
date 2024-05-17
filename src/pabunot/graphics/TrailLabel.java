@@ -16,19 +16,22 @@ public class TrailLabel extends ArrayList<JLabel>
     private int startY;
     private int x;
     private int endY;
+    private int size;
 
-    private static int i;
+    private int i;
 
     private int letterLength;
     private int letterDepth;
 
     public TrailLabel(String s, int size, int startY, int endY)
     {
-        //default color will be rainbow :3
+        //the default color will be rainbow :3
+        i = 0;
         letterLength = 0;
         stringSequence = s;
         sequence = s.toCharArray();
         colors = TrailLabel.rainbow;
+        this.size = size;
         this.startX = Short.MAX_VALUE;
         this.startY = startY;
         this.endY = endY;
@@ -108,9 +111,41 @@ public class TrailLabel extends ArrayList<JLabel>
     public void wave(long currentTime)
     {
         int index = 0;
-        for(JLabel l : this)
+        if(sequence.length == 1)
         {
-            l.setLocation(l.getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
+            get(0).setLocation(get(0).getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, 1, 0));
         }
+        else
+        {
+            for(JLabel l : this)
+            {
+                l.setLocation(l.getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
+            }
+        }
+    }
+
+    public int getEndY()
+    {
+        return endY;
+    }
+
+    public void setEndY(int endY)
+    {
+        this.endY = endY;
+    }
+
+    public int getStartY()
+    {
+        return startY;
+    }
+
+    public void setStartY(int startY)
+    {
+        this.startY = startY;
+    }
+
+    public int getSize()
+    {
+        return size;
     }
 }

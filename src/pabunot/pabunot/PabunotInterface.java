@@ -2,14 +2,12 @@ package pabunot.pabunot;
 
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
-import pabunot.InitialFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
 public class PabunotInterface extends JPanel
 {
@@ -78,7 +76,6 @@ public class PabunotInterface extends JPanel
             public void mouseEntered(MouseEvent e)
             {
                 label.setForeground(Color.red);
-                setBackground(new Color(50, 50, 50, 120));
             }
 
             @Override
@@ -115,7 +112,6 @@ public class PabunotInterface extends JPanel
             public void mouseEntered(MouseEvent e)
             {
                 label.setForeground(Color.green);
-                setBackground(new Color(50, 50, 50, 120));
             }
 
             @Override
@@ -131,7 +127,7 @@ public class PabunotInterface extends JPanel
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText(s);
+        label.setText(s = s == null? "Pabunot 1" : s);
         label.setForeground(Color.white);
         label.setFont(AndyBold.createFont(50));
 
@@ -149,28 +145,5 @@ public class PabunotInterface extends JPanel
         setLayout(null);
         setBorder(new LineBorder(Color.white));
         setBackground(new Color(0, 0, 0,120));
-        addMouseListener(new MouseAdapter()
-        {
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                setBackground(new Color(50, 50, 50, 120));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                 setBackground(new Color(0, 0, 0, 120));
-            }
-        });
-        addMouseMotionListener(new MouseMotionAdapter()
-        {
-            @Override
-            public void mouseMoved(MouseEvent e)
-            {
-                InitialFrame.parallaxMove(new Point(e.getX() + getX(), e.getY() + getY()));
-            }
-        });
     }
 }
