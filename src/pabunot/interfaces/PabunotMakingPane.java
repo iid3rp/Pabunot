@@ -2,8 +2,8 @@ package pabunot.interfaces;
 
 import pabunot.InitialFrame;
 import pabunot.graphics.TrailLabel;
-import pabunot.pabunot.Pabunot;
-import pabunot.pabunot.PabunotInterface;
+import pabunot.palabunutan.Pabunot;
+import pabunot.palabunutan.PabunotInterface;
 import pabunot.palabunutan.Palabunot;
 import pabunot.prize.Prize;
 import pabunot.prize.PrizeListPane;
@@ -68,8 +68,8 @@ public class PabunotMakingPane extends JPanel
     public JLabel matrix;
     private JLabel letterLimitDesc;
     private JLabel letterLimitField;
-    public int x = 10;
-    public int y = 10;
+    public int x;
+    public int y;
     public String other;
     public JLabel addPrize;
     PrizeListPane pane;
@@ -89,6 +89,8 @@ public class PabunotMakingPane extends JPanel
     public PabunotMakingPane(InitialFrame frame, String titleString)
     {
         super();
+        x = 10;
+        y = 10;
         this.frame = frame;
         theme = Theme.RED_HEARTS;
         initializeComponent();

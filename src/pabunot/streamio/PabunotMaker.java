@@ -1,6 +1,6 @@
 package pabunot.streamio;
 
-import pabunot.pabunot.Pabunot;
+import pabunot.palabunutan.Pabunot;
 import pabunot.palabunutan.Palabunot;
 import pabunot.prize.Prize;
 import pabunot.util.Intention;

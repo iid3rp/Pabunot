@@ -1,7 +1,7 @@
 package pabunot.interfaces;
 
 import pabunot.InitialFrame;
-import pabunot.pabunot.PabunotInterface;
+import pabunot.palabunutan.PabunotInterface;
 import pabunot.util.Intention;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public class PabunotScrollPane extends JScrollPane
         addComponents();
 
         setViewportView(container);
-        getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+        //getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
         getViewport().setVisible(true);
         getViewport().setBackground(new Color(0, 0, 0, 90));
         getVerticalScrollBar().setVisible(false);
@@ -96,6 +96,7 @@ public class PabunotScrollPane extends JScrollPane
         panel.setPreferredSize(new Dimension(InitialFrame.WIDTH, InitialFrame.HEIGHT));
         panel.setLayout(null);
         panel.setOpaque(false);
+        panel.setDoubleBuffered(true);
         panel.setBackground(new Color(0, 0, 0, 100));
         return panel;
     }

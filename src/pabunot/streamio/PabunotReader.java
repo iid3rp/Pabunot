@@ -6,7 +6,7 @@ import pabunot.interfaces.PabunotSection;
 import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
-import pabunot.pabunot.Pabunot;
+import pabunot.palabunutan.Pabunot;
 import pabunot.prize.PrizeList;
 import pabunot.util.Theme;
 

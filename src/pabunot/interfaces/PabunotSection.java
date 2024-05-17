@@ -23,6 +23,12 @@ public class PabunotSection extends JPanel
         super();
         this.grid = grid;
         this.frame = frame;
+        initializeComponent();
+
+    }
+
+    private void initializeComponent()
+    {
         setSize(new Dimension(1280, 720));
         setLayout(null);
         setLocation(0, 0);
@@ -88,6 +94,7 @@ public class PabunotSection extends JPanel
     @Override
     public void paintComponent(Graphics g)
     {
+        super.paintComponent(g);
         InitialFrame.render(g);
     }
 }

@@ -19,6 +19,7 @@ public class TrailTitlePanel extends JPanel
     @Intention InitialFrame frame;
     private JLabel makePabunot;
     TitleTyping typeEvent;
+    public TrailLabel titleLabel;
 
     public TrailTitlePanel(InitialFrame frame)
     {
@@ -27,10 +28,26 @@ public class TrailTitlePanel extends JPanel
         goBack = createGoBack();
         makePabunot = createMakingPabunot();
         typeEvent = new TitleTyping(frame);
+        titleLabel = new TrailLabel("Lets call your new Pabunot!", 30, 200, 210, new Color[] {Color.gray});
         title = new TrailLabel("Type your title here", 100, 300, 320, new Color[] {new Color(127, 127, 127)});
         initializeComponent();
         addComponents();
         repaint();
+    }
+
+    private JLabel createTitleLabel()
+    {
+        JLabel label = new JLabel();
+        label.setText("Lets call your new Pabunot!");
+        label.setFont(AndyBold.createFont(30));
+        label.setForeground(Color.gray);
+
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText().toUpperCase());
+        int height = metrics.getHeight();
+
+        label.setBounds(1280 - width + 20, 250, width, height);
+        return label;
     }
 
     private JLabel createMakingPabunot()
@@ -82,7 +99,7 @@ public class TrailTitlePanel extends JPanel
         return label;
     }
 
-    private void resetTitle()
+    public void resetTitle()
     {
         for(JLabel label : title)
         {
@@ -148,6 +165,10 @@ public class TrailTitlePanel extends JPanel
         }
         add(goBack);
         add(makePabunot);
+        for(JLabel label : titleLabel)
+        {
+            add(label);
+        }
     }
 
     private void initializeComponent()

@@ -54,7 +54,8 @@ import java.util.Random;
  *
  * @author Francis (iid3rp) Madanlo
  */
-public class InitialFrame extends JFrame implements Runnable
+public class
+InitialFrame extends JFrame implements Runnable
 {
     public static int WIDTH = 1280;
     public static int HEIGHT = 720;
@@ -66,6 +67,7 @@ public class InitialFrame extends JFrame implements Runnable
     private final TrailLabel titleLabel;
     public static Image mainBackGround;
     public static Image mainMiddleGround;
+    private static Image mainMiddleBackGround;
     @Intention InitialFrame frame = this;
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
@@ -84,7 +86,7 @@ public class InitialFrame extends JFrame implements Runnable
     public int fps;
     private JLabel framesPerSecond;
     public PabunotMakingPane createPabunot;
-    public TrailLabel labels = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, TrailLabel.rainbow);
+    public TrailLabel tipLabel = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, TrailLabel.rainbow);
     public TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
 
     public static int x = 0;
@@ -93,7 +95,7 @@ public class InitialFrame extends JFrame implements Runnable
     public TrailTitlePanel titlePanel;
 
     private JTextArea area;
-    private boolean fpsUnlocked = false;
+    private boolean fpsUnlocked = true;
     private Cursor pabunotCursor;
     private PabunotSection pabunotProcess;
 
@@ -137,8 +139,10 @@ public class InitialFrame extends JFrame implements Runnable
                 try {
                     mainBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
                     mainMiddleGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleGround.png")));
+                    mainMiddleBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleBackGround.png")));
                     mainBackGround = mainBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
                     mainMiddleGround = mainMiddleGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+                    mainMiddleBackGround = mainMiddleBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -298,7 +302,7 @@ public class InitialFrame extends JFrame implements Runnable
         {
             mainMenu.add(l);
         }
-        for(JLabel l : labels)
+        for(JLabel l : tipLabel)
         {
             mainMenu.add(l);
         }
@@ -358,11 +362,11 @@ public class InitialFrame extends JFrame implements Runnable
                         frames = 0;
                         tickCount = 0;
                         if(seconds % 6 == 0) {
-                            for(JLabel l : labels) {
+                            for(JLabel l : tipLabel) {
                                 mainMenu.remove(l);
                             }
-                            labels = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, TrailLabel.rainbow);
-                            for(JLabel l : labels) {
+                            tipLabel = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, TrailLabel.rainbow);
+                            for(JLabel l : tipLabel) {
                                 mainMenu.add(l);
                             }
                         }
@@ -376,11 +380,18 @@ public class InitialFrame extends JFrame implements Runnable
                     if(!fpsUnlocked) {
                         try {
                             // waving trail labels...
-                            titleLabel.wave(currentTime);
-                            labels.wave(currentTime);
-                            labels2.wave(currentTime);
-                            picker.title.wave(currentTime);
-                            titlePanel.title.wave(currentTime);
+
+                            if(mainMenu.isVisible()) {
+                                titleLabel.wave(currentTime);
+                                tipLabel.wave(currentTime);
+                            }
+                            if(picker.isVisible()) {
+                                picker.title.wave(currentTime);
+                            }
+                            if(titlePanel.isVisible()) {
+                                titlePanel.title.wave(currentTime);
+                                titlePanel.titleLabel.wave(currentTime);
+                            }
 
                             if(createPabunot != null)
                             {
@@ -399,13 +410,17 @@ public class InitialFrame extends JFrame implements Runnable
 
                 if(fpsUnlocked) {
 
-                    // the wave thingies
-                    titleLabel.wave(currentTime);
-
-                    labels.wave(currentTime);
-                    labels2.wave(currentTime);
-                    picker.title.wave(currentTime);
-                    titlePanel.title.wave(currentTime);
+                    if(mainMenu.isVisible()) {
+                        titleLabel.wave(currentTime);
+                        tipLabel.wave(currentTime);
+                    }
+                    if(picker.isVisible()) {
+                        picker.title.wave(currentTime);
+                    }
+                    if(titlePanel.isVisible()) {
+                        titlePanel.title.wave(currentTime);
+                        titlePanel.titleLabel.wave(currentTime);
+                    }
 
                     if(createPabunot != null)
                     {
@@ -486,6 +501,7 @@ public class InitialFrame extends JFrame implements Runnable
     {
         g.drawImage(mainBackGround, x, y, null);
         g.drawImage(snow, 0, 0, null);
+        g.drawImage(mainMiddleBackGround, ((x * -1) - 48) / 2, ((y * -1) - 36) / 2, null);
         g.drawImage(mainMiddleGround, (x * -1) - 48, (y * -1) - 36, null);
         g.setColor(new Color(0, 0, 0, 90));
         g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -662,8 +678,11 @@ public class InitialFrame extends JFrame implements Runnable
 
     public static void main(String[] a)
     {
-        InitialFrame frame = new InitialFrame();
-        @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
-        frame.start();
+        SwingUtilities.invokeLater(() ->
+        {
+            InitialFrame frame = new InitialFrame();
+            @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
+            frame.start();
+        });
     }
 }

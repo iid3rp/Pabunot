@@ -2,8 +2,8 @@ package pabunot.interfaces;
 
 import pabunot.graphics.TrailLabel;
 import pabunot.InitialFrame;
-import pabunot.pabunot.Pabunot;
-import pabunot.pabunot.PabunotInterface;
+import pabunot.palabunutan.Pabunot;
+import pabunot.palabunutan.PabunotInterface;
 import pabunot.streamio.PabunotMaker;
 import pabunot.streamio.PabunotReader;
 import pabunot.util.AndyBold;
@@ -216,6 +216,8 @@ public class PabunotPickerPanel extends JPanel
             {
                 picker.setVisible(false);
                 frame.titlePanel.setVisible(true);
+                frame.titlePanel.resetTitle();
+                frame.titlePanel.typeEvent.string = "";
             }
 
             @Override

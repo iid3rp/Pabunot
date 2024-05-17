@@ -1,4 +1,4 @@
-package pabunot.pabunot;
+package pabunot.palabunutan;
 
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;

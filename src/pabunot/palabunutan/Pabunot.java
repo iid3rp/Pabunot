@@ -1,6 +1,5 @@
-package pabunot.pabunot;
+package pabunot.palabunutan;
 
-import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.PrizeList;
 import pabunot.util.Theme;
 
