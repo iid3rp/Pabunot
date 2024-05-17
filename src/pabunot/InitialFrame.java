@@ -70,7 +70,7 @@ public class InitialFrame extends JFrame implements Runnable
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
-    public static int refreshRate = 144;
+    public static int refreshRate = dm.getRefreshRate() * 4;
     public static Snow snow;
     public int reference;
     public static boolean isRunning = true;
