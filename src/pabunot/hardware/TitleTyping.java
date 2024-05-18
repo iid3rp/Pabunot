@@ -34,6 +34,10 @@ public class TitleTyping implements KeyListener
     @Override
     public void keyPressed(KeyEvent e)
     {
+        if(e.getKeyCode() == KeyEvent.VK_ENTER)
+        {
+            frame.titlePanel.cont();
+        }
         if(string.length() < 30)
         {
             if(Character.isLetterOrDigit(e.getKeyChar()))

@@ -1,9 +1,9 @@
 package pabunot.interfaces;
 
-import pabunot.graphics.TrailLabel;
 import pabunot.InitialFrame;
-import pabunot.palabunutan.Pabunot;
+import pabunot.graphics.TrailLabel;
 import pabunot.palabunutan.PabunotInterface;
+import pabunot.palabunutan.PalabunotGrid;
 import pabunot.streamio.PabunotMaker;
 import pabunot.streamio.PabunotReader;
 import pabunot.util.AndyBold;
@@ -15,12 +15,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PabunotPickerPanel extends JPanel
 {
     public TrailLabel title;
-    PabunotScrollPane pane;
+    public PabunotScrollPane pane;
 
     JLabel goBack;
     @Intention InitialFrame frame;
@@ -73,7 +74,7 @@ public class PabunotPickerPanel extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(Color.yellow);
+                label.setForeground(Color.white);
             }
         });
 
@@ -113,11 +114,17 @@ public class PabunotPickerPanel extends JPanel
             System.out.println("its not empty");
             for(String s : folderNames)
             {
-                Pabunot pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
+                PalabunotGrid pbn = null;
+                try {
+                    pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
                 System.out.println(s + File.separator + "Pabunot.ini");
                 if(pbn != null)
                 {
-                    PabunotInterface inter = new PabunotInterface(pbn);
+                    PabunotInterface inter = new PabunotInterface(frame, pbn);
                     reference.add(inter);
                 }
             }
@@ -146,7 +153,7 @@ public class PabunotPickerPanel extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                super.mouseClicked(e);
+                frame.requestFocus();
             }
 
             @Override
@@ -168,8 +175,8 @@ public class PabunotPickerPanel extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                InitialFrame.x = -24;
-                InitialFrame.y = -18;
+                InitialFrame.snowX = -24;
+                InitialFrame.snowY = -18;
             }
         });
         addMouseMotionListener(new MouseMotionAdapter()
@@ -215,9 +222,10 @@ public class PabunotPickerPanel extends JPanel
             public void mouseClicked(MouseEvent e)
             {
                 picker.setVisible(false);
+                frame.addKeyListener(frame.typeEvent);
                 frame.titlePanel.setVisible(true);
                 frame.titlePanel.resetTitle();
-                frame.titlePanel.typeEvent.string = "";
+                frame.typeEvent.string = "";
             }
 
             @Override

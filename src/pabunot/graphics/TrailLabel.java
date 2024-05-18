@@ -7,6 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * The {@code TrailLabel} class extends {@code ArrayList<JLabel>} to create a visually appealing trail effect with text labels.
+ * Each character of the input string is represented as a separate {@code JLabel}, and these labels can be animated to move in a wave-like pattern.
+ * This class supports customization of text size, start and end positions on the Y-axis, and color patterns.
+ *
+ * @author iid3rp
+ */
 public class TrailLabel extends ArrayList<JLabel>
 {
     public char[] sequence;
@@ -42,6 +49,17 @@ public class TrailLabel extends ArrayList<JLabel>
         }
     }
 
+    /**
+     * The TrailLabel constructor initializes a new instance of the
+     * TrailLabel class, designed to display a sequence of characters (s) as
+     * individual labels, each potentially with different colors.
+     *
+     * @param s         the string sequence
+     * @param size      the size of the letters
+     * @param startY    the starting Y position
+     * @param endY      the ending Y position
+     * @param colors    the array of colors
+     */
     public TrailLabel(String s, int size, int startY, int endY, Color[] colors)
     {
         letterLength = 0;
@@ -93,7 +111,7 @@ public class TrailLabel extends ArrayList<JLabel>
         label.setDoubleBuffered(true); // very important!!!
 
         assert colors != null;
-        label.setForeground(colors[i++ % colors.length]);
+        label.setForeground(s.isBlank()? null : colors[i++ % colors.length]);
 
         label.setFont(AndyBold.createFont(size));
         FontMetrics metrics = label.getFontMetrics(label.getFont());

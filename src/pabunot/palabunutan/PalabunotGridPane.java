@@ -17,9 +17,9 @@ public class PalabunotGridPane extends JPanel
     private int x;
     private int y;
     private int paperLength;
-    private PalabunotGrid grid;
+    public PalabunotGrid grid;
 
-
+    @Deprecated
     public PalabunotGridPane(InitialFrame frame, int x, int y)
     {
         super();
@@ -47,19 +47,23 @@ public class PalabunotGridPane extends JPanel
 
     private void addPapers(PalabunotGrid grid)
     {
+        Palabunot.image = Palabunot.image.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
         int index = 0;
         for(int i = 0; i < x; i++)
         {
             for(int j = 0; j < y; j++)
             {
                 try {
-                    JLabel paper = createPaper(grid.grid[index].getValue());
-                    grid.grid[index].image = grid.grid[index].image.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
-                    paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
-                    add(paper);
+                    System.out.println(index);
+                    if(!grid.grid.get(index).isPicked())
+                    {
+                        JLabel paper = createPaper(index, grid.grid.get(index).getValue());
+                        paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
+                        add(paper);
+                    }
                     index++;
                 }
-                catch(IndexOutOfBoundsException e) {  System.out.println(index + ", dummy");  }
+                catch(IndexOutOfBoundsException e) {  System.out.println(index + ", error");  }
             }
         }
     }
@@ -88,7 +92,7 @@ public class PalabunotGridPane extends JPanel
             for(int j = 0; j < y; j++)
             {
                 try {
-                    JLabel paper = createPaper(range.get(index++));
+                    JLabel paper = createPaper(index, range.get(index++));
 
                     paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
                     // System.out.println(i * paperLength + " " + j * paperLength); // debuggers
@@ -99,7 +103,7 @@ public class PalabunotGridPane extends JPanel
         }
     }
 
-    private JLabel createPaper(int i)
+    private JLabel createPaper(int index, int value)
     {
         final boolean[] isEntered = {false};
         JLabel label = new JLabel()
@@ -109,17 +113,17 @@ public class PalabunotGridPane extends JPanel
             {
                 if(isEntered[0])
                 {
-                    g.drawImage(grid.grid[i - 1].image, 0, 0, null);
+                    g.drawImage(Palabunot.image, 0, 0, null);
                     g.setColor(new Color(0, 0 ,0, 127));
                     g.fillRect(0, 0, paperLength, paperLength);
                 }
                 else
                 {
                     try {
-                        g.drawImage(grid.grid[i - 1].image, 0, 0, null);
+                        g.drawImage(Palabunot.image, 0, 0, null);
                     }
                     catch(Exception e) {
-                        System.out.println(i);
+                        System.out.println(value);
                     }
                 }
             }
@@ -133,10 +137,10 @@ public class PalabunotGridPane extends JPanel
             public void mouseClicked(MouseEvent e)
             {
                 if(label.isEnabled()) {
-                    System.out.println("You picked number " + i);
-                    label.setEnabled(false);
+                    System.out.println("You picked number " + value);
                     frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                    grid.grid[i - 1].setPicked(true);
+                    grid.grid.get(index).setPicked(true);
+                    System.out.println(grid.getArrayNotPicked());
                     remove(label);
                     validateChecking();
                 }

@@ -1,31 +1,31 @@
 package pabunot.streamio;
 
-import pabunot.palabunutan.Pabunot;
 import pabunot.palabunutan.Palabunot;
+import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
 import pabunot.util.Intention;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Random;
 
 public class PabunotMaker
 {
     public static final String pabunotDir = System.getProperty("user.home") + File.separator + "Pabunot";
     public File fileName;
-    public long serial;
-    private Random r = new Random();
-    private @Intention Pabunot pb;
+    private static Random r = new Random();
+    private @Intention PalabunotGrid pb;
 
-    public PabunotMaker(Pabunot p)
+    public PabunotMaker(PalabunotGrid p)
     {
         pb = p;
-        serial = generateSerial();
+        generatePrizeNumbers();
         writePabunot();
     }
     
-    public long generateSerial()
+    public static long generateSerial()
     {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 16; i++) {
@@ -34,9 +34,31 @@ public class PabunotMaker
         return Long.parseLong(sb.toString());
     }
 
+    /**
+     * Shuffles the elements in the `pb.grid`
+     * array and assigns each element's value to the corresponding `Prize` object in the `pb.list`.
+     * This method first generates a random number to determine the number of times the grid array will be shuffled.
+     * Then, it shuffles the grid array that many times to randomize the order of elements.
+     * Finally, it iterates through the `pb.list` of prizes, assigning each prize a number from the shuffled grid.
+     */
+    public void generatePrizeNumbers()
+    {
+        if(pb.prizeList != null)
+        {
+            for(int i = 0; i <  new Random().nextInt(10); i++)
+            {
+                Collections.shuffle(pb.grid);
+            }
+            for(int i = 0; i < pb.prizeList.size(); i++)
+            {
+                pb.prizeList.get(i).setNumber(pb.grid.get(i).getValue());
+            }
+        }
+    }
+
     public void writePabunot()
     {
-        String serialDir = pabunotDir + File.separator + serial;
+        String serialDir = pabunotDir + File.separator + pb.getSerial();
         var x = new File(serialDir).mkdirs();
         File f = new File(serialDir + File.separator + "Pabunot.ini");
 
@@ -46,14 +68,14 @@ public class PabunotMaker
             writer.write("x:" + pb.getX() + "\n");
             writer.write("y:" + pb.getY() + "\n");
             writer.write("Title:" + pb.getTitle() + "\n");
-            writer.write("Serial:" + serial + "\n");
+            writer.write("Serial:" + pb.getSerial() + "\n");
             writer.write("Theme:" + pb.theme.toString() + "\n");
 
             writer.write("Prizes\n");
-            if(pb.list != null) {
-                for(Prize p : pb.list)
+            if(pb.prizeList != null) {
+                for(Prize p : pb.prizeList)
                 {
-                    writer.write(p.getTitle() + ":" + p.getDescription() + "\n");
+                    writer.write(p.getTitle() + ":" + p.getDescription() + ":" + p.getNumber() + "\n");
                 }
             }
 
@@ -65,12 +87,11 @@ public class PabunotMaker
             writer.close();
         }
         catch(IOException ignored) {}
-
     }
 
     @Override
     public String toString()
     {
-        return "Saved file to " + pabunotDir + File.separator + serial + File.separator + "Pabunot.ini";
+        return "Saved file to " + pabunotDir + File.separator + pb.getSerial() + File.separator + "Pabunot.ini";
     }
 }

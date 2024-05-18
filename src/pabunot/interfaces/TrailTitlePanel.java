@@ -2,7 +2,6 @@ package pabunot.interfaces;
 
 import pabunot.InitialFrame;
 import pabunot.graphics.TrailLabel;
-import pabunot.hardware.TitleTyping;
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
 
@@ -18,7 +17,6 @@ public class TrailTitlePanel extends JPanel
     public TrailLabel title;
     @Intention InitialFrame frame;
     private JLabel makePabunot;
-    TitleTyping typeEvent;
     public TrailLabel titleLabel;
 
     public TrailTitlePanel(InitialFrame frame)
@@ -27,7 +25,6 @@ public class TrailTitlePanel extends JPanel
         this.frame = frame;
         goBack = createGoBack();
         makePabunot = createMakingPabunot();
-        typeEvent = new TitleTyping(frame);
         titleLabel = new TrailLabel("Lets call your new Pabunot!", 30, 200, 210, new Color[] {Color.gray});
         title = new TrailLabel("Type your title here", 100, 300, 320, new Color[] {new Color(127, 127, 127)});
         initializeComponent();
@@ -67,12 +64,7 @@ public class TrailTitlePanel extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                setVisible(false);
-                resetTitle();
-                frame.createPabunot = new PabunotMakingPane(frame, typeEvent.string);
-                frame.getContentPane().add(frame.createPabunot);
-                frame.createPabunot.setVisible(true);
-                frame.getContentPane().repaint();
+                cont();
             }
 
             @Override
@@ -131,6 +123,8 @@ public class TrailTitlePanel extends JPanel
             {
                 setVisible(false);
                 frame.picker.setVisible(true);
+                frame.removeKeyListener(frame.typeEvent);
+                frame.typeEvent.string = "";
             }
 
             @Override
@@ -179,7 +173,6 @@ public class TrailTitlePanel extends JPanel
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 10));
         setDoubleBuffered(true);
-        frame.addKeyListener(typeEvent);
     }
 
     @Override
@@ -187,5 +180,17 @@ public class TrailTitlePanel extends JPanel
     {
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0 , getWidth(), getHeight());
+    }
+
+    public void cont()
+    {
+        setVisible(false);
+        resetTitle();
+        frame.createPabunot = new PabunotMakingPane(frame, frame.typeEvent.string);
+        frame.getContentPane().add(frame.createPabunot);
+        frame.createPabunot.setVisible(true);
+        frame.getContentPane().repaint();
+        frame.removeKeyListener(frame.typeEvent);
+        frame.typeEvent.string = "";
     }
 }

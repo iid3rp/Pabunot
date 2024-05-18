@@ -5,40 +5,51 @@ import pabunot.util.RandomRange;
 import pabunot.util.Theme;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class PalabunotGrid extends ArrayList<Palabunot>
+public class PalabunotGrid
 {
     private int x;
     private int y;
-    public Palabunot[] grid;
-    public PrizeList list;
+    public ArrayList<Palabunot> grid;
+    public PrizeList prizeList;
     public Theme theme;
     private int size;
     private String title;
     private long serial;
 
-    @Deprecated
-    public PalabunotGrid(int x, int y, String title, Theme theme)
+    public PalabunotGrid(int x, int y, long serial, String title, PrizeList list, Theme theme)
     {
-        grid = new Palabunot[x * y];
+        grid = new ArrayList<>();
         this.theme = theme;
+        this.x = x;
+        this.y = y;
+        this.prizeList = list;
+        this.title = title;
+        this.serial = serial;
+        setPabunot(theme);
+    }
+
+    @Deprecated
+    public PalabunotGrid(int x, int y, String title,  PrizeList list, Theme theme)
+    {
+        grid = new ArrayList<>();
+        this.theme = theme;
+        this.prizeList = list;
         this.x = x;
         this.y = y;
         this.title = title;
         setPabunot(theme);
     }
 
-    public PalabunotGrid(int x, int y, String title,  PrizeList list, Theme theme)
+    public PalabunotGrid(int x, int y, ArrayList<Palabunot> pb, long serial, String title, PrizeList list, Theme theme)
     {
-        grid = new Palabunot[x * y];
+        grid = pb;
         this.theme = theme;
-        this.list = list;
         this.x = x;
         this.y = y;
+        this.prizeList = list;
         this.title = title;
-        this.serial = 0L;
-        setPabunot(theme);
+        this.serial = serial;
     }
 
     private void setPabunot(Theme theme)
@@ -46,7 +57,7 @@ public class PalabunotGrid extends ArrayList<Palabunot>
         int index = 0;
         for(int i : new RandomRange(1, x * y))
         {
-            grid[index++] = new Palabunot(i, theme);
+            grid.add(new Palabunot(i, theme));
         }
     }
 
@@ -60,7 +71,7 @@ public class PalabunotGrid extends ArrayList<Palabunot>
         serial = 0;
     }
 
-    public Palabunot[] getGrid()
+    public ArrayList<Palabunot> getGrid()
     {
         return grid;
     }
@@ -86,8 +97,8 @@ public class PalabunotGrid extends ArrayList<Palabunot>
         return "PabunotGrid{" +
                 "x=" + x +
                 ", y=" + y +
-                ", grid=" + Arrays.toString(grid) +
-                ", list=" + list +
+                ", grid=" + grid +
+                ", list=" + prizeList +
                 ", theme=" + theme +
                 ", size=" + size +
                 ", title='" + title + '\'' +
@@ -98,5 +109,23 @@ public class PalabunotGrid extends ArrayList<Palabunot>
     public String getTitle()
     {
         return title;
+    }
+
+    public long getSerial()
+    {
+        return serial;
+    }
+
+    public int getArrayNotPicked()
+    {
+        int index = 0;
+        for(Palabunot palabunot : grid)
+        {
+            if(!palabunot.isPicked())
+            {
+                index++;
+            }
+        }
+        return index;
     }
 }

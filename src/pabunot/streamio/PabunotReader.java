@@ -6,7 +6,6 @@ import pabunot.interfaces.PabunotSection;
 import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
-import pabunot.palabunutan.Pabunot;
 import pabunot.prize.PrizeList;
 import pabunot.util.Theme;
 
@@ -14,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 /**
@@ -43,10 +43,10 @@ public class PabunotReader
      * @param file The File object representing the data file to be read.
      * @return A PabunotSection containing the constructed PabunotGrid, or null if an error occurs.
      */
+    @Deprecated
     public PabunotSection createPabunotFromFile(InitialFrame frame, File file)
     {
         try {
-            PrizeList list = new PrizeList();
             // FileWriter ug BufferedReader
             BufferedReader reader = new BufferedReader(new FileReader(file));
             int x = Integer.parseInt(reader.readLine().split(":")[1]);
@@ -61,23 +61,19 @@ public class PabunotReader
             while(!line.equalsIgnoreCase("pabunot"))
             {
                 String[] s = line.split(":");
-                list.add(new Prize(s[0], s[1]));
+
                 System.out.println(line);
                 line = reader.readLine();
             }
 
             reader.readLine(); // skip
-
-            PalabunotGrid grid = new PalabunotGrid(x, y, title, list, theme);
-
             line = reader.readLine();
             while(line != null)
             {
                 String[] s = line.split(":");
-                grid.add(new Palabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
                 line = reader.readLine();
             }
-            return new PabunotSection(frame, grid);
+            return null;
         }
         catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
         {
@@ -104,9 +100,9 @@ public class PabunotReader
      * @param file the path to the data file as a {@code String}
      * @return a {@code Pabunot} object containing the configured grid and prizes, or {@code null} if an error occurs
      */
-    public static Pabunot createPalabunotFromFile(String file)
+    public static PalabunotGrid createPalabunotFromFile(String file) throws IOException
     {
-        try {
+        {
             PrizeList list = new PrizeList();
             // FileWriter ug BufferedReader
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -122,29 +118,23 @@ public class PabunotReader
             while(!line.equalsIgnoreCase("pabunot"))
             {
                 String[] s = line.split(":");
-                list.add(new Prize(s[0], s[1]));
+                int num = Integer.parseInt(s[2]);
+                list.add(new Prize(s[0], s[1], num));
                 System.out.println(line);
                 line = reader.readLine();
             }
 
-            reader.readLine(); // skip
-
-            PalabunotGrid grid = new PalabunotGrid(x, y, title, list, theme);
-
+            ArrayList<Palabunot> palabunotList = new ArrayList<>();
             line = reader.readLine();
+            int xy = 0;
             while(line != null)
             {
                 String[] s = line.split(":");
-                grid.add(new Palabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
+                palabunotList.add(new Palabunot(Integer.parseInt(s[0]), Boolean.parseBoolean(s[1]), theme));
                 line = reader.readLine();
             }
             reader.close();
-            return new Pabunot(x, y, title, list, theme);
-        }
-        catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
-        {
-            System.out.println("Invalid file format");
-            return null;
+            return new PalabunotGrid(x, y, palabunotList, serial, title, list, theme);
         }
     }
 }

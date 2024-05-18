@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class PabunotScrollPane extends JScrollPane
 {
-    ArrayList<PabunotInterface> list;
+    public ArrayList<PabunotInterface> list;
     private JPanel container;
     private boolean nothing;
     @Intention PabunotScrollPane pane = this;
@@ -103,4 +103,15 @@ public class PabunotScrollPane extends JScrollPane
 
     @Override
     public void paintComponent(Graphics ignored) {}
+
+    public void refresh()
+    {
+        for(PabunotInterface p : list) {
+            p.description.setText(
+                             "Dimension: " + "\"" + p.pb.getX() + " x " + p.pb.getY() + "\"          " +
+                            "Theme: " + p.getThemeString() + "          " +
+                            "Prizes: " + (p.pb.prizeList != null ? p.pb.prizeList.size() : 0) + "          " +
+                            "Pabunot left: " + p.pb.getArrayNotPicked());;
+        }
+    }
 }

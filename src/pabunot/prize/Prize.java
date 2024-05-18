@@ -7,12 +7,21 @@ public class Prize
     private String title;
     private String description;
     private long serial;
+    private int number;
     private static final Random rand = new Random();
 
     public Prize(String title, String description)
     {
         this.title = title;
         this.description = description;
+        serial = getSerial();
+    }
+
+    public Prize(String title, String description, int number)
+    {
+        this.title = title;
+        this.description = description;
+        this.number = number;
         serial = getSerial();
     }
 
@@ -47,5 +56,15 @@ public class Prize
             }
         }
         return str.toString();
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+
+    public void setNumber(int number)
+    {
+        this.number = number;
     }
 }

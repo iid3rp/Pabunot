@@ -2,9 +2,9 @@ package pabunot.interfaces;
 
 import pabunot.InitialFrame;
 import pabunot.graphics.TrailLabel;
-import pabunot.palabunutan.Pabunot;
 import pabunot.palabunutan.PabunotInterface;
 import pabunot.palabunutan.Palabunot;
+import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
 import pabunot.prize.PrizeListPane;
 import pabunot.streamio.PabunotMaker;
@@ -443,11 +443,12 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                Pabunot pb = new Pabunot(x, y, pabunotTitle, pane.list, theme);
+                long serial = PabunotMaker.generateSerial();
+                PalabunotGrid pb = new PalabunotGrid(x, y, serial, pabunotTitle, pane.list, theme);
                 new PabunotMaker(pb);
 
                 panel.setVisible(false);
-                frame.picker.add(new PabunotInterface(pb));
+                frame.picker.add(new PabunotInterface(frame, pb));
                 frame.picker.setVisible(true);
                 frame.repaint();
                 // redirect to the main menu and the scroll pane should be basically restore already...
@@ -1229,8 +1230,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                InitialFrame.x = -24;
-                InitialFrame.y = -18;
+                InitialFrame.snowX = -24;
+                InitialFrame.snowY = -18;
             }
         });
 

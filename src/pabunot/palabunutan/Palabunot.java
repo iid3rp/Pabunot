@@ -14,7 +14,7 @@ public class Palabunot
 
     private int value;
     private boolean isPicked;
-    protected Image image;
+    protected static Image image;
 
     public int getValue()
     {

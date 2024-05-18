@@ -2,11 +2,11 @@ package pabunot;
 
 import pabunot.graphics.Snow;
 import pabunot.graphics.TrailLabel;
+import pabunot.hardware.TitleTyping;
 import pabunot.interfaces.PabunotMakingPane;
 import pabunot.interfaces.PabunotPickerPanel;
 import pabunot.interfaces.PabunotSection;
 import pabunot.interfaces.TrailTitlePanel;
-import pabunot.palabunutan.PalabunotGrid;
 import pabunot.palabunutan.PalabunotGridPane;
 import pabunot.streamio.PabunotMaker;
 import pabunot.util.AndyBold;
@@ -68,19 +68,19 @@ InitialFrame extends JFrame implements Runnable
     public static Image mainBackGround;
     public static Image mainMiddleGround;
     private static Image mainMiddleBackGround;
+    public TitleTyping typeEvent;
+    public PabunotSection section;
     @Intention InitialFrame frame = this;
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
     public static int refreshRate = dm.getRefreshRate() * 4;
     public static Snow snow;
-    public int reference;
     public static boolean isRunning = true;
     public JPanel mainMenu;
     public JPanel contentPanel;
     public static boolean isDragging;
     public static Point offset;
-    PalabunotGridPane bunot;
     public PabunotPickerPanel picker;
     public JPanel glassPane;
     public int fps;
@@ -88,14 +88,10 @@ InitialFrame extends JFrame implements Runnable
     public PabunotMakingPane createPabunot;
     public TrailLabel tipLabel = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, TrailLabel.rainbow);
     public TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
-
-    public static int x = 0;
-
-    public static int y = 0;
+    public static int snowX;
+    public static int snowY;
     public TrailTitlePanel titlePanel;
-
-    private JTextArea area;
-    private boolean fpsUnlocked = true;
+    private boolean fpsUnlocked = false;
     private Cursor pabunotCursor;
     private PabunotSection pabunotProcess;
 
@@ -104,10 +100,11 @@ InitialFrame extends JFrame implements Runnable
         super();
         pabunotCursor = createCursor();
         initializeComponent();
+        typeEvent = new TitleTyping(this);
         snow = new Snow();
         contentPanel = createContentPanel();
         mainMenu = createMainMenu();
-        pabunotProcess = new PabunotSection(this, new PalabunotGrid());
+        //pabunotProcess = new PabunotSection(this, new PalabunotGrid());
         glassPane = createGlassPane();
         framesPerSecond = createFPS();
         titlePanel = new TrailTitlePanel(this);
@@ -180,8 +177,8 @@ InitialFrame extends JFrame implements Runnable
             @Override
             public void mouseExited(MouseEvent e)
             {
-                x = -24;
-                y = -18;
+                snowX = -24;
+                snowY = -18;
             }
 
         });
@@ -463,8 +460,8 @@ InitialFrame extends JFrame implements Runnable
             @Override
             public void mouseExited(MouseEvent e)
             {
-                x = -24;
-                y = -18;
+                snowX = -24;
+                snowY = -18;
             }
 
         });
@@ -499,18 +496,18 @@ InitialFrame extends JFrame implements Runnable
 
     public static void render(Graphics g)
     {
-        g.drawImage(mainBackGround, x, y, null);
+        g.drawImage(mainBackGround, snowX, snowY, null);
         g.drawImage(snow, 0, 0, null);
-        g.drawImage(mainMiddleBackGround, ((x * -1) - 48) / 2, ((y * -1) - 36) / 2, null);
-        g.drawImage(mainMiddleGround, (x * -1) - 48, (y * -1) - 36, null);
+        g.drawImage(mainMiddleBackGround, ((snowX * -1) - 48) / 2, ((snowY * -1) - 36) / 2, null);
+        g.drawImage(mainMiddleGround, (snowX * -1) - 48, (snowY * -1) - 36, null);
         g.setColor(new Color(0, 0, 0, 90));
         g.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
     public static void parallaxMove(Point e)
     {
-        x = (int) -((e.getX() * 48) / WIDTH);
-        y = (int) -((e.getY() * 36) / HEIGHT);
+        snowX = (int) -((e.getX() * 48) / WIDTH);
+        snowY = (int) -((e.getY() * 36) / HEIGHT);
 
         snowMultiplierX = (int) ((e.getX() / WIDTH) * 4);
         snowMultiplierY = (int) ((e.getY() / HEIGHT) * 2);
@@ -556,7 +553,6 @@ InitialFrame extends JFrame implements Runnable
             {
                 mainMenu.setVisible(false);
                 picker.setVisible(true);
-                repaint();
             }
 
             @Override
