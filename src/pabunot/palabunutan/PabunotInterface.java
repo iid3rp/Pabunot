@@ -31,7 +31,7 @@ public class PabunotInterface extends Interface
         super();
         panel = this;
         this.frame = frame;
-        WIDTH = 1000;
+        WIDTH = (int) (InitialFrame.WIDTH * 0.8);
         HEIGHT = 100;
         pb = p;
         initializeComponent();
@@ -173,8 +173,7 @@ public class PabunotInterface extends Interface
 
     public String getThemeString()
     {
-        return switch(pb.theme)
-        {
+        return switch(pb.theme) {
             case Theme.RED_HEARTS -> "Red hearts";
             case Theme.ORANGE_HEARTS -> "Orange hearts";
             case Theme.YELLOW_HEARTS -> "Yellow hearts";
@@ -184,6 +183,12 @@ public class PabunotInterface extends Interface
             case Theme.PINK_HEARTS -> "Pink hearts";
             case Theme.GRAY_HEARTS -> "Gray hearts";
             case Theme.RAINBOW_HEARTS -> "Rainbow hearts";
+            case Theme.TEAL_HEARTS -> "Teal hearts";
+            case Theme.WOOD -> "Wood flowers";
+            case Theme.ORANGE_FRUIT -> "Orange fruit";
+            case Theme.CLOVER -> "Clover leaf";
+            case Theme.LUCKY -> "Lucky block";
+            case Theme.SUNFLOWER -> "Sunflowers";
         };
     }
 }

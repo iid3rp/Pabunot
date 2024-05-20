@@ -4,11 +4,14 @@ import pabunot.InitialFrame;
 import pabunot.util.Intention;
 import pabunot.util.RandomRange;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class PalabunotGridPane extends JPanel
 {
@@ -47,6 +50,12 @@ public class PalabunotGridPane extends JPanel
 
     private void addPapers(PalabunotGrid grid)
     {
+        try {
+            Palabunot.image = ImageIO.read(Palabunot.selectTheme(grid.theme));
+        }
+        catch(IOException e) {
+            throw new RuntimeException(e);
+        }
         Palabunot.image = Palabunot.image.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
         int index = 0;
         for(int i = 0; i < x; i++)
@@ -106,6 +115,7 @@ public class PalabunotGridPane extends JPanel
     private JLabel createPaper(int index, int value)
     {
         final boolean[] isEntered = {false};
+        final BufferedImage x = new BufferedImage(paperLength, paperLength, BufferedImage.TYPE_INT_ARGB);
         JLabel label = new JLabel()
         {
             @Override
@@ -113,9 +123,14 @@ public class PalabunotGridPane extends JPanel
             {
                 if(isEntered[0])
                 {
-                    g.drawImage(Palabunot.image, 0, 0, null);
-                    g.setColor(new Color(0, 0 ,0, 127));
-                    g.fillRect(0, 0, paperLength, paperLength);
+                    Graphics2D g2d = x.createGraphics();
+                    g2d.drawImage(Palabunot.image, 0, 0, null);
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN, 0.5f));
+                    g2d.setColor(Color.white);
+                    g2d.fillRect(0, 0, paperLength, paperLength);
+                    g2d.dispose();
+
+                    g.drawImage(x, 0,  0, null);
                 }
                 else
                 {
@@ -126,6 +141,7 @@ public class PalabunotGridPane extends JPanel
                         System.out.println(value);
                     }
                 }
+
             }
         };
         label.setLayout(null);
@@ -138,7 +154,6 @@ public class PalabunotGridPane extends JPanel
             {
                 if(label.isEnabled()) {
                     System.out.println("You picked number " + value);
-                    frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
                     grid.grid.get(index).setPicked(true);
                     System.out.println(grid.getArrayNotPicked());
                     remove(label);
@@ -153,7 +168,6 @@ public class PalabunotGridPane extends JPanel
                 {
                     isEntered[0] = false;
                 }
-                else frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
 
             @Override
@@ -162,7 +176,6 @@ public class PalabunotGridPane extends JPanel
                 if(label.isEnabled()) {
                     isEntered[0] = true;
                 }
-                else frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
         });
 

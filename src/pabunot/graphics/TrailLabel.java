@@ -118,7 +118,8 @@ public class TrailLabel extends ArrayList<JLabel>
         int width = metrics.stringWidth(s.toUpperCase() + 10);
         int height = metrics.getHeight();
 
-        this.startX = startX == Short.MAX_VALUE? (1280 / 2) - ((metrics.stringWidth(stringSequence) / 2)) : startX;
+        this.startX = startX == Short.MAX_VALUE? (int) (InitialFrame.WIDTH - metrics.stringWidth(
+                stringSequence)) / 2 : startX;
 
         label.setBounds(startX + letterLength, startY + letterDepth, width, height);
         letterLength += metrics.stringWidth(s) + 1;
@@ -131,13 +132,13 @@ public class TrailLabel extends ArrayList<JLabel>
         int index = 0;
         if(sequence.length == 1)
         {
-            get(0).setLocation(get(0).getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, 1, 0));
+            get(0).setLocation(get(0).getX(), (int) InitialFrame.sineEase(currentTime, 1_000, startY, endY, 1, 0));
         }
         else
         {
             for(JLabel l : this)
             {
-                l.setLocation(l.getX(), (int) InitialFrame.sineEase(currentTime, 1_000_000_000, startY, endY, (this.size() - 1) - index,index++));
+                l.setLocation(l.getX(), (int) InitialFrame.sineEase(currentTime, 1_000, startY, endY, (this.size() - 1) - index,index++));
             }
         }
     }

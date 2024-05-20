@@ -10,7 +10,8 @@ public class Confetti
     public int speedY;
     public int length;
     Color color;
-    Random r = new Random();
+    Random r;
+    public static int currentFrameIteration = 0;
 
     private Color[] colors = new Color[]
     {
@@ -32,20 +33,31 @@ public class Confetti
 
     public Confetti()
     {
-        color = colors[r.nextInt(colors.length)];
-        position = new Point(r.nextInt(1600), 0);
-        speedX = r.nextInt(3);
-        speedY = r.nextInt(3) + 1;
-        length = 7 * speedY;
+        r = new Random();
+        color = colors[currentFrameIteration % colors.length];
+        position = new Point(r.nextInt(2000), -10);
+        speedX = (currentFrameIteration % 6) - 3;
+        speedY = (currentFrameIteration % 3) + 1;
+        length = 7 *  Math.abs(speedY);
+        currentFrameIteration++;
     }
 
     public Confetti(int y)
     {
-        color = colors[r.nextInt(colors.length)];
-        position = new Point(r.nextInt(1500), y);
-        speedX = r.nextInt(3);
-        speedY = r.nextInt(3) + 1;
-        length = 7 * speedY;
+        r = new Random();
+        color = colors[currentFrameIteration % colors.length];
+        position = new Point(r.nextInt(2000), y);
+        speedX = (currentFrameIteration % 6) - 3;
+        speedY = (currentFrameIteration % 3) + 1;
+        length = 7 * Math.abs(speedY);
+        currentFrameIteration++;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Confetti{" +
+                "length=" + speedX +
+                '}';
+    }
 }

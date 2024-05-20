@@ -11,4 +11,10 @@ public enum Theme
     PINK_HEARTS,
     GRAY_HEARTS,
     RAINBOW_HEARTS,
+    TEAL_HEARTS,
+    WOOD,
+    ORANGE_FRUIT,
+    CLOVER,
+    LUCKY,
+    SUNFLOWER,
 }

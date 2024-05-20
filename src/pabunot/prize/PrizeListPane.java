@@ -38,12 +38,13 @@ public class PrizeListPane extends JScrollPane
         // add components into the container here :3
         addComponents();
 
+        setLocation(20, 350);
         setViewportView(container);
         getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         getViewport().setOpaque(false);
         getVerticalScrollBar().setVisible(false);
         getHorizontalScrollBar().setVisible(false);
-        setSize(new Dimension(width, 300));
+        setSize(new Dimension(width, InitialFrame.HEIGHT - getY() - 80));
         setDoubleBuffered(true);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

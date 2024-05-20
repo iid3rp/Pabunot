@@ -25,8 +25,9 @@ public class TrailTitlePanel extends JPanel
         this.frame = frame;
         goBack = createGoBack();
         makePabunot = createMakingPabunot();
-        titleLabel = new TrailLabel("Lets call your new Pabunot!", 30, 200, 210, new Color[] {Color.gray});
-        title = new TrailLabel("Type your title here", 100, 300, 320, new Color[] {new Color(127, 127, 127)});
+        titleLabel = new TrailLabel("Lets call your new Pabunot!", 30, (int) ((InitialFrame.HEIGHT * .35) - 10), (int) ((InitialFrame.HEIGHT * .35) + 10), new Color[] {Color.gray});
+        int fontHeight = (InitialFrame.HEIGHT - frame.getFontMetrics(AndyBold.createFont(100)).getHeight()) / 2;
+        title = new TrailLabel("Type your title here", 100, fontHeight - 10, fontHeight + 10, new Color[] {new Color(127, 127, 127)});
         initializeComponent();
         addComponents();
         repaint();
@@ -58,7 +59,7 @@ public class TrailTitlePanel extends JPanel
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
 
-        label.setBounds(1280 - width + 20, 720 - height - 20, width, height);
+        label.setBounds(InitialFrame.WIDTH - width + 20, InitialFrame.HEIGHT - height - 20, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -97,7 +98,8 @@ public class TrailTitlePanel extends JPanel
         {
             remove(label);
         }
-        title = new TrailLabel("Type your title here", 100, 300, 320, new Color[] {new Color(127, 127, 127)});
+        int fontHeight = (InitialFrame.HEIGHT - frame.getFontMetrics(AndyBold.createFont(100)).getHeight()) / 2;
+        title = new TrailLabel("Type your title here", 100, fontHeight - 10, fontHeight + 10, new Color[] {new Color(127, 127, 127)});
         for(JLabel label : title)
         {
             add(label);
@@ -121,10 +123,7 @@ public class TrailTitlePanel extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                setVisible(false);
-                frame.picker.setVisible(true);
-                frame.removeKeyListener(frame.typeEvent);
-                frame.typeEvent.string = "";
+               back();
             }
 
             @Override
@@ -167,7 +166,7 @@ public class TrailTitlePanel extends JPanel
 
     private void initializeComponent()
     {
-        setSize(1280, 720);
+        setSize(InitialFrame.WIDTH, InitialFrame.HEIGHT);
         setVisible(false);
         setLayout(null);
         setOpaque(false);
@@ -190,6 +189,14 @@ public class TrailTitlePanel extends JPanel
         frame.getContentPane().add(frame.createPabunot);
         frame.createPabunot.setVisible(true);
         frame.getContentPane().repaint();
+        frame.removeKeyListener(frame.typeEvent);
+        frame.typeEvent.string = "";
+    }
+
+    public void back()
+    {
+        setVisible(false);
+        frame.picker.setVisible(true);
         frame.removeKeyListener(frame.typeEvent);
         frame.typeEvent.string = "";
     }

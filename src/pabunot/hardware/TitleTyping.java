@@ -38,6 +38,10 @@ public class TitleTyping implements KeyListener
         {
             frame.titlePanel.cont();
         }
+        else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+        {
+            frame.titlePanel.back();
+        }
         if(string.length() < 30)
         {
             if(Character.isLetterOrDigit(e.getKeyChar()))

@@ -22,8 +22,8 @@ public class PabunotScrollPane extends JScrollPane
     {
         super();
         this.list = list;
-        setSize(new Dimension(1000, 550));
-        setPreferredSize(new Dimension(1000, 700));
+        setSize(new Dimension((int) (InitialFrame.WIDTH * 0.8), (int) (InitialFrame.HEIGHT * 0.8)));
+        setPreferredSize(new Dimension((int) (InitialFrame.WIDTH * 0.8), (int) (InitialFrame.HEIGHT * 0.8)));
         setBackground(new Color(0, 0, 0, 80));
         setDoubleBuffered(true);
         container = createContainer();

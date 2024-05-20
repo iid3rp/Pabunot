@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class PabunotPickerPanel extends JPanel
@@ -114,13 +113,8 @@ public class PabunotPickerPanel extends JPanel
             System.out.println("its not empty");
             for(String s : folderNames)
             {
-                PalabunotGrid pbn = null;
-                try {
-                    pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
-                }
-                catch(IOException e) {
-                    throw new RuntimeException(e);
-                }
+                PalabunotGrid pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
+
                 System.out.println(s + File.separator + "Pabunot.ini");
                 if(pbn != null)
                 {

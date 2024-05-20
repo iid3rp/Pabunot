@@ -2,6 +2,7 @@ package pabunot;
 
 import pabunot.graphics.Snow;
 import pabunot.graphics.TrailLabel;
+import pabunot.hardware.MainMenuKey;
 import pabunot.hardware.TitleTyping;
 import pabunot.interfaces.PabunotMakingPane;
 import pabunot.interfaces.PabunotPickerPanel;
@@ -57,13 +58,12 @@ import java.util.Random;
 public class
 InitialFrame extends JFrame implements Runnable
 {
-    public static int WIDTH = 1280;
-    public static int HEIGHT = 720;
     public static double snowMultiplierX;
     public static double snowMultiplierY;
     private final JLabel start;
     private final JLabel settings;
     private final JLabel exit;
+    private JLabel gitRepo;
     private final TrailLabel titleLabel;
     public static Image mainBackGround;
     public static Image mainMiddleGround;
@@ -74,7 +74,9 @@ InitialFrame extends JFrame implements Runnable
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
-    public static int refreshRate = dm.getRefreshRate() * 4;
+    public static int refreshRate = dm.getRefreshRate() * 2;
+    public static int WIDTH;
+    public static int HEIGHT;
     public static Snow snow;
     public static boolean isRunning = true;
     public JPanel mainMenu;
@@ -86,25 +88,32 @@ InitialFrame extends JFrame implements Runnable
     public int fps;
     private JLabel framesPerSecond;
     public PabunotMakingPane createPabunot;
-    public TrailLabel tipLabel = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, 680, 690, TrailLabel.rainbow);
-    public TrailLabel labels2 = new TrailLabel("Francis L. Madanlo", 20, 90, 100, new Color[]{Color.WHITE, Color.WHITE});
+    public TrailLabel tipLabel;
     public static int snowX;
     public static int snowY;
     public TrailTitlePanel titlePanel;
     private boolean fpsUnlocked = false;
     private Cursor pabunotCursor;
     private PabunotSection pabunotProcess;
+    private MainMenuKey mainKey;
 
     public InitialFrame()
     {
         super();
+        WIDTH = (int) (gd.getDisplayMode().getWidth() / 1.25);
+        HEIGHT = (int) (gd.getDisplayMode().getHeight() / 1.25);
         pabunotCursor = createCursor();
         initializeComponent();
+
+        // key events
+        mainKey = new MainMenuKey(this);
         typeEvent = new TitleTyping(this);
+
         snow = new Snow();
         contentPanel = createContentPanel();
         mainMenu = createMainMenu();
-        //pabunotProcess = new PabunotSection(this, new PalabunotGrid());
+        gitRepo = createGitLabel();
+
         glassPane = createGlassPane();
         framesPerSecond = createFPS();
         titlePanel = new TrailTitlePanel(this);
@@ -112,7 +121,10 @@ InitialFrame extends JFrame implements Runnable
         start = createStart();
         settings = createSettings();
         exit = createExit();
-        titleLabel = new TrailLabel("Pabunot!", 150, 100, 120, TrailLabel.rainbow);
+
+        // trail labels here
+        tipLabel = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, InitialFrame.HEIGHT - 50, InitialFrame.HEIGHT - 40, TrailLabel.rainbow);
+        titleLabel = new TrailLabel("Pabunot!", 150, (int) ((InitialFrame.HEIGHT * 0.3) - 10), (int) ((InitialFrame.HEIGHT * 0.3) + 10), TrailLabel.rainbow);
 
         // bunot = new PalabunotGridPane(this, new PalabunotGrid(40, 40, "Hello World!", Theme.PINK_HEARTS));
         addComponents();
@@ -123,9 +135,10 @@ InitialFrame extends JFrame implements Runnable
         getContentPane().add(mainMenu);
         getContentPane().add(titlePanel);
         setGlassPane(glassPane);
-        
 
+        validate();
         glassPane.setVisible(true);
+        setVisible(true);
     }
 
     private JPanel createContentPanel()
@@ -137,9 +150,12 @@ InitialFrame extends JFrame implements Runnable
                     mainBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
                     mainMiddleGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleGround.png")));
                     mainMiddleBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleBackGround.png")));
-                    mainBackGround = mainBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
-                    mainMiddleGround = mainMiddleGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
-                    mainMiddleBackGround = mainMiddleBackGround.getScaledInstance(1328, 756, Image.SCALE_SMOOTH);
+                    mainBackGround = mainBackGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.05),
+                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
+                    mainMiddleGround = mainMiddleGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.1),
+                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
+                    mainMiddleBackGround = mainMiddleBackGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.1),
+                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -154,26 +170,6 @@ InitialFrame extends JFrame implements Runnable
         };
         panel.addMouseListener(new MouseAdapter()
         {
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    isDragging = true;
-                    offset = e.getPoint();
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    isDragging = false;
-                }
-            }
-
             @Override
             public void mouseExited(MouseEvent e)
             {
@@ -184,20 +180,6 @@ InitialFrame extends JFrame implements Runnable
         });
         panel.addMouseMotionListener(new MouseMotionAdapter()
         {
-            @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                if (isDragging)
-                {
-                    Point currentMouse = e.getLocationOnScreen();
-
-                    int deltaX = currentMouse.x - offset.x;
-                    int deltaY = currentMouse.y - offset.y;
-
-                    setLocation(deltaX, deltaY);
-                }
-            }
-
             @Override
             public void mouseMoved(MouseEvent e)
             {
@@ -254,7 +236,7 @@ InitialFrame extends JFrame implements Runnable
         FontMetrics metrics = getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds(10, getHeight() - height - 10, width, height);
+        label.setBounds(0, 0, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -294,7 +276,7 @@ InitialFrame extends JFrame implements Runnable
     public void addComponents()
     {
         mainMenu.add(framesPerSecond);
-        mainMenu.add(createGitLabel());
+        mainMenu.add(gitRepo);
         for(JLabel l : titleLabel)
         {
             mainMenu.add(l);
@@ -330,105 +312,96 @@ InitialFrame extends JFrame implements Runnable
     {
         int frames = 0;
         double unprocessedSeconds = 0;
-        long prevTime = System.nanoTime();
+        long prevTime = System.currentTimeMillis();
         double secondsTick = ((1d / refreshRate));
         int tickCount = 0;
         boolean ticked = false;
         int seconds = 0;
 
-        long lastSnowRenderTime = System.nanoTime();
-        double snowRenderInterval = 1d / 90; // 90 FPS for snow rendering
+        long lastSnowRenderTime = System.currentTimeMillis();
+        double snowRenderInterval = 1d / 60; // 90 FPS for snow rendering
 
         while(isRunning) {
-            while(isRunning) {
-                long currentTime = System.nanoTime();
-                long passedTime = currentTime - prevTime;
-                prevTime = currentTime;
-                unprocessedSeconds += passedTime / 1_000_000_000.0;
+            long currentTime = System.currentTimeMillis();
+            long passedTime = currentTime - prevTime;
+            prevTime = currentTime;
+            unprocessedSeconds += (double) passedTime / 1_000;
 
-                boolean snowRendered = false;
+            boolean snowRendered = false;
 
-                while(unprocessedSeconds > secondsTick) {
-                    unprocessedSeconds -= secondsTick;
-                    tickCount++;
+            while(unprocessedSeconds > secondsTick)
+            {
+                unprocessedSeconds -= secondsTick;
+                tickCount++;
 
-                    if(tickCount % refreshRate == 0) {
-                        fps = frames;
-                        framesPerSecond.setText("FPS Counter " + (fpsUnlocked ? "(Unlocked): " : "(locked): ") + fps);
-                        prevTime += 1000;
-                        frames = 0;
-                        tickCount = 0;
-                        if(seconds % 6 == 0) {
-                            for(JLabel l : tipLabel) {
-                                mainMenu.remove(l);
-                            }
-                            tipLabel = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, 680, 690, TrailLabel.rainbow);
-                            for(JLabel l : tipLabel) {
-                                mainMenu.add(l);
-                            }
-                        }
-                        seconds++;
-                    }
-                    if ((currentTime - lastSnowRenderTime) / 1_000_000_000.0 > snowRenderInterval)
-                    {
-                        snow.render(currentTime);
-                        lastSnowRenderTime = currentTime;
-                    }
-                    if(!fpsUnlocked) {
-                        try {
-                            // waving trail labels...
-
-                            if(mainMenu.isVisible()) {
-                                titleLabel.wave(currentTime);
-                                tipLabel.wave(currentTime);
-                            }
-                            if(picker.isVisible()) {
-                                picker.title.wave(currentTime);
-                            }
-                            if(titlePanel.isVisible()) {
-                                titlePanel.title.wave(currentTime);
-                                titlePanel.titleLabel.wave(currentTime);
-                            }
-
-                            if(createPabunot != null)
-                            {
-                                createPabunot.title.wave(currentTime);
-                            }
-
-                            // rendering process
-                            getContentPane().repaint();
-
-                            frames++;
-                        }
-                        catch(Exception ignored) {
-                        }
-                    }
+                if(tickCount % refreshRate == 0)
+                {
+                    fps = frames;
+                    framesPerSecond.setText("FPS Counter " + (fpsUnlocked ? "(Unlocked): " : "(locked): ") + fps);
+                    frames = 0;
+                    tickCount = 0;
+                    tipUpdate(seconds);
+                    seconds++;
                 }
+                if ((double) (currentTime - lastSnowRenderTime) / 1_000 > snowRenderInterval)
+                {
+                    snow.render(currentTime);
+                    lastSnowRenderTime = currentTime;
+                }
+                if(!fpsUnlocked) {
+                    try {
+                        // waving trail labels...
 
-                if(fpsUnlocked) {
+                        waveComponents(currentTime);
 
-                    if(mainMenu.isVisible()) {
-                        titleLabel.wave(currentTime);
-                        tipLabel.wave(currentTime);
-                    }
-                    if(picker.isVisible()) {
-                        picker.title.wave(currentTime);
-                    }
-                    if(titlePanel.isVisible()) {
-                        titlePanel.title.wave(currentTime);
-                        titlePanel.titleLabel.wave(currentTime);
-                    }
+                        // rendering process
+                        getContentPane().repaint();
 
-                    if(createPabunot != null)
-                    {
-                        createPabunot.title.wave(currentTime);
+                        frames++;
                     }
-
-                    getContentPane().repaint();
-                    //getGlassPane().repaint();
-                    frames++;
+                    catch(Exception ignored) {
+                    }
                 }
             }
+
+            if(fpsUnlocked) {
+
+                waveComponents(currentTime);
+
+                getContentPane().repaint();
+                //getGlassPane().repaint();
+                frames++;
+            }
+        }
+
+    }
+
+    private void tipUpdate(int seconds)
+    {
+        if(seconds % 6 == 0)
+        {
+            for(JLabel l : tipLabel)
+            {
+                mainMenu.remove(l);
+            }
+            tipLabel = new TrailLabel(Tip.stuff[new Random().nextInt(Tip.stuff.length)], 20, InitialFrame.HEIGHT - 50, InitialFrame.HEIGHT - 40, TrailLabel.rainbow);
+            for(JLabel l : tipLabel)
+            {
+                mainMenu.add(l);
+            }
+        }
+    }
+
+    private void waveComponents(long currentTime)
+    {
+        titleLabel.wave(currentTime);
+        tipLabel.wave(currentTime);
+        picker.title.wave(currentTime);
+        titlePanel.title.wave(currentTime);
+        titlePanel.titleLabel.wave(currentTime);
+        if (createPabunot != null)
+        {
+            createPabunot.title.wave(currentTime);
         }
     }
 
@@ -437,25 +410,6 @@ InitialFrame extends JFrame implements Runnable
         JPanel panel = new JPanel();
         panel.addMouseListener(new MouseAdapter()
         {
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    isDragging = true;
-                    offset = e.getPoint();
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    isDragging = false;
-                }
-            }
 
             @Override
             public void mouseExited(MouseEvent e)
@@ -468,20 +422,6 @@ InitialFrame extends JFrame implements Runnable
         panel.addMouseMotionListener(new MouseMotionAdapter()
         {
             @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                if (isDragging)
-                {
-                    Point currentMouse = e.getLocationOnScreen();
-
-                    int deltaX = currentMouse.x - offset.x;
-                    int deltaY = currentMouse.y - offset.y;
-
-                    setLocation(deltaX, deltaY);
-                }
-            }
-
-            @Override
             public void mouseMoved(MouseEvent e)
             {
                 parallaxMove(e.getPoint());
@@ -489,6 +429,7 @@ InitialFrame extends JFrame implements Runnable
         });
         panel.setLayout(null);
         panel.setOpaque(false);
+        panel.setIgnoreRepaint(true);
         panel.setDoubleBuffered(true);
         panel.setSize(getWidth(), getHeight());
         return panel;
@@ -497,7 +438,7 @@ InitialFrame extends JFrame implements Runnable
     public static void render(Graphics g)
     {
         g.drawImage(mainBackGround, snowX, snowY, null);
-        g.drawImage(snow, 0, 0, null);
+        g.drawImage(snow.particle, 0, 0, null);
         g.drawImage(mainMiddleBackGround, ((snowX * -1) - 48) / 2, ((snowY * -1) - 36) / 2, null);
         g.drawImage(mainMiddleGround, (snowX * -1) - 48, (snowY * -1) - 36, null);
         g.setColor(new Color(0, 0, 0, 90));
@@ -509,23 +450,24 @@ InitialFrame extends JFrame implements Runnable
         snowX = (int) -((e.getX() * 48) / WIDTH);
         snowY = (int) -((e.getY() * 36) / HEIGHT);
 
-        snowMultiplierX = (int) ((e.getX() / WIDTH) * 4);
-        snowMultiplierY = (int) ((e.getY() / HEIGHT) * 2);
+        snowMultiplierX = (int) ((e.getX() / WIDTH) * ((InitialFrame.WIDTH / refreshRate)) / 2);
+        snowMultiplierY = (int) ((e.getY() / HEIGHT) * ((InitialFrame.HEIGHT / refreshRate) / 2));
     }
 
     private void initializeComponent()
     {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setSize(getPreferredSize());
+        setSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(getSize());
         setCursor(pabunotCursor);
-        setTitle("");
+        setIgnoreRepaint(true);
+        setTitle("Pabunot");
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
-        setVisible(true);
+        addKeyListener(mainKey);
     }
 
     public static double sineEase(double currentTime, double duration, double startY, double endY, int delaySine, int delayCosine) {
@@ -545,14 +487,13 @@ InitialFrame extends JFrame implements Runnable
         FontMetrics metrics = getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 350, width, height);
+        label.setBounds((getWidth() / 2) - (width / 2), (int) (InitialFrame.HEIGHT * 0.50), width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                mainMenu.setVisible(false);
-                picker.setVisible(true);
+                play();
             }
 
             @Override
@@ -589,7 +530,7 @@ InitialFrame extends JFrame implements Runnable
         FontMetrics metrics = getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 420, width, height);
+        label.setBounds((getWidth() / 2) - (width / 2),  (int) (InitialFrame.HEIGHT * 0.5) + 75, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -632,7 +573,7 @@ InitialFrame extends JFrame implements Runnable
         FontMetrics metrics = getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
-        label.setBounds((getWidth() / 2) - (width / 2), 490, width, height);
+        label.setBounds((getWidth() / 2) - (width / 2),  (int) (InitialFrame.HEIGHT * 0.5) + 150, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -680,5 +621,18 @@ InitialFrame extends JFrame implements Runnable
             @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
             frame.start();
         });
+    }
+
+    public void play()
+    {
+        mainMenu.setVisible(false);
+        picker.setVisible(true);
+    }
+
+    @Override
+    public void validate()
+    {
+        super.validate();
+        gitRepo.setLocation(10, getHeight() - gitRepo.getHeight() - 10);
     }
 }

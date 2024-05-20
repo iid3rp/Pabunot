@@ -8,10 +8,7 @@ import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
 import pabunot.prize.PrizeListPane;
 import pabunot.streamio.PabunotMaker;
-import pabunot.util.DataType;
-import pabunot.util.Intention;
-import pabunot.util.TextFilter;
-import pabunot.util.Theme;
+import pabunot.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,6 +18,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -81,10 +79,11 @@ public class PabunotMakingPane extends JPanel
     public JLabel decreaseY;
     private JCheckBox sameRatio;
     private boolean startProcess;
-    private Image pabunotThemeImage;
+    private BufferedImage pabunotThemeImage;
     private JPanel matrixPanel;
     private JComboBox<String> themeCombo;
     private String pabunotTitle;
+    private JLabel contents;
 
     public PabunotMakingPane(InitialFrame frame, String titleString)
     {
@@ -94,7 +93,7 @@ public class PabunotMakingPane extends JPanel
         this.frame = frame;
         theme = Theme.RED_HEARTS;
         initializeComponent();
-        title = new TrailLabel(titleString, 40, 20, 20, 25, TrailLabel.rainbow);
+        title = new TrailLabel("Title: " + titleString, 30, 150, 15, 25, TrailLabel.rainbow);
 
         pabunotTitle = titleString;
         matrixPanel = createMatrixPanel();
@@ -102,10 +101,10 @@ public class PabunotMakingPane extends JPanel
         prizeDescription = createDescription();
         letterLimitDesc = createLetterLimit();
         letterLimitField = createLetterLimitField();
+        contents = createContents();
         addPrize = createAddPrize();
         matrix = createMatrixLabel();
         pane = new PrizeListPane(frame);
-        pane.setLocation(20, 350);
         startPabunot = createStart();
         xField = createXField();
         yField = createYField();
@@ -129,6 +128,22 @@ public class PabunotMakingPane extends JPanel
         addComponents();
     }
 
+    private JLabel createContents()
+    {
+        JLabel label = new JLabel();
+        label.setLayout(null);
+        label.setText("<html>" +
+                "Pabunot Content: 100<br>" +
+                "Chances when getting a prize: unidentified...<html>");
+        label.setFont(createFont(20));
+        label.setForeground(gray);
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText().toUpperCase());
+        int height = metrics.getHeight() * 2;
+        label.setBounds(20, 60, width, height);
+        return label;
+    }
+
     private void addComponents()
     {
         add(prizeTitle);
@@ -150,14 +165,17 @@ public class PabunotMakingPane extends JPanel
         add(sameRatio);
         add(matrixPanel);
 
+        add(createGoBack());
 
         add(createNormalLabel("Prize Section", 20, 110));
         add(createNormalLabel("Dimension", 400, 110));
         add(createNormalLabel("Themes", 400, 320));
 
+        matrixPanel.add(contents);
         matrixPanel.add(matrix);
         matrixPanel.add(createDimensionLabel());
     }
+
 
     private JPanel createMatrixPanel()
     {
@@ -167,15 +185,14 @@ public class PabunotMakingPane extends JPanel
             public void paintComponent(Graphics g)
             {
                 g.setColor(new Color(0, 0, 0, 90));
-                g.fillRect(0, 0, 600, 600);
+                g.fillRect(0, 0, (int) (InitialFrame.HEIGHT * 0.9), InitialFrame.HEIGHT);
             }
         };
-        panel.setSize(new Dimension(600, 600));
-        panel.setBackground(new Color(0, 0, 0, 125));
+        panel.setSize(new Dimension((int) (InitialFrame.HEIGHT * 0.9), InitialFrame.HEIGHT));
         panel.setDoubleBuffered(true);
         panel.setOpaque(false);
         panel.setLayout(null);
-        panel.setLocation(600, (getHeight() - 600) / 2);
+        panel.setLocation(InitialFrame.WIDTH - panel.getWidth(), (InitialFrame.HEIGHT - panel.getHeight()) / 2);
         panel.setVisible(true);
         return panel;
     }
@@ -234,6 +251,7 @@ public class PabunotMakingPane extends JPanel
                 y = sameRatio.isSelected() && y + 1 <= 30 ? y + 1 : y;
                 xField.setText("" + x);
                 yField.setText("" + y);
+                setContent();
                 matrix.repaint();
                 matrix.revalidate();
             }
@@ -259,6 +277,19 @@ public class PabunotMakingPane extends JPanel
         });
         return label;
     }
+
+    private void setContent()
+    {
+        String prizeChance = pane.list != null? (((float) pane.list.size()) / (x * y)) * 100 + "% per pabunot" : "Undefined...";
+        contents.setText("<html>" +
+                        "Pabunot Content: " + x * y + "<br>" +
+                        "Chances when getting a prize: " + prizeChance + "<html>");
+        FontMetrics metrics = contents.getFontMetrics(contents.getFont());
+        int width = metrics.stringWidth(contents.getText());
+        int height = metrics.getHeight() * 2;
+        contents.setBounds(20, 60, width, height);
+    }
+
     private JLabel createAddY()
     {
         JLabel label = new JLabel();
@@ -279,6 +310,7 @@ public class PabunotMakingPane extends JPanel
                 y = y + 1 > 30? y : y + 1;
                 xField.setText("" + x);
                 yField.setText("" + y);
+                setContent();
                 matrix.repaint();
                 matrix.revalidate();
             }
@@ -326,6 +358,7 @@ public class PabunotMakingPane extends JPanel
                 y = sameRatio.isSelected() && y - 1 >= 5 ? y - 1 : y;
                 xField.setText("" + x);
                 yField.setText("" + y);
+                setContent();
                 matrix.repaint();
                 matrix.revalidate();
             }
@@ -372,6 +405,7 @@ public class PabunotMakingPane extends JPanel
                 y = y - 1 < 5 ? y : y - 1;
                 xField.setText("" + x);
                 yField.setText("" + y);
+                setContent();
                 matrix.repaint();
                 matrix.revalidate();
             }
@@ -409,7 +443,7 @@ public class PabunotMakingPane extends JPanel
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds((matrixPanel.getWidth() - width) / 2, 10, width, height);
+        label.setBounds(20, 20, width, height);
         return label;
     }
 
@@ -427,6 +461,55 @@ public class PabunotMakingPane extends JPanel
         return label;
     }
 
+    private JLabel createGoBack()
+    {
+        JLabel label = new JLabel();
+        label.setText("< Back");
+        label.setFont(AndyBold.createFont(30));
+        label.setForeground(Color.gray);
+
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int width = metrics.stringWidth(label.getText().toUpperCase());
+        int height = metrics.getHeight();
+
+        label.setBounds(20, 20, width, height);
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                back();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                label.setForeground(Color.yellow);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                label.setForeground(Color.gray);
+            }
+        });
+
+        label.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                InitialFrame.parallaxMove(new Point(e.getX() + label.getX(), e.getY() + label.getY()));
+            }
+        });
+        return label;
+    }
+
+    private void back()
+    {
+
+    }
+
     private JLabel createStart()
     {
         JLabel label = new JLabel();
@@ -437,7 +520,7 @@ public class PabunotMakingPane extends JPanel
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
-        label.setBounds(20, 720 - height - 10, width, height);
+        label.setBounds(20, InitialFrame.HEIGHT - height - 10, width, height);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -518,6 +601,7 @@ public class PabunotMakingPane extends JPanel
                             {
                                 x = Integer.parseInt(field.getText());
                                 field.setForeground(white);
+                                setContent();
                             }
                         }
                         else
@@ -550,6 +634,7 @@ public class PabunotMakingPane extends JPanel
                             x = 30;
                             field.setForeground(Color.red);
                         }
+                        setContent();
                     }
                     catch(NumberFormatException ignored) {}
                 }
@@ -558,26 +643,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void changedUpdate(DocumentEvent e)
             {
-                if(!field.getText().isEmpty())
-                {
-                    try {
-                        int n = Integer.parseInt(field.getText());
-                        if(n <= 30)
-                        {
-                            if(n >= 5)
-                            {
-                                x = Integer.parseInt(field.getText());
-                                field.setForeground(white);
-                            }
-                        }
-                        else
-                        {
-                            x = 30;
-                            field.setForeground(Color.red);
-                        }
-                    }
-                    catch(NumberFormatException ignored) {}
-                }
+
+
             }
         });
         field.addMouseMotionListener(new MouseMotionAdapter()
@@ -641,6 +708,7 @@ public class PabunotMakingPane extends JPanel
                             y = 30;
                             field.setForeground(Color.red);
                         }
+                        setContent();
                     }
                     catch(NumberFormatException ignored) {
                     }
@@ -668,6 +736,7 @@ public class PabunotMakingPane extends JPanel
                             y = 30;
                             field.setForeground(Color.red);
                         }
+                        setContent();
                     }
                     catch(NumberFormatException ignored) {
                     }
@@ -677,28 +746,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void changedUpdate(DocumentEvent e)
             {
-                if(!field.getText().isEmpty())
-                {
-                    try
-                    {
-                        int n = Integer.parseInt(field.getText());
-                        if(n <= 30)
-                        {
-                            if(n >= 5)
-                            {
-                                y = Integer.parseInt(field.getText());
-                                field.setForeground(white);
-                            }
-                        }
-                        else
-                        {
-                            y = 30;
-                            field.setForeground(Color.red);
-                        }
-                    }
-                    catch(NumberFormatException ignored) {
-                    }
-                }
+
+
             }
         });
 
@@ -785,6 +834,7 @@ public class PabunotMakingPane extends JPanel
                     prizeTitle.requestFocus();
                     prizeDescription.requestFocus();
                     frame.requestFocus();
+                    setContent();
                 }
             }
 
@@ -961,15 +1011,21 @@ public class PabunotMakingPane extends JPanel
     {
         final String[] themes = new String[]
         {
-            "Red hearts",
-            "Orange hearts",
-            "Yellow hearts",
-            "Green hearts",
-            "Blue hearts",
-            "Purple hearts",
-            "Pink hearts",
-            "Gray hearts",
-            "Rainbow hearts"
+                "Red hearts",
+                "Orange hearts",
+                "Yellow hearts",
+                "Green hearts",
+                "Blue hearts",
+                "Purple hearts",
+                "Pink hearts",
+                "Gray hearts",
+                "Rainbow hearts",
+                "Teal hearts",
+                "Wood flowers",
+                "Orange fruit",
+                "Clover leaf",
+                "Lucky block",
+                "Sunflowers"
         };
         JComboBox<String> combo = new JComboBox<>(themes);
         combo.setLayout(null);
@@ -990,19 +1046,7 @@ public class PabunotMakingPane extends JPanel
         {
             if(e.getStateChange() == ItemEvent.SELECTED)
             {
-                theme = switch(e.getItem().toString())
-                {
-                    case "Red hearts" -> Theme.RED_HEARTS;
-                    case "Orange hearts" -> Theme.ORANGE_HEARTS;
-                    case "Yellow hearts" -> Theme.YELLOW_HEARTS;
-                    case "Green hearts" -> Theme.GREEN_HEARTS;
-                    case "Blue hearts" -> Theme.BLUE_HEARTS;
-                    case "Purple hearts" -> Theme.PURPLE_HEARTS;
-                    case "Pink hearts" -> Theme.PINK_HEARTS;
-                    case "Gray hearts" -> Theme.GRAY_HEARTS;
-                    case "Rainbow hearts" -> Theme.RAINBOW_HEARTS;
-                    default -> throw new IllegalStateException("Unexpected value: " + e.getItem().toString());
-                };
+                theme = Palabunot.valueOf(e.getItem().toString());
                 try {
                     pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
                 }
@@ -1028,14 +1072,13 @@ public class PabunotMakingPane extends JPanel
     {
         final int[] width = new int[1];
         final int[] height = new int[1];
-        final int metric = 500;
+        final int metric = (int) (InitialFrame.HEIGHT * 0.7);
         paperLength = (metric / Math.max(x, y));
         JLabel label = new JLabel()
         {
             {
                 try {
                     pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
-                    pabunotThemeImage = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -1049,10 +1092,9 @@ public class PabunotMakingPane extends JPanel
                 width[0] = paperLength * x;
                 height[0] = paperLength * y;
                 setSize(width[0], height[0]);
-                setLocation((matrixPanel.getWidth() - width[0]) / 2, ((matrixPanel.getHeight() - height[0]) / 2));
+                setLocation((int) ((matrixPanel.getWidth() - width[0]) * .6),
+                            (int) ((matrixPanel.getHeight() - height[0]) * .6));
                 Image io = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
-                g.setColor(new Color(0, 0, 0, 127));
-                g.fillRect(0, 0, metric, metric);
                 for(int i = 0; i < x; i++)
                 {
                     for(int j = 0; j < y; j++)
@@ -1196,8 +1238,9 @@ public class PabunotMakingPane extends JPanel
     private void initializeComponent()
     {
         setVisible(false);
-        setSize(new Dimension(1280,720));
+        setSize(new Dimension(InitialFrame.WIDTH, InitialFrame.HEIGHT));
         setOpaque(false);
+        setIgnoreRepaint(true);
         setDoubleBuffered(true);
         setLayout(null);
         addMouseListener(new MouseAdapter()
@@ -1206,25 +1249,6 @@ public class PabunotMakingPane extends JPanel
             public void mouseClicked(MouseEvent e)
             {
                 frame.requestFocus();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    InitialFrame.isDragging = true;
-                    InitialFrame.offset = e.getPoint();
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    InitialFrame.isDragging = false;
-                }
             }
 
             @Override
@@ -1237,19 +1261,6 @@ public class PabunotMakingPane extends JPanel
 
         addMouseMotionListener(new MouseMotionAdapter()
         {
-            @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                if(InitialFrame.isDragging)
-                {
-                    Point currentMouse = e.getLocationOnScreen();
-
-                    int deltaX = currentMouse.x - InitialFrame.offset.x;
-                    int deltaY = currentMouse.y - InitialFrame.offset.y;
-
-                    frame.setLocation(deltaX, deltaY);
-                }
-            }
 
             @Override
             public void mouseMoved(MouseEvent e)
@@ -1260,5 +1271,9 @@ public class PabunotMakingPane extends JPanel
     }
 
     @Override
-    public void paintComponent(Graphics ignored) {}
+    public void paintComponent(Graphics g)
+    {
+        g.setColor(new Color(66, 32, 10, 90));
+        g.fillRect(0, 0, InitialFrame.WIDTH, InitialFrame.HEIGHT);
+    }
 }

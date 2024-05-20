@@ -100,8 +100,9 @@ public class PabunotReader
      * @param file the path to the data file as a {@code String}
      * @return a {@code Pabunot} object containing the configured grid and prizes, or {@code null} if an error occurs
      */
-    public static PalabunotGrid createPalabunotFromFile(String file) throws IOException
+    public static PalabunotGrid createPalabunotFromFile(String file)
     {
+        try
         {
             PrizeList list = new PrizeList();
             // FileWriter ug BufferedReader
@@ -135,6 +136,10 @@ public class PabunotReader
             }
             reader.close();
             return new PalabunotGrid(x, y, palabunotList, serial, title, list, theme);
+        }
+        catch(InputMismatchException | IOException | ArrayIndexOutOfBoundsException ignored)
+        {
+            return null;
         }
     }
 }
