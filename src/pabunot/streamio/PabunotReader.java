@@ -17,7 +17,16 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 /**
- * The `PabunotReader` class provides functionalities for reading and processing bank data.
+ * The {@code PabunotReader} class provides functionalities for reading data from files
+ * and constructing game elements such as {@code PabunotSection}
+ * and {@code PalabunotGrid}.
+ * This class is essential
+ * for initializing the game state with predefined configurations and prize setups stored in external files.
+ *<p>
+ * The class supports operations to read various configurations and elements including grid dimensions,
+ * themes, prizes, and individual {@code Palabunot} statuses from a file.
+ * It handles file I/O operations
+ * and ensures that the data is correctly parsed and instantiated into the game's objects.
  *
  * @author Francis (iid3rp) Madanlo
  */
@@ -29,19 +38,19 @@ public class PabunotReader
     public PabunotReader() {}
 
     /**
-     * Reads data from a specified file and creates a PabunotSection with a PabunotGrid containing prizes and pabunots.
+     * Reads data from a specified file and creates a {@code PabunotSection} with a {@code PabunotGrid} containing prizes and pabunots.
      * <p>
      * Steps:
      * <ul>
      * <li>Reads configuration data from the file to set up the grid dimensions, title, theme, and serial number.</li>
-     * <li>Processes prize data to populate a PrizeList.</li>
-     * <li>Reads and creates Pabunot objects based on the remaining file content.</li>
+     * <li>Processes prize data to populate a {@code PrizeList}.</li>
+     * <li>Reads and creates {@code Palabunot} objects based on the remaining file content.</li>
      * <li>Handles exceptions by displaying an error message and returning null if file reading fails.</li>
      * </ul>
      *
-     * @param frame A reference to an InitialFrame object, used for UI interactions during the reading process.
-     * @param file The File object representing the data file to be read.
-     * @return A PabunotSection containing the constructed PabunotGrid, or null if an error occurs.
+     * @param frame A reference to an {@code InitialFrame} object, used for UI interactions during the reading process.
+     * @param file The {@code File} object representing the data file to be read.
+     * @return A {@code PabunotSection} containing the constructed {@code PabunotGrid}, or null if an error occurs.
      */
     @Deprecated
     public PabunotSection createPabunotFromFile(InitialFrame frame, File file)

@@ -1,5 +1,9 @@
 package pabunot.util;
 
+/**
+ * Enum representing different Palabunot themes such as hearts in various colors,
+ * wood, fruits, clover, lucky, and sunflower.
+ */
 public enum Theme
 {
     RED_HEARTS,

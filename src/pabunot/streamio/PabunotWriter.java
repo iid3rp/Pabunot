@@ -9,8 +9,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * The PabunotWriter class provides functionality to write the state of a PalabunotGridPane to a file.
+ * This includes details such as grid dimensions, title, serial number, theme, and the list of prizes.
+ * It is designed to create a persistent record of the game state that can be used for later retrieval or analysis.
+ *
+ * @author Francis (iid3rp) Madanlo
+ */
 public class PabunotWriter
 {
+    /**
+     * Writes the details of a PalabunotGridPane object to a file in the Pabunot directory.
+     * Includes information such as grid dimensions, title, serial, theme, prizes, and grid contents.
+     * If the prize list is not null, it iterates over each prize and writes its title, description, and number.
+     * Finally, it writes the grid contents with each Palabunot value and picked status to the file.
+     */
     public static void writePabunot(PalabunotGridPane pane)
     {
         String serialDir = PabunotMaker.pabunotDir + File.separator + pane.grid.getSerial();

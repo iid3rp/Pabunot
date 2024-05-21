@@ -6,8 +6,9 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
 /**
- * <p>This section creates a {@code DocumentFilter} to filter the text and use it in either JTextFields
- * or JTextArea for the purpose of filtering character sequence.</p><p></p>
+ * Provides a {@code DocumentFilter} that restricts and validates text input based on specified {@link DataType}.
+ * This filter can be applied to components like {@link javax.swing.JTextField} or {@link javax.swing.JTextArea}
+ * to enforce specific content rules such as numerical limits, character types, or string lengths.
  *
  * @see javax.swing.text.DocumentFilter
  * @see javax.swing.JTextField

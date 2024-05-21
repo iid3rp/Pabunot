@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * This class is responsible for creating and managing the Pabunot game setup.
+ * It handles the generation of prize numbers and the writing of game configurations to a file.
+ */
 public class PabunotMaker
 {
     public static final String pabunotDir = System.getProperty("user.home") + File.separator + "Pabunot";
@@ -20,13 +24,24 @@ public class PabunotMaker
     private static Random r = new Random();
     private @Intention PalabunotGrid pb;
 
+    /**
+     * Constructor for PabunotMaker.
+     * Initializes the game grid and starts the process of generating prize numbers and writing the game setup to a file.
+     *
+     * @param p The PalabunotGrid object that contains the game grid and prize list.
+     */
     public PabunotMaker(PalabunotGrid p)
     {
         pb = p;
         generatePrizeNumbers();
         writePabunot();
     }
-    
+
+    /**
+     * Generates a unique serial number for the game session.
+     *
+     * @return A long value representing the serial number.
+     */
     public static long generateSerial()
     {
         StringBuilder sb = new StringBuilder();
@@ -59,6 +74,13 @@ public class PabunotMaker
         }
     }
 
+    /**
+     * Shuffles the elements in the {@code pb.grid} array and assigns each element's value to the corresponding {@code Prize}
+     * object in the {@code pb.list}.
+     * This method first generates a random number to determine the number of times the grid array will be shuffled.
+     * Then, it shuffles the grid array that many times to randomize the order of elements.
+     * Finally, it iterates through the {@code pb.list} of prizes, assigning each prize a number from the shuffled grid.
+     */
     public void writePabunot()
     {
         String serialDir = pabunotDir + File.separator + pb.getSerial();
@@ -92,6 +114,11 @@ public class PabunotMaker
         catch(IOException ignored) {}
     }
 
+    /**
+     * Provides a string representation of the object, indicating where the game configuration file was saved.
+     *
+     * @return A string detailing the save location of the game configuration.
+     */
     @Override
     public String toString()
     {
