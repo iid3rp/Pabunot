@@ -103,6 +103,22 @@ public class TrailLabel extends ArrayList<JLabel>
             new Color(255, 73, 255)
     };
 
+    /**
+     * Creates a {@code JLabel} representing a single character with specified styling.
+     * <p>This method initializes a {@code JLabel} with the character {@code s}, sets its layout to null for manual positioning,
+     * and applies double buffering to optimize rendering. The label's foreground color cycles through a predefined array of colors,
+     * and its font size is set according to the {@code size} parameter.</p>
+     * <ul>
+     *     <li>{@code s} - the character to be displayed in the label</li>
+     *     <li>{@code size} - the font size of the label</li>
+     * </ul>
+     * <p>The method calculates the width and height of the label based on the character's size and sets its bounds accordingly.
+     * The horizontal position is determined by the cumulative width of previously created labels, ensuring proper spacing between characters.</p>
+     *
+     * @param s the character string to be displayed in the label
+     * @param size the font size for the label
+     * @return the created {@code JLabel} with the specified character and styling
+     */
     public JLabel createLetter(String s, int size)
     {
         JLabel label = new JLabel();

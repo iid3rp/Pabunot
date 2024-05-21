@@ -1,5 +1,7 @@
 package pabunot.graphics;
 
+import pabunot.InitialFrame;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -35,21 +37,21 @@ public class Confetti
     {
         r = new Random();
         color = colors[currentFrameIteration % colors.length];
-        position = new Point(r.nextInt(2000), -10);
-        speedX = (currentFrameIteration % 6) - 3;
-        speedY = (currentFrameIteration % 3) + 1;
-        length = 7 *  Math.abs(speedY);
+        position = new Point(r.nextInt(InitialFrame.WIDTH), -10);
+        speedX = (currentFrameIteration % 10) - 5;
+        speedY = (currentFrameIteration % 6) + 2;
+        length = (int) (7 *  Math.abs(speedY / 1.25));
         currentFrameIteration++;
     }
 
-    public Confetti(int y)
+    public Confetti(int metric)
     {
         r = new Random();
         color = colors[currentFrameIteration % colors.length];
-        position = new Point(r.nextInt(2000), y);
-        speedX = (currentFrameIteration % 6) - 3;
-        speedY = (currentFrameIteration % 3) + 1;
-        length = 7 * Math.abs(speedY);
+        position = new Point(r.nextInt(InitialFrame.WIDTH), metric);
+        speedX = (currentFrameIteration % 10) - 5;
+        speedY = (currentFrameIteration % 6) + 2;
+        length = (int) (7 * Math.abs(speedY / 1.25));
         currentFrameIteration++;
     }
 

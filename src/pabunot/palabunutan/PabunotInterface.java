@@ -2,18 +2,18 @@ package pabunot.palabunutan;
 
 import pabunot.InitialFrame;
 import pabunot.interfaces.PabunotSection;
-import pabunot.streamio.PabunotMaker;
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
 import pabunot.util.Interface;
 import pabunot.util.Theme;
 
-import javax.swing.*;
+import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 public class PabunotInterface extends Interface
 {
@@ -23,13 +23,12 @@ public class PabunotInterface extends Interface
     JLabel delete;
     JLabel gridLabel;
     @Intention InitialFrame frame;
-    public @Intention PabunotInterface panel;
+    public @Intention PabunotInterface panel = this;
     public @Intention PalabunotGrid pb;
 
     public PabunotInterface(InitialFrame frame, PalabunotGrid p)
     {
         super();
-        panel = this;
         this.frame = frame;
         WIDTH = (int) (InitialFrame.WIDTH * 0.8);
         HEIGHT = 100;
@@ -96,14 +95,9 @@ public class PabunotInterface extends Interface
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                @Intention boolean[] x = new boolean[]
-                {
-                    new File(PabunotMaker.pabunotDir + File.separator + panel.pb.getSerial() + File.separator + "Pabunot.ini").delete(),
-                    new File(PabunotMaker.pabunotDir + File.separator + panel.pb.getSerial()).delete()
-                };
-                System.out.println(PabunotMaker.pabunotDir + File.separator + panel.pb.getSerial() + " " + x[0] + " " + x[1]);
-                frame.picker.pane.list.remove(panel);
-                frame.picker.pane.restore();
+               pb.deletePabunot();
+               frame.picker.pane.list.remove(panel);
+               frame.picker.pane.restore();
             }
         });
         return label;
@@ -173,7 +167,7 @@ public class PabunotInterface extends Interface
 
     public String getThemeString()
     {
-        return switch(pb.theme) {
+        return switch(pb.currentTheme) {
             case Theme.RED_HEARTS -> "Red hearts";
             case Theme.ORANGE_HEARTS -> "Orange hearts";
             case Theme.YELLOW_HEARTS -> "Yellow hearts";

@@ -23,7 +23,7 @@ public class PabunotWriter
             writer.write("y:" + pane.grid.getY() + "\n");
             writer.write("Title:" + pane.grid.getTitle() + "\n");
             writer.write("Serial:" + pane.grid.getSerial() + "\n");
-            writer.write("Theme:" + pane.grid.theme.toString() + "\n");
+            writer.write("Theme:" + pane.grid.currentTheme.toString() + "\n");
 
             writer.write("Prizes\n");
             if(pane.grid.prizeList != null) {

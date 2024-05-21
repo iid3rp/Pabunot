@@ -8,16 +8,38 @@ import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
 import pabunot.prize.PrizeListPane;
 import pabunot.streamio.PabunotMaker;
-import pabunot.util.*;
+import pabunot.util.AndyBold;
+import pabunot.util.DataType;
+import pabunot.util.Intention;
+import pabunot.util.TextFilter;
+import pabunot.util.Theme;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -507,7 +529,8 @@ public class PabunotMakingPane extends JPanel
 
     private void back()
     {
-
+        setVisible(false);
+        frame.picker.setVisible(true);
     }
 
     private JLabel createStart()

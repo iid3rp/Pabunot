@@ -1,6 +1,7 @@
 package pabunot.interfaces;
 
 import pabunot.InitialFrame;
+import pabunot.controls.TitleTyping;
 import pabunot.graphics.TrailLabel;
 import pabunot.palabunutan.PabunotInterface;
 import pabunot.palabunutan.PalabunotGrid;
@@ -88,7 +89,7 @@ public class PabunotPickerPanel extends JPanel
         return label;
     }
 
-    private <E> ArrayList<PabunotInterface> searchPabunot()
+    <E> ArrayList<PabunotInterface> searchPabunot()
     {
         ArrayList<PabunotInterface> reference = new ArrayList<>();
         File directory = new File(PabunotMaker.pabunotDir);
@@ -216,6 +217,7 @@ public class PabunotPickerPanel extends JPanel
             public void mouseClicked(MouseEvent e)
             {
                 picker.setVisible(false);
+                frame.typeEvent = new TitleTyping(frame);
                 frame.addKeyListener(frame.typeEvent);
                 frame.titlePanel.setVisible(true);
                 frame.titlePanel.resetTitle();

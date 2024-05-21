@@ -4,10 +4,12 @@ import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
 import pabunot.util.Intention;
+import pabunot.util.RandomRange;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
@@ -43,15 +45,16 @@ public class PabunotMaker
      */
     public void generatePrizeNumbers()
     {
+        ArrayList<Integer> range = new RandomRange(1, pb.getX()* pb.getY());
         if(pb.prizeList != null)
         {
             for(int i = 0; i <  new Random().nextInt(10); i++)
             {
-                Collections.shuffle(pb.grid);
+                Collections.shuffle(range);
             }
             for(int i = 0; i < pb.prizeList.size(); i++)
             {
-                pb.prizeList.get(i).setNumber(pb.grid.get(i).getValue());
+                pb.prizeList.get(i).setNumber(range.get(i));
             }
         }
     }
@@ -69,7 +72,7 @@ public class PabunotMaker
             writer.write("y:" + pb.getY() + "\n");
             writer.write("Title:" + pb.getTitle() + "\n");
             writer.write("Serial:" + pb.getSerial() + "\n");
-            writer.write("Theme:" + pb.theme.toString() + "\n");
+            writer.write("Theme:" + pb.currentTheme.toString() + "\n");
 
             writer.write("Prizes\n");
             if(pb.prizeList != null) {

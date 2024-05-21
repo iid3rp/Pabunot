@@ -1,6 +1,7 @@
 package pabunot.graphics;
 
 import pabunot.InitialFrame;
+import pabunot.util.Intention;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,20 +28,33 @@ import java.util.Random;
  * @see Confetti
  * @see InitialFrame
  */
-public class Snow
+public class Snow implements Runnable
 {
     public BufferedImage particle;
     private Random random;
     private ArrayList<Confetti> confettiList;
+    public boolean isRunning = true;
 
     public Snow()
     {
-        particle = new BufferedImage(InitialFrame.WIDTH, InitialFrame.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        particle = new BufferedImage(InitialFrame.WIDTH / 2, InitialFrame.HEIGHT / 2, BufferedImage.TYPE_INT_ARGB);
         random = new Random();
         confettiList = new ArrayList<>();
         for(int i = 0; i < 800; i++)
         {
-            confettiList.add(new Confetti(random.nextInt(InitialFrame.HEIGHT)));
+            confettiList.add(new Confetti(random.nextInt((InitialFrame.HEIGHT))));
+        }
+    }
+
+    @Intention(design = "Confetti when won")
+    public Snow(int metric)
+    {
+        particle = new BufferedImage(InitialFrame.WIDTH / 2, InitialFrame.HEIGHT / 2, BufferedImage.TYPE_INT_ARGB);
+        random = new Random();
+        confettiList = new ArrayList<>();
+        for(int i = 0; i < 800; i++)
+        {
+            confettiList.add(new Confetti(metric));
         }
     }
 
@@ -51,17 +65,51 @@ public class Snow
         for (Confetti c : confettiList)
         {
             g2d.setColor(c.color);
-            g2d.fillRect(c.position.x - 250, c.position.y, c.length, c.length); // Draw confetti
-            // Update position based directly on snow multipliers which are influenced by cursor location
-            c.position.translate(
-                    (int) (c.speedX + InitialFrame.snowMultiplierX), // Incorporate horizontal movement influenced by cursor
-                    (int) (c.speedY + InitialFrame.snowMultiplierY)  // Incorporate vertical movement (like gravity or wind)
-            );
-
+            g2d.fillRect(c.position.x + 40, c.position.y, (int) (c.length / 2.3), (int) (c.length / 2.3)); // Draw confetti
+        }
+        if(currentTime % 50 == 0)
+        {
+            confettiList.add(new Confetti());
+            confettiList.removeFirst();
         }
         g2d.dispose();
-        confettiList.add(new Confetti());
-        confettiList.removeFirst();
+        moveSnowflakes();
+    }
 
+    public void moveSnowflakes()
+    {
+        for (Confetti c : confettiList)
+        {
+            if(c.position.y + c.speedY <= InitialFrame.HEIGHT)
+            {
+                c.position.translate((int) ((c.speedX + InitialFrame.snowMultiplierX) / 2),
+                        (int) (c.speedY + InitialFrame.snowMultiplierY) / 2); // Move snowflake down
+            }
+        }
+    }
+
+    @Override
+    public void run()
+    {
+        int frames = 0;
+        double delta = 0;
+        long prevTime = System.nanoTime();
+        double tickPerSecond = 1_000_000_000d / 60;
+        long currentTime;
+
+        while(isRunning)
+        {
+            currentTime = System.nanoTime();
+            long passedTime = currentTime - prevTime;
+            prevTime = currentTime;
+            delta += (double) passedTime / tickPerSecond;
+
+            if(delta >= 1)
+            {
+                delta--;
+                render(currentTime);
+                frames++;
+            }
+        }
     }
 }

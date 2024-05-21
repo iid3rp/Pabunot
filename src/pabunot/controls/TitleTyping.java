@@ -1,4 +1,4 @@
-package pabunot.hardware;
+package pabunot.controls;
 
 import pabunot.InitialFrame;
 import pabunot.graphics.TrailLabel;

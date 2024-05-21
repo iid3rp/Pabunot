@@ -1,9 +1,12 @@
 package pabunot.palabunutan;
 
 import pabunot.prize.PrizeList;
+import pabunot.streamio.PabunotMaker;
+import pabunot.util.Intention;
 import pabunot.util.RandomRange;
 import pabunot.util.Theme;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PalabunotGrid
@@ -12,7 +15,7 @@ public class PalabunotGrid
     private int y;
     public ArrayList<Palabunot> grid;
     public PrizeList prizeList;
-    public Theme theme;
+    public Theme currentTheme;
     private int size;
     private String title;
     private long serial;
@@ -20,7 +23,7 @@ public class PalabunotGrid
     public PalabunotGrid(int x, int y, long serial, String title, PrizeList list, Theme theme)
     {
         grid = new ArrayList<>();
-        this.theme = theme;
+        this.currentTheme = theme;
         this.x = x;
         this.y = y;
         this.prizeList = list;
@@ -33,7 +36,7 @@ public class PalabunotGrid
     public PalabunotGrid(int x, int y, String title,  PrizeList list, Theme theme)
     {
         grid = new ArrayList<>();
-        this.theme = theme;
+        this.currentTheme = theme;
         this.prizeList = list;
         this.x = x;
         this.y = y;
@@ -44,7 +47,7 @@ public class PalabunotGrid
     public PalabunotGrid(int x, int y, ArrayList<Palabunot> pb, long serial, String title, PrizeList list, Theme theme)
     {
         grid = pb;
-        this.theme = theme;
+        this.currentTheme = theme;
         this.x = x;
         this.y = y;
         this.prizeList = list;
@@ -99,7 +102,7 @@ public class PalabunotGrid
                 ", y=" + y +
                 ", grid=" + grid +
                 ", list=" + prizeList +
-                ", theme=" + theme +
+                ", theme=" + currentTheme +
                 ", size=" + size +
                 ", title='" + title + '\'' +
                 ", serial=" + serial +
@@ -127,5 +130,15 @@ public class PalabunotGrid
             }
         }
         return index;
+    }
+
+    public void deletePabunot()
+    {
+        @Intention boolean[] x = new boolean[]
+        {
+            new File(PabunotMaker.pabunotDir + File.separator + getSerial() + File.separator + "Pabunot.ini").delete(),
+            new File(PabunotMaker.pabunotDir + File.separator + getSerial()).delete()
+        };
+        System.out.println(PabunotMaker.pabunotDir + File.separator + getSerial() + " " + x[0] + " " + x[1]);
     }
 }

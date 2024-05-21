@@ -1,12 +1,14 @@
 package pabunot;
 
+import pabunot.controls.MainMenuKey;
+import pabunot.controls.TitleTyping;
 import pabunot.graphics.Snow;
 import pabunot.graphics.TrailLabel;
-import pabunot.hardware.MainMenuKey;
-import pabunot.hardware.TitleTyping;
+import pabunot.interfaces.PabunotEnding;
 import pabunot.interfaces.PabunotMakingPane;
 import pabunot.interfaces.PabunotPickerPanel;
 import pabunot.interfaces.PabunotSection;
+import pabunot.interfaces.PrizePicked;
 import pabunot.interfaces.TrailTitlePanel;
 import pabunot.palabunutan.PalabunotGridPane;
 import pabunot.streamio.PabunotMaker;
@@ -15,11 +17,27 @@ import pabunot.util.Intention;
 import pabunot.util.Tip;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -58,11 +76,15 @@ import java.util.Random;
 public class
 InitialFrame extends JFrame implements Runnable
 {
+    public static int WIDTH;
+    public static int HEIGHT;
     public static double snowMultiplierX;
     public static double snowMultiplierY;
     private final JLabel start;
     private final JLabel settings;
     private final JLabel exit;
+    public PrizePicked prizePicked;
+    public PabunotEnding ended;
     private JLabel gitRepo;
     private final TrailLabel titleLabel;
     public static Image mainBackGround;
@@ -70,13 +92,12 @@ InitialFrame extends JFrame implements Runnable
     private static Image mainMiddleBackGround;
     public TitleTyping typeEvent;
     public PabunotSection section;
-    @Intention InitialFrame frame = this;
+    @Intention
+    InitialFrame frame = this;
     public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static GraphicsDevice gd = ge.getDefaultScreenDevice();
     public static DisplayMode dm = gd.getDisplayMode();
-    public static int refreshRate = dm.getRefreshRate() * 2;
-    public static int WIDTH;
-    public static int HEIGHT;
+    public static int refreshRate = dm.getRefreshRate() * 4;
     public static Snow snow;
     public static boolean isRunning = true;
     public JPanel mainMenu;
@@ -94,14 +115,12 @@ InitialFrame extends JFrame implements Runnable
     public TrailTitlePanel titlePanel;
     private boolean fpsUnlocked = false;
     private Cursor pabunotCursor;
-    private PabunotSection pabunotProcess;
     private MainMenuKey mainKey;
 
     public InitialFrame()
     {
         super();
-        WIDTH = (int) (gd.getDisplayMode().getWidth() / 1.25);
-        HEIGHT = (int) (gd.getDisplayMode().getHeight() / 1.25);
+        verifyDimensionFromScalingSystem();
         pabunotCursor = createCursor();
         initializeComponent();
 
@@ -114,7 +133,6 @@ InitialFrame extends JFrame implements Runnable
         mainMenu = createMainMenu();
         gitRepo = createGitLabel();
 
-        glassPane = createGlassPane();
         framesPerSecond = createFPS();
         titlePanel = new TrailTitlePanel(this);
 
@@ -126,7 +144,7 @@ InitialFrame extends JFrame implements Runnable
         tipLabel = new TrailLabel(">>><<<EED    le fiche    >>><<<EED", 20, InitialFrame.HEIGHT - 50, InitialFrame.HEIGHT - 40, TrailLabel.rainbow);
         titleLabel = new TrailLabel("Pabunot!", 150, (int) ((InitialFrame.HEIGHT * 0.3) - 10), (int) ((InitialFrame.HEIGHT * 0.3) + 10), TrailLabel.rainbow);
 
-        // bunot = new PalabunotGridPane(this, new PalabunotGrid(40, 40, "Hello World!", Theme.PINK_HEARTS));
+        // adding components
         addComponents();
 
         picker = new PabunotPickerPanel(this);
@@ -134,11 +152,21 @@ InitialFrame extends JFrame implements Runnable
         getContentPane().add(picker);
         getContentPane().add(mainMenu);
         getContentPane().add(titlePanel);
-        setGlassPane(glassPane);
 
-        validate();
-        glassPane.setVisible(true);
         setVisible(true);
+    }
+
+    private void verifyDimensionFromScalingSystem()
+    {
+        AffineTransform at = gd.getDefaultConfiguration().getDefaultTransform();
+
+        double scaleX = at.getScaleX();
+        double scaleY = at.getScaleY();
+
+        System.out.println("Scale factor X (width): " + scaleX);
+        System.out.println("Scale factor Y (height): " + scaleY);
+        WIDTH = (int) (gd.getDisplayMode().getWidth() / scaleX);
+        HEIGHT = (int) (gd.getDisplayMode().getHeight() / scaleY);
     }
 
     private JPanel createContentPanel()
@@ -147,15 +175,15 @@ InitialFrame extends JFrame implements Runnable
         {
             {
                 try {
+                    int width = (int) ((InitialFrame.WIDTH / 2) * 1.1);
+                    int height = (int) ((InitialFrame.HEIGHT / 2) * 1.1);
+
                     mainBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/hello.png")));
                     mainMiddleGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleGround.png")));
                     mainMiddleBackGround = ImageIO.read(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pabunotMiddleBackGround.png")));
-                    mainBackGround = mainBackGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.05),
-                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
-                    mainMiddleGround = mainMiddleGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.1),
-                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
-                    mainMiddleBackGround = mainMiddleBackGround.getScaledInstance((int) (InitialFrame.WIDTH * 1.1),
-                            (int) (InitialFrame.HEIGHT * 1.05), Image.SCALE_SMOOTH);
+                    mainBackGround = mainBackGround.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    mainMiddleGround = mainMiddleGround.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    mainMiddleBackGround = mainMiddleBackGround.getScaledInstance(width, height, Image.SCALE_SMOOTH);
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -307,15 +335,47 @@ InitialFrame extends JFrame implements Runnable
         return panel;
     }
 
+    /**
+     * The run method in the InitialFrame class is responsible for managing the game loop,
+     * which includes updating the frame rate, handling animations, and repainting the components.
+     *
+     * <p>Here's a breakdown of its functionality:</p>
+     *
+     * <ul>
+     * <li><b>Frame Rate Management:</b> Calculates the time passed between frames and adjusts
+     * the frame rate accordingly. This is controlled by the <code>tickPerSecond</code> which is
+     * derived from the refresh rate of the display device.</li>
+     *
+     * <li><b>Animation Handling:</b> Includes a loop that checks if the unprocessed seconds exceed the <code>tickPerSecond</code>.
+     * If true, it updates the animations by calling <code>waveComponents</code>, which likely animates certain UI components.</li>
+     *
+     * <li><b>Conditional Rendering:</b> The rendering of frames is conditional
+     * based on whether the frame rate is locked (<code>fpsUnlocked</code>).
+     * If unlocked, it continuously repaints the components to achieve smoother animations.</li>
+     *
+     * <li><b>FPS Counter Update:</b> Updates an FPS counter label every second if the frame rate
+     * is locked, providing feedback on the performance.</li>
+     *
+     * <li><b>Exception Handling:</b> Includes a try-catch block to
+     * handle any exceptions during the rendering process,
+     * ensuring the game loop continues running smoothly.</li>
+     * </ul>
+     *
+     * <p>This method effectively manages the timing and rendering necessary for a game loop,
+     * ensuring that the game updates consistently and responds to user interactions promptly.</p>
+     *
+     * @Citation:  <a href="https://www.youtube.com/watch?v=0zuVHDNYPQU&list=PL656DADE0DA25ADBB&index=2">[1] 3D Game Programming - Episode 2 - Game Loop | The Cherno on YouTube</a>
+     * <a href="https://www.youtube.com/watch?v=VpH33Uw-_0E&list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&index=2">[2] Game Loop and Key Input - How to Make a 2D Game in Java #2 | RyiSnow on YouTube</a>
+     * @Modifier: <a href="https://github.com/iid3rp">derp :3 | GitHub</a>
+     */
     @Override
     public void run()
     {
         int frames = 0;
         double unprocessedSeconds = 0;
         long prevTime = System.currentTimeMillis();
-        double secondsTick = ((1d / refreshRate));
+        double tickPerSecond = ((1d / refreshRate));
         int tickCount = 0;
-        boolean ticked = false;
         int seconds = 0;
 
         long lastSnowRenderTime = System.currentTimeMillis();
@@ -329,9 +389,9 @@ InitialFrame extends JFrame implements Runnable
 
             boolean snowRendered = false;
 
-            while(unprocessedSeconds > secondsTick)
+            while(unprocessedSeconds > tickPerSecond)
             {
-                unprocessedSeconds -= secondsTick;
+                unprocessedSeconds -= tickPerSecond;
                 tickCount++;
 
                 if(tickCount % refreshRate == 0)
@@ -343,15 +403,11 @@ InitialFrame extends JFrame implements Runnable
                     tipUpdate(seconds);
                     seconds++;
                 }
-                if ((double) (currentTime - lastSnowRenderTime) / 1_000 > snowRenderInterval)
+                if(!fpsUnlocked)
                 {
-                    snow.render(currentTime);
-                    lastSnowRenderTime = currentTime;
-                }
-                if(!fpsUnlocked) {
-                    try {
+                    try
+                    {
                         // waving trail labels...
-
                         waveComponents(currentTime);
 
                         // rendering process
@@ -403,6 +459,18 @@ InitialFrame extends JFrame implements Runnable
         {
             createPabunot.title.wave(currentTime);
         }
+        if(section != null)
+        {
+            section.prizeLabel.wave(currentTime);
+        }
+        if(prizePicked != null)
+        {
+            prizePicked.infoLabel.wave(currentTime);
+        }
+        if(ended != null)
+        {
+            ended.infoLabel.wave(currentTime);
+        }
     }
 
     private JPanel createMainMenu()
@@ -437,12 +505,17 @@ InitialFrame extends JFrame implements Runnable
 
     public static void render(Graphics g)
     {
-        g.drawImage(mainBackGround, snowX, snowY, null);
-        g.drawImage(snow.particle, 0, 0, null);
-        g.drawImage(mainMiddleBackGround, ((snowX * -1) - 48) / 2, ((snowY * -1) - 36) / 2, null);
-        g.drawImage(mainMiddleGround, (snowX * -1) - 48, (snowY * -1) - 36, null);
-        g.setColor(new Color(0, 0, 0, 90));
-        g.fillRect(0, 0, WIDTH, HEIGHT);
+        BufferedImage image = new BufferedImage(InitialFrame.WIDTH / 2, InitialFrame.HEIGHT / 2, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+        g2d.drawImage(mainBackGround, snowX, snowY, null);
+        g2d.drawImage((Image) snow.particle, 0, 0, (int) (InitialFrame.WIDTH / 1.5), (int) (InitialFrame.HEIGHT / 1.5), null);
+        g2d.drawImage(mainMiddleBackGround, ((snowX * -1) - 48) / 2, ((snowY * -1) - 36) / 2, null);
+        g2d.drawImage(mainMiddleGround, (snowX * -1) - 48, (snowY * -1) - 36, null);
+        g2d.setColor(new Color(0, 0, 0, 90));
+        g2d.fillRect(0, 0, WIDTH / 2, HEIGHT / 2);
+        g2d.dispose();
+
+        g.drawImage(image, 0, 0, InitialFrame.WIDTH, HEIGHT, null);
     }
 
     public static void parallaxMove(Point e)
@@ -450,8 +523,8 @@ InitialFrame extends JFrame implements Runnable
         snowX = (int) -((e.getX() * 48) / WIDTH);
         snowY = (int) -((e.getY() * 36) / HEIGHT);
 
-        snowMultiplierX = (int) ((e.getX() / WIDTH) * ((InitialFrame.WIDTH / refreshRate)) / 2);
-        snowMultiplierY = (int) ((e.getY() / HEIGHT) * ((InitialFrame.HEIGHT / refreshRate) / 2));
+        snowMultiplierX = (int) (((e.getX() / WIDTH) * ((InitialFrame.WIDTH / refreshRate)))) - (double) ((InitialFrame.WIDTH / refreshRate) / 2);
+        snowMultiplierY = (int) ((e.getY() / HEIGHT) * ((InitialFrame.HEIGHT / refreshRate)) / 2) + 1;
     }
 
     private void initializeComponent()
@@ -610,7 +683,9 @@ InitialFrame extends JFrame implements Runnable
     public void start()
     {
         Thread thread = new Thread(this);
+        Thread snowThread = new Thread(snow);
         thread.start();
+        snowThread.start();
     }
 
     public static void main(String[] a)

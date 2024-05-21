@@ -18,19 +18,20 @@ public class PabunotPrizeInterface extends Interface
     private PrizeList list;
     Prize prize;
     PabunotPrizeListPane pane;
+    public int width = 350;
+    public int height = 50;
 
     public PabunotPrizeInterface(Prize prize, PrizeList list, PabunotPrizeListPane pane)
     {
         super();
-        WIDTH = 200;
-        HEIGHT = 30;
         this.prize = prize;
         this.list = list;
         this.pane = pane;
         initializeComponent();
         title = createTitle(prize.getTitle());
-        prizeNumber = createPrizeNumber(0);
+        prizeNumber = createPrizeNumber(prize.getNumber());
         add(title);
+        add(prizeNumber);
     }
 
     private JLabel createPrizeNumber(int i)
@@ -38,35 +39,12 @@ public class PabunotPrizeInterface extends Interface
         JLabel label = new JLabel();
         label.setLayout(null);
         label.setText(i + "");
-        label.setFont(AndyBold.createFont(20));
-        label.setForeground(new Color(215, 39, 39));
+        label.setFont(AndyBold.createFont(30));
+        label.setForeground(new Color(255, 255, 255));
         FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText().toUpperCase());
-        int height = metrics.getHeight();
-        label.setBounds(WIDTH - width, 10, width, height);
-        label.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                list.remove(prize);
-                pane.restore();
-            }
-        });
-        return label;
-    }
-
-    private JLabel createDelete()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("delete");
-        label.setFont(AndyBold.createFont(20));
-        label.setForeground(new Color(215, 39, 39));
-        FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int width = metrics.stringWidth(label.getText().toUpperCase());
-        int height = metrics.getHeight();
-        label.setBounds(225, 10, width, height);
+        int w = metrics.stringWidth(label.getText().toUpperCase() + "pp");
+        int h = metrics.getHeight();
+        label.setBounds(width - w - 10, 10, w, h);
         label.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -84,7 +62,7 @@ public class PabunotPrizeInterface extends Interface
         JLabel label = new JLabel();
         label.setLayout(null);
         label.setText(title);
-        label.setFont(AndyBold.createFont(20));
+        label.setFont(AndyBold.createFont(30));
         label.setForeground(new Color(255, 255, 255));
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
@@ -93,37 +71,12 @@ public class PabunotPrizeInterface extends Interface
         return label;
     }
 
-    private JLabel createDescription(String desc)
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText(desc);
-        label.setFont(AndyBold.createFont(15));
-        label.setForeground(new Color(126, 126, 126));
-        FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int height = metrics.getHeight();
-        label.setBounds(5, 25, 230, height);
-        return label;
-    }
-
-    private JLabel createStuff()
-    {
-        JLabel label = new JLabel();
-        label.setLayout(null);
-        label.setText("");
-        label.setFont(AndyBold.createFont(23));
-        label.setForeground(Color.BLACK);
-        FontMetrics metrics = label.getFontMetrics(label.getFont());
-        int height = metrics.getHeight();
-        label.setBounds(0, 0, 0, 0);
-        return label;
-    }
-
     private void initializeComponent()
     {
         setLayout(null);
+        setOpaque(true);
         setBorder(new LineBorder(Color.white));
         setBackground(new Color(0x00_00_000, true));
-        setSize(new Dimension(WIDTH, HEIGHT));
+        setSize(new Dimension(width, height));
     }
 }

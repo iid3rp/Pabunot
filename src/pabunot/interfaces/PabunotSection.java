@@ -1,6 +1,7 @@
 package pabunot.interfaces;
 
 import pabunot.InitialFrame;
+import pabunot.graphics.TrailLabel;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.palabunutan.PalabunotGridPane;
 import pabunot.streamio.PabunotWriter;
@@ -17,8 +18,9 @@ public class PabunotSection extends JPanel
 {
     public PalabunotGridPane pane;
     public PalabunotGrid grid;
-    public JLabel randomize;
     private JLabel goBack;
+    public PabunotPrizeListPane prizeListPane;
+    public TrailLabel prizeLabel;
     private @Intention InitialFrame frame;
     private @Intention PabunotSection panel;
 
@@ -27,12 +29,20 @@ public class PabunotSection extends JPanel
         super();
         this.grid = grid;
         this.frame = frame;
+        prizeLabel = new TrailLabel("Prizes here", 60, 30, 100, 110, TrailLabel.rainbow);
         initializeComponent();
         pane = new PalabunotGridPane(frame, grid);
+        pane.setLocation((int) (InitialFrame.WIDTH * 0.4), (InitialFrame.HEIGHT - pane.getHeight()) / 2);
         goBack = createGoBack();
-        pane.setLocation((getWidth() - pane.getWidth()) / 2, (getHeight() - pane.getHeight()) / 2);
+        prizeListPane = new PabunotPrizeListPane(frame, grid.prizeList);
+
         add(pane);
+        add(prizeListPane);
         add(goBack);
+        for(JLabel label : prizeLabel)
+        {
+            add(label);
+        }
         // setting the prize here:
 
 
@@ -89,7 +99,7 @@ public class PabunotSection extends JPanel
 
     private void initializeComponent()
     {
-        setSize(new Dimension(1280, 720));
+        setSize(new Dimension(InitialFrame.WIDTH, InitialFrame.HEIGHT));
         setLayout(null);
         setOpaque(false);
         setLocation(0, 0);
@@ -153,5 +163,9 @@ public class PabunotSection extends JPanel
     }
 
     @Override
-    public void paintComponent(Graphics ignored) {}
+    public void paintComponent(Graphics g)
+    {
+        g.setColor(new Color(66, 32, 10, 90));
+        g.fillRect(0, 0, InitialFrame.WIDTH, InitialFrame.HEIGHT);
+    }
 }

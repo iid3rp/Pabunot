@@ -1,4 +1,4 @@
-package pabunot.hardware;
+package pabunot.controls;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

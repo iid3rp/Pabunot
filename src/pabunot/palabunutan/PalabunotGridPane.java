@@ -1,12 +1,20 @@
 package pabunot.palabunutan;
 
 import pabunot.InitialFrame;
+import pabunot.interfaces.PrizePicked;
+import pabunot.prize.Prize;
 import pabunot.util.Intention;
 import pabunot.util.RandomRange;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -19,6 +27,8 @@ public class PalabunotGridPane extends JPanel
     @Intention JPanel panel = this;
     private int x;
     private int y;
+    private int width;
+    private int height;
     private int paperLength;
     public PalabunotGrid grid;
 
@@ -31,7 +41,7 @@ public class PalabunotGridPane extends JPanel
         this.frame = frame;
         initializeComponent(x, y);
         addPapers(new RandomRange(1, x * y));
-        setLocation((1280 / 2) - (getWidth() / 2), (720 / 2) - (getHeight() / 2));
+        setLocation((InitialFrame.WIDTH  - getWidth()) / 2, (InitialFrame.HEIGHT - getHeight()) / 2);
 
     }
 
@@ -44,14 +54,13 @@ public class PalabunotGridPane extends JPanel
         this.grid = grid;
         initializeComponent(x, y);
         addPapers(grid);
-        setBounds((1280 / 2) - (getWidth() / 2), (720 / 2) - (getHeight() / 2), getWidth(), getHeight());
 
     }
 
     private void addPapers(PalabunotGrid grid)
     {
         try {
-            Palabunot.image = ImageIO.read(Palabunot.selectTheme(grid.theme));
+            Palabunot.image = ImageIO.read(Palabunot.selectTheme(grid.currentTheme));
         }
         catch(IOException e) {
             throw new RuntimeException(e);
@@ -79,8 +88,7 @@ public class PalabunotGridPane extends JPanel
 
     private void initializeComponent(int x, int y)
     {
-        paperLength = (600 / Math.max(x, y));
-        int width, height;
+        paperLength = (int) ((InitialFrame.HEIGHT * 0.8) / Math.max(x, y));
         {
             width = paperLength * x;
             height = paperLength * y;
@@ -88,7 +96,7 @@ public class PalabunotGridPane extends JPanel
         setLayout(null);
         setOpaque(false);
         setDoubleBuffered(true);
-        setSize(new Dimension(width, height));
+        setSize(width, height);
         setBackground(new Color(0, 0,0, 127));
         System.out.println("rendering...");
     }
@@ -153,11 +161,12 @@ public class PalabunotGridPane extends JPanel
             public void mouseClicked(MouseEvent e)
             {
                 if(label.isEnabled()) {
-                    System.out.println("You picked number " + value);
                     grid.grid.get(index).setPicked(true);
                     System.out.println(grid.getArrayNotPicked());
                     remove(label);
                     validateChecking();
+
+                    validatePalabunot(grid.grid.get(index));
                 }
             }
 
@@ -188,6 +197,35 @@ public class PalabunotGridPane extends JPanel
             }
         });
         return label;
+    }
+
+    private void validatePalabunot(Palabunot palabunot)
+    {
+        Prize reference = null;
+        for(Prize p : grid.prizeList)
+        {
+            if(p.getNumber() == palabunot.getValue())
+            {
+                frame.prizePicked = new PrizePicked(frame, grid, palabunot, p);
+                System.out.println("YOU WON");
+                reference = p;
+            }
+        }
+        if(reference != null) 
+        {
+            grid.prizeList.remove(reference);
+            frame.section.prizeListPane.restore();
+        }
+        if(frame.prizePicked == null)
+        {
+            frame.prizePicked = new PrizePicked(frame, grid, palabunot);
+            System.out.println("YOU LOST");
+        }
+
+        frame.section.setVisible(false);
+        frame.contentPanel.add(frame.prizePicked);
+        frame.prizePicked.setVisible(true);
+        frame.repaint();
     }
 
     private void validateChecking()

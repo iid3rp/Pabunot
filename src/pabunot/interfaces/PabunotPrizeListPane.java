@@ -13,11 +13,11 @@ import java.awt.event.MouseMotionAdapter;
 
 public class PabunotPrizeListPane extends JScrollPane
 {
-    private static final int width = PabunotPrizeInterface.WIDTH;
-    private static final int height = PabunotPrizeInterface.HEIGHT;
     public PrizeList list;
     private JPanel container;
     private int size;
+    private int width = 350;
+    private int height = 50;
     private boolean nothing;
     @Intention public InitialFrame frame;
 
@@ -29,24 +29,25 @@ public class PabunotPrizeListPane extends JScrollPane
      * REFER THE CONSTRUCTOR BELOW
      *</editor-fold>
      * */
-    public PabunotPrizeListPane(InitialFrame frame)
+    public PabunotPrizeListPane(InitialFrame frame, PrizeList list)
     {
         super();
         size = 0;
-        list = new PrizeList();
+        this.list = list;
         this.frame = frame;
         initializeComponent(frame);
-        container.setSize(new Dimension(width, ((height) * list.size()) + list.size()));
-        container.setPreferredSize(new Dimension(width, ((height) * list.size()) + size));
+        container.setSize(new Dimension(width, height * (list.size() - 1)));
+        container.setPreferredSize(new Dimension(width, height * (list.size() - 1)));
         // add components into the container here :3
         addComponents();
 
         setViewportView(container);
         getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
         getViewport().setOpaque(false);
+        setLocation(40, 200);
         getVerticalScrollBar().setVisible(false);
         getHorizontalScrollBar().setVisible(false);
-        setSize(new Dimension(width, 300));
+        setSize(new Dimension(width, InitialFrame.HEIGHT - 250));
         setDoubleBuffered(true);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -87,9 +88,9 @@ public class PabunotPrizeListPane extends JScrollPane
         {
             for(Prize p : list)
             {
-                PabunotPrizeInterface bankInterface = new PabunotPrizeInterface(p, list, this);
-                bankInterface.setBounds(0, (PrizeInterface.HEIGHT * index++), bankInterface.getWidth(), bankInterface.getHeight());
-                container.add(bankInterface);
+                PabunotPrizeInterface prizeInterface = new PabunotPrizeInterface(p, list, this);
+                prizeInterface.setBounds(0, (prizeInterface.height * index++), prizeInterface.getWidth(), prizeInterface.getHeight());
+                container.add(prizeInterface);
             }
             nothing = false;
             container.repaint();
@@ -100,8 +101,8 @@ public class PabunotPrizeListPane extends JScrollPane
     public void restore()
     {
         container.removeAll();
-        container.setSize(new Dimension(width, (PrizeInterface.HEIGHT * list.size()) + (list. size())));
-        container.setPreferredSize(new Dimension(width, (PrizeInterface.HEIGHT * list.size()) + (list.size())));
+        container.setSize(new Dimension(width, PrizeInterface.HEIGHT * list.size()));
+        container.setPreferredSize(new Dimension(width, PrizeInterface.HEIGHT * list.size()));
         // add the components to the panel to be put into the scrollPane...
         addComponents();
         setViewportView(container);
