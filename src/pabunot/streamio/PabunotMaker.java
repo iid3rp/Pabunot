@@ -1,5 +1,6 @@
 package pabunot.streamio;
 
+import pabunot.InitialFrame;
 import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
@@ -49,6 +50,27 @@ public class PabunotMaker
             sb.append(i == 0 ? r.nextInt(9) + 1 : r.nextInt(10));
         }
         return Long.parseLong(sb.toString());
+    }
+
+    public static void setNewInitialization()
+    {
+        File file = new File(pabunotDir + File.separator + "Settings.ini");
+        if(!file.exists())
+        {
+            try {
+                FileWriter writer = new FileWriter(file);
+                writer.write("Settings\n");
+                writer.write("fpsCountVisibility:false\n");
+                writer.write("parallax:true\n");
+                writer.write("fpsUnlocker:false\n");
+                writer.write("fpsFrameCap:" + InitialFrame.refreshRate + "\n");
+                writer.write("graphicsQuality:Medium");
+                writer.close();
+            }
+            catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**

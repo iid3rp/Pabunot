@@ -1277,8 +1277,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                InitialFrame.snowX = -24;
-                InitialFrame.snowY = -18;
+                InitialFrame.parallaxX = -24;
+                InitialFrame.parallaxY = -18;
             }
         });
 

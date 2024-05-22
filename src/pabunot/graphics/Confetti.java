@@ -37,10 +37,10 @@ public class Confetti
     {
         r = new Random();
         color = colors[currentFrameIteration % colors.length];
-        position = new Point(r.nextInt(InitialFrame.WIDTH), -10);
+        position = new Point(r.nextInt((int) (InitialFrame.WIDTH / InitialFrame.scaleFactor)), -10);
         speedX = (currentFrameIteration % 10) - 5;
         speedY = (currentFrameIteration % 6) + 2;
-        length = (int) (7 *  Math.abs(speedY / 1.25));
+        length = (int) (7 *  Math.abs(speedY / 2));
         currentFrameIteration++;
     }
 
@@ -48,10 +48,10 @@ public class Confetti
     {
         r = new Random();
         color = colors[currentFrameIteration % colors.length];
-        position = new Point(r.nextInt(InitialFrame.WIDTH), metric);
+        position = new Point(r.nextInt((int) (InitialFrame.WIDTH / InitialFrame.scaleFactor)), metric);
         speedX = (currentFrameIteration % 10) - 5;
         speedY = (currentFrameIteration % 6) + 2;
-        length = (int) (7 * Math.abs(speedY / 1.25));
+        length = (int) (7 * Math.abs(speedY / 2));
         currentFrameIteration++;
     }
 

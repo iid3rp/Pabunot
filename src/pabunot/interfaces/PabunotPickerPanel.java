@@ -25,7 +25,8 @@ public class PabunotPickerPanel extends JPanel
 
     JLabel goBack;
     @Intention InitialFrame frame;
-    @Intention PabunotPickerPanel picker = this;
+    @Intention
+    PabunotPickerPanel picker = this;
     JLabel addLabel;
     ArrayList<PabunotInterface> list;
 
@@ -89,7 +90,7 @@ public class PabunotPickerPanel extends JPanel
         return label;
     }
 
-    <E> ArrayList<PabunotInterface> searchPabunot()
+    private <L> ArrayList<PabunotInterface> searchPabunot()
     {
         ArrayList<PabunotInterface> reference = new ArrayList<>();
         File directory = new File(PabunotMaker.pabunotDir);
@@ -145,51 +146,16 @@ public class PabunotPickerPanel extends JPanel
         setSize(new Dimension(InitialFrame.WIDTH, InitialFrame.HEIGHT));
         addMouseListener(new MouseAdapter()
         {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                frame.requestFocus();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    InitialFrame.isDragging = true;
-                    InitialFrame.offset = e.getPoint();
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                InitialFrame.isDragging = false;
-            }
 
             @Override
             public void mouseExited(MouseEvent e)
             {
-                InitialFrame.snowX = -24;
-                InitialFrame.snowY = -18;
+                InitialFrame.parallaxX = -24;
+                InitialFrame.parallaxY = -18;
             }
         });
         addMouseMotionListener(new MouseMotionAdapter()
         {
-            @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                if (InitialFrame.isDragging)
-                {
-                    Point currentMouse = e.getLocationOnScreen();
-
-                    int deltaX = currentMouse.x - InitialFrame.offset.x;
-                    int deltaY = currentMouse.y - InitialFrame.offset.y;
-
-                    frame.setLocation(deltaX, deltaY);
-                }
-            }
-
             @Override
             public void mouseMoved(MouseEvent e)
             {

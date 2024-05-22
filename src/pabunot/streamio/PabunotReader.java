@@ -3,6 +3,7 @@ package pabunot.streamio;
 
 import pabunot.InitialFrame;
 import pabunot.interfaces.PabunotSection;
+import pabunot.interfaces.SettingsPane;
 import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGrid;
 import pabunot.prize.Prize;
@@ -36,6 +37,40 @@ public class PabunotReader
      * Constructs a `PabunotReader` object. (Default constructor with no arguments)
      */
     public PabunotReader() {}
+
+    public static void readInitialization()
+    {
+        File file = new File(PabunotMaker.pabunotDir + File.separator + "Settings.ini");
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] setting = line.split(":");
+                if (setting.length == 2) {
+                    switch (setting[0].trim()) {
+                        case "fpsCountVisibility":
+                            SettingsPane.fpsCountVisibility = Boolean.parseBoolean(setting[1].trim());
+                            break;
+                        case "parallax":
+                            SettingsPane.parallax = Boolean.parseBoolean(setting[1].trim());
+                            break;
+                        case "fpsUnlocker":
+                            SettingsPane.fpsUnlocker = Boolean.parseBoolean(setting[1].trim());
+                            break;
+                        case "fpsFrameCap":
+                            InitialFrame.refreshRate = Integer.parseInt(setting[1].trim());
+                            break;
+                        case "graphicsQuality":
+                            SettingsPane.graphicsQuality = setting[1].trim();
+                            break;
+                    }
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Reads data from a specified file and creates a {@code PabunotSection} with a {@code PabunotGrid} containing prizes and pabunots.

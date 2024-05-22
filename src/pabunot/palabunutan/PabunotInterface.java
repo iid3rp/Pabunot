@@ -61,7 +61,7 @@ public class PabunotInterface extends Interface
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
 
-        label.setBounds(10, 65, width, height);
+        label.setBounds(15, 70, width, height);
         return label;
     }
 
@@ -153,7 +153,7 @@ public class PabunotInterface extends Interface
         int width = metrics.stringWidth(s.toUpperCase());
         int height = metrics.getHeight();
 
-        label.setBounds(10, 10, width, height);
+        label.setBounds(15, 15, width, height);
         return label;
     }
 

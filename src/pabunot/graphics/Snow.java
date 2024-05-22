@@ -3,7 +3,7 @@ package pabunot.graphics;
 import pabunot.InitialFrame;
 import pabunot.util.Intention;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,7 +37,8 @@ public class Snow implements Runnable
 
     public Snow()
     {
-        particle = new BufferedImage(InitialFrame.WIDTH / 2, InitialFrame.HEIGHT / 2, BufferedImage.TYPE_INT_ARGB);
+        particle = new BufferedImage((int) (InitialFrame.WIDTH / InitialFrame.scaleFactor),
+                (int) (InitialFrame.HEIGHT / InitialFrame.scaleFactor), BufferedImage.TYPE_INT_ARGB);
         random = new Random();
         confettiList = new ArrayList<>();
         for(int i = 0; i < 800; i++)
@@ -49,7 +50,8 @@ public class Snow implements Runnable
     @Intention(design = "Confetti when won")
     public Snow(int metric)
     {
-        particle = new BufferedImage(InitialFrame.WIDTH / 2, InitialFrame.HEIGHT / 2, BufferedImage.TYPE_INT_ARGB);
+        particle = new BufferedImage((int) (InitialFrame.WIDTH / InitialFrame.scaleFactor),
+                (int) (InitialFrame.HEIGHT / InitialFrame.scaleFactor), BufferedImage.TYPE_INT_ARGB);
         random = new Random();
         confettiList = new ArrayList<>();
         for(int i = 0; i < 800; i++)
@@ -60,12 +62,13 @@ public class Snow implements Runnable
 
     public void render(long currentTime)
     {
-        particle = new BufferedImage(InitialFrame.WIDTH, InitialFrame.HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = particle.createGraphics();
+        BufferedImage reference = new BufferedImage(InitialFrame.WIDTH, InitialFrame.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = reference.createGraphics();
         for (Confetti c : confettiList)
         {
             g2d.setColor(c.color);
-            g2d.fillRect(c.position.x + 40, c.position.y, (int) (c.length / 2.3), (int) (c.length / 2.3)); // Draw confetti
+            g2d.fillRect(c.position.x + 40, c.position.y, (int) (c.length / InitialFrame.scaleFactor),
+                    (int) (c.length / InitialFrame.scaleFactor)); // Draw confetti
         }
         if(currentTime % 50 == 0)
         {
@@ -73,6 +76,7 @@ public class Snow implements Runnable
             confettiList.removeFirst();
         }
         g2d.dispose();
+        particle = reference;
         moveSnowflakes();
     }
 
@@ -82,8 +86,8 @@ public class Snow implements Runnable
         {
             if(c.position.y + c.speedY <= InitialFrame.HEIGHT)
             {
-                c.position.translate((int) ((c.speedX + InitialFrame.snowMultiplierX) / 2),
-                        (int) (c.speedY + InitialFrame.snowMultiplierY) / 2); // Move snowflake down
+                c.position.translate((int) ((c.speedX + InitialFrame.snowMultiplierX / InitialFrame.scaleFactor) / InitialFrame.scaleFactor),
+                        (int) ((int) (c.speedY + InitialFrame.snowMultiplierY) / InitialFrame.scaleFactor)); // Move snowflake down
             }
         }
     }
@@ -94,7 +98,8 @@ public class Snow implements Runnable
         int frames = 0;
         double delta = 0;
         long prevTime = System.nanoTime();
-        double tickPerSecond = 1_000_000_000d / 60;
+        double tickPerSecond = 1_000_000_000d / 60; // renders at 60 fps for consistency,
+        // regardless of the frames in the current render stream of {@code InitialFrame} class
         long currentTime;
 
         while(isRunning)

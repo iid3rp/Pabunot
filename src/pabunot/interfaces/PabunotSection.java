@@ -112,29 +112,10 @@ public class PabunotSection extends JPanel
             }
 
             @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    InitialFrame.isDragging = true;
-                    InitialFrame.offset = e.getPoint();
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    InitialFrame.isDragging = false;
-                }
-            }
-
-            @Override
             public void mouseExited(MouseEvent e)
             {
-                InitialFrame.snowX = -24;
-                InitialFrame.snowY = -18;
+                InitialFrame.parallaxX = -24;
+                InitialFrame.parallaxY = -18;
             }
         });
 
