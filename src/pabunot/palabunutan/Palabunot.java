@@ -1,12 +1,13 @@
 package pabunot.palabunutan;
 
-import pabunot.util.Theme;
 import pabunot.InitialFrame;
+import pabunot.util.Intention;
+import pabunot.util.Theme;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.File;
+import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class Palabunot
@@ -50,24 +51,24 @@ public class Palabunot
         this.isPicked = isPicked;
     }
 
-    public static File selectTheme(Theme theme)
-    {
-         return switch(theme) {
-            case RED_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/red.png")).getPath());
-            case ORANGE_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/orange.png")).getPath());
-            case YELLOW_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/yellow.png")).getPath());
-            case GREEN_HEARTS ->  new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/green.png")).getPath());
-            case BLUE_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/blue.png")).getPath());
-            case TEAL_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/teal.png")).getPath());
-            case PURPLE_HEARTS ->  new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/purple.png")).getPath());
-            case PINK_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/pink.png")).getPath());
-            case GRAY_HEARTS ->  new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/gray.png")).getPath());
-            case RAINBOW_HEARTS -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/rainbow.png")).getPath());
-            case WOOD -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/wood.png")).getPath());
-            case ORANGE_FRUIT -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/orangeFruit.png")).getPath());
-            case CLOVER -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/clover.png")).getPath());
-            case LUCKY -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/lucky.png")).getPath());
-            case SUNFLOWER -> new File(Objects.requireNonNull(InitialFrame.class.getResource("Resources/sunflower.png")).getPath());
+    @Intention(design = "Using InputStream than file due to URI to File weak reading..")
+    public static InputStream selectTheme(Theme theme) {
+        return switch(theme) {
+            case RED_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/red.png"));
+            case ORANGE_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/orange.png"));
+            case YELLOW_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/yellow.png"));
+            case GREEN_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/green.png"));
+            case BLUE_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/blue.png"));
+            case TEAL_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/teal.png"));
+            case PURPLE_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/purple.png"));
+            case PINK_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/pink.png"));
+            case GRAY_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/gray.png"));
+            case RAINBOW_HEARTS -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/rainbow.png"));
+            case WOOD -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/wood.png"));
+            case ORANGE_FRUIT -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/orangeFruit.png"));
+            case CLOVER -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/clover.png"));
+            case LUCKY -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/lucky.png"));
+            case SUNFLOWER -> Objects.requireNonNull(InitialFrame.class.getResourceAsStream("Resources/sunflower.png"));
         };
     }
 

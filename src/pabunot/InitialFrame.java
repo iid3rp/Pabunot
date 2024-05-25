@@ -989,13 +989,18 @@ InitialFrame extends JFrame implements Runnable
     public static void main(String[] a)
     {
         System.out.println("hello World!");
-        SwingUtilities.invokeLater(() ->
-        {
-            @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
-            PabunotMaker.setNewInitialization();
-            PabunotReader.readInitialization();
-            InitialFrame frame = new InitialFrame();
-            frame.start();
-        });
+        try {
+            SwingUtilities.invokeLater(() ->
+            {
+                @Intention var x = new File(PabunotMaker.pabunotDir).mkdirs();
+                PabunotMaker.setNewInitialization();
+                PabunotReader.readInitialization();
+                InitialFrame frame = new InitialFrame();
+                frame.start();
+            });
+        }
+        catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
