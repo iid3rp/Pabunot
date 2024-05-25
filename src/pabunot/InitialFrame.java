@@ -364,13 +364,12 @@ InitialFrame extends JFrame implements Runnable
         Image i;
         BufferedImage img;
         try {
-            i = ImageIO.read(new File(
+            i = ImageIO.read(
                      Objects.requireNonNull(
                              InitialFrame.class.getResource(
                                      "Resources/pabunotCursorNew.png")
-                     ).getPath()
-                )
-            );
+                     )
+                );
             i = i.getScaledInstance(100, 100, Image.SCALE_FAST);
             img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = img.createGraphics();

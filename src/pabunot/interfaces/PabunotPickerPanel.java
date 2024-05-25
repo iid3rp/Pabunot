@@ -28,7 +28,8 @@ public class PabunotPickerPanel extends JPanel
     public PabunotScrollPane pane;
 
     JLabel goBack;
-    @Intention InitialFrame frame;
+    @Intention
+    InitialFrame frame;
     @Intention
     PabunotPickerPanel picker = this;
     JLabel addLabel;
@@ -42,9 +43,9 @@ public class PabunotPickerPanel extends JPanel
         list = searchPabunot();
         title = new TrailLabel("Select A Spot for a Pabunot!", 50, 20, 30, TrailLabel.rainbow);
         pane = new PabunotScrollPane(list);
-        pane.setLocation((getWidth() - pane.getWidth())/2, 100);
+        pane.setLocation((getWidth() - pane.getWidth()) / 2, 100);
         pane.restore();
-        goBack= createGoBack();
+        goBack = createGoBack();
         addLabel = createAddLabel();
         addComponents();
     }
@@ -101,29 +102,24 @@ public class PabunotPickerPanel extends JPanel
         // Filter directories based on the searchPattern
         File[] matchingFolders = directory.listFiles((dir, name) -> new File(dir, name).isDirectory());
 
-        if (matchingFolders == null)
-        {
+        if(matchingFolders == null) {
             System.out.println("empty");
             return new ArrayList<>();
         }
 
-        String[] folderNames = matchingFolders.length == 0? null : new String[matchingFolders.length];
-        for (int i = 0; i < matchingFolders.length; i++)
-        {
+        String[] folderNames = matchingFolders.length == 0 ? null : new String[matchingFolders.length];
+        for(int i = 0; i < matchingFolders.length; i++) {
             folderNames[i] = matchingFolders[i].getPath();
             System.out.println(folderNames[i]);
         }
 
-        if(folderNames != null)
-        {
+        if(folderNames != null) {
             System.out.println("its not empty");
-            for(String s : folderNames)
-            {
+            for(String s : folderNames) {
                 PalabunotGrid pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
 
                 System.out.println(s + File.separator + "Pabunot.ini");
-                if(pbn != null)
-                {
+                if(pbn != null) {
                     PabunotInterface inter = new PabunotInterface(frame, pbn);
                     reference.add(inter);
                 }
@@ -134,8 +130,7 @@ public class PabunotPickerPanel extends JPanel
 
     private void addComponents()
     {
-        for(JLabel label : title)
-        {
+        for(JLabel label : title) {
             add(label);
         }
         add(pane);

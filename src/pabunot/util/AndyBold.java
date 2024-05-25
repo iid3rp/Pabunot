@@ -4,8 +4,8 @@ import pabunot.InitialFrame;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 /**
@@ -29,17 +29,25 @@ public class AndyBold
     public static Font font;
 
     /**
-     * Creates and returns a {@link Font} object for the AndyBold font with the specified size.
-     * If the font has not been loaded before, it loads it from the file system.
+     * Creates and returns a {@link Font} object for the AndyBold
+     * font with the specified size.
+     * If the font has not been loaded before, it loads it from the
+     * file system.
      *
      * @param size the size of the font
      * @return the {@link Font} object set to the specified size
-     * @throws RuntimeException if there is an error loading the font file, including missing file or format issues
+     * @throws RuntimeException if there is an error loading the font file,
+     * including missing file or format issues
      */
     public static Font createFont(float size)
     {
+
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File((Objects.requireNonNull(InitialFrame.class.getResource("Resources/Pabunot.AndyBold.ttf")).getPath())));
+            @Intention(design = "Intended to use InputStream due to weak URI to File parsing...")
+            InputStream stream = AndyBold.class.getResourceAsStream("Pabunot.AndyBold.ttf");
+            font = Font.createFont(Font.TRUETYPE_FONT,
+                    Objects.requireNonNull(stream));
+            stream.close();
         }
         catch(FontFormatException | IOException e) {
             throw new RuntimeException(e);

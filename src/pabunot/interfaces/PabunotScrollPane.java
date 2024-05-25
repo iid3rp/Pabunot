@@ -111,7 +111,7 @@ public class PabunotScrollPane extends JScrollPane
                              "Dimension: " + "\"" + p.pb.getX() + " x " + p.pb.getY() + "\"          " +
                             "Theme: " + p.getThemeString() + "          " +
                             "Prizes: " + (p.pb.prizeList != null ? p.pb.prizeList.size() : 0) + "          " +
-                            "Pabunot left: " + p.pb.getArrayNotPicked());;
+                            "Pabunot left: " + p.pb.getArrayNotPicked());
         }
     }
 }

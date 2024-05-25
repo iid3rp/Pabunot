@@ -183,14 +183,17 @@ public class TrailTitlePanel extends JPanel
 
     public void cont()
     {
-        setVisible(false);
-        resetTitle();
-        frame.createPabunot = new PabunotMakingPane(frame, frame.typeEvent.string);
-        frame.getContentPane().add(frame.createPabunot);
-        frame.createPabunot.setVisible(true);
-        frame.getContentPane().repaint();
-        frame.removeKeyListener(frame.typeEvent);
-        frame.typeEvent.string = "";
+        SwingUtilities.invokeLater(() ->
+        {
+            setVisible(false);
+            resetTitle();
+            frame.createPabunot = new PabunotMakingPane(frame, frame.typeEvent.string);
+            frame.getContentPane().add(frame.createPabunot);
+            frame.createPabunot.setVisible(true);
+            frame.getContentPane().repaint();
+            frame.removeKeyListener(frame.typeEvent);
+            frame.typeEvent.string = "";
+        });
     }
 
     public void back()
