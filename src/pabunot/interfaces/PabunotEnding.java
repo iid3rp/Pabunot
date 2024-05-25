@@ -12,8 +12,10 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class PabunotEnding extends JPanel
 {
@@ -86,13 +88,8 @@ public class PabunotEnding extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                frame.contentPanel.remove(panel);
+                InitialFrame.contentPanel.remove(panel);
                 frame.mainMenu.setVisible(true);
-                grid.deletePabunot();
-
-                frame.contentPanel.remove(frame.picker);
-                frame.picker = new PabunotPickerPanel(frame);
-                frame.contentPanel.add(frame.picker);
 
                 PrizePicked.snow.isRunning = false;
                 frame.prizePicked = null;
@@ -107,7 +104,11 @@ public class PabunotEnding extends JPanel
         g.fillRect(0, 0 , getWidth(), getHeight());
         if(PrizePicked.snow != null)
         {
-            g.drawImage(PrizePicked.snow.particle, 0 ,0, getWidth(), getHeight(), null);
+            BufferedImage x = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = x.createGraphics();
+            g2d.drawImage(PrizePicked.snow.particle, 0, 0, (int) (getWidth() * InitialFrame.scaleFactor), (int) (getHeight() * InitialFrame.scaleFactor), null);
+            g2d.dispose();
+            g.drawImage(x, 0 ,0, getWidth(), getHeight(), null);
         }
     }
 }

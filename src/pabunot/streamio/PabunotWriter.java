@@ -1,5 +1,7 @@
 package pabunot.streamio;
 
+import pabunot.InitialFrame;
+import pabunot.interfaces.SettingsPane;
 import pabunot.palabunutan.Palabunot;
 import pabunot.palabunutan.PalabunotGridPane;
 import pabunot.prize.Prize;
@@ -54,5 +56,26 @@ public class PabunotWriter
             writer.close();
         }
         catch(IOException ignored) {}
+    }
+
+    public static void writeInitialization()
+    {
+        File file = new File(PabunotMaker.pabunotDir + File.separator + "Settings.ini");
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write("Settings\n");
+            writer.write("fpsCountVisibility:" + SettingsPane.fpsCountVisibility +"\n");
+            writer.write("parallax:" + SettingsPane.parallax + "\n");
+            writer.write("fpsUnlocker:" + SettingsPane.fpsUnlock + "\n");
+            writer.write("fpsFrameCap:" + InitialFrame.refreshRate + "\n");
+            writer.write("graphicsQuality:" + SettingsPane.graphicsQuality + "\n");
+            writer.write("trailWave:" + SettingsPane.waveTrail + "\n");
+            writer.write("snowVisible:" + SettingsPane.snowVisible + "\n");
+            writer.close();
+        }
+        catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

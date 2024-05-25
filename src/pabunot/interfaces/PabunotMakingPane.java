@@ -44,7 +44,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-import static java.awt.Color.*;
 import static pabunot.util.AndyBold.createFont;
 
 /**
@@ -53,18 +52,22 @@ import static pabunot.util.AndyBold.createFont;
  * This panel allows users to set various parameters for the game,
  * including the dimensions of the grid, theme selection,
  * and prize management.
- * It provides interactive components like text fields, buttons, and combo boxes to customize the game setup.
+ * It provides interactive components like text fields, buttons,
+ * and combo boxes to customize the game setup.
  *
  * <p>Key features include:</p>
  * <ul>
- *   <li>Setting grid dimensions with interactive increment and decrement buttons.</li>
+ *   <li>Setting grid dimensions with interactive increment and
+ *   decrement buttons.</li>
  *   <li>Choosing a theme from a predefined list of themes.</li>
  *   <li>Adding prizes with titles and descriptions.</li>
  *   <li>Starting the game with the configured settings.</li>
  * </ul>
  *
- * <p>This class extensively uses {@link TrailLabel} for displaying animated text, and interacts with {@link InitialFrame}
- * to handle user interactions and visual feedback. It also integrates with {@link PrizeListPane} for managing a list of prizes.</p>
+ * <p>This class extensively uses {@link TrailLabel} for displaying animated text,
+ * and interacts with {@link InitialFrame}
+ * to handle user interactions and visual feedback. It also integrates with {@link PrizeListPane}
+ * for managing a list of prizes.</p>
  *
  * @see JPanel
  * @see TrailLabel
@@ -115,7 +118,13 @@ public class PabunotMakingPane extends JPanel
         this.frame = frame;
         theme = Theme.RED_HEARTS;
         initializeComponent();
-        title = new TrailLabel("Title: " + titleString, 30, 150, 15, 25, TrailLabel.rainbow);
+        title = new TrailLabel(
+                "Title: " + titleString,
+                30,
+                150,
+                15,
+                25,
+                TrailLabel.rainbow);
 
         pabunotTitle = titleString;
         matrixPanel = createMatrixPanel();
@@ -158,7 +167,7 @@ public class PabunotMakingPane extends JPanel
                 "Pabunot Content: 100<br>" +
                 "Chances when getting a prize: unidentified...<html>");
         label.setFont(createFont(20));
-        label.setForeground(gray);
+        label.setForeground(Color.gray);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight() * 2;
@@ -207,14 +216,17 @@ public class PabunotMakingPane extends JPanel
             public void paintComponent(Graphics g)
             {
                 g.setColor(new Color(0, 0, 0, 90));
-                g.fillRect(0, 0, (int) (InitialFrame.HEIGHT * 0.9), InitialFrame.HEIGHT);
+                g.fillRect(0, 0, (int) (InitialFrame.HEIGHT * 0.9),
+                        InitialFrame.HEIGHT);
             }
         };
-        panel.setSize(new Dimension((int) (InitialFrame.HEIGHT * 0.9), InitialFrame.HEIGHT));
+        panel.setSize(new Dimension((int) (InitialFrame.HEIGHT * 0.9),
+                InitialFrame.HEIGHT));
         panel.setDoubleBuffered(true);
         panel.setOpaque(false);
         panel.setLayout(null);
-        panel.setLocation(InitialFrame.WIDTH - panel.getWidth(), (InitialFrame.HEIGHT - panel.getHeight()) / 2);
+        panel.setLocation(InitialFrame.WIDTH - panel.getWidth(),
+                (InitialFrame.HEIGHT - panel.getHeight()) / 2);
         panel.setVisible(true);
         return panel;
     }
@@ -237,7 +249,7 @@ public class PabunotMakingPane extends JPanel
         check.setText("Apply Both");
         check.setFont(createFont(20));
         check.setOpaque(false);
-        check.setForeground(white);
+        check.setForeground(Color.white);
         FontMetrics metrics = check.getFontMetrics(check.getFont());
         int width = metrics.stringWidth(check.getText());
         int height = metrics.getHeight();
@@ -247,7 +259,8 @@ public class PabunotMakingPane extends JPanel
         @Override
         public void mouseMoved(MouseEvent e)
         {
-            InitialFrame.parallaxMove(new Point(check.getX() + e.getX(),  check.getY() + e.getY()));
+            InitialFrame.parallaxMove(new Point(check.getX() + e.getX(),
+                    check.getY() + e.getY()));
         }
     });
         return check;
@@ -259,7 +272,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("+");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
@@ -286,7 +299,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -294,7 +307,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),
+                        label.getY() + e.getY()));
             }
         });
         return label;
@@ -302,7 +316,9 @@ public class PabunotMakingPane extends JPanel
 
     private void setContent()
     {
-        String prizeChance = pane.list != null? (((float) pane.list.size()) / (x * y)) * 100 + "% per pabunot" : "Undefined...";
+        String prizeChance = pane.list != null?
+                (((float) pane.list.size()) / (x * y)) * 100 + "% per pabunot"
+                : "Undefined...";
         contents.setText("<html>" +
                         "Pabunot Content: " + x * y + "<br>" +
                         "Chances when getting a prize: " + prizeChance + "<html>");
@@ -318,7 +334,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("+");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
@@ -346,7 +362,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -354,7 +370,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),
+                        label.getY() + e.getY()));
             }
         });
         return label;
@@ -366,7 +383,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("-");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
@@ -394,7 +411,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -402,7 +419,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),
+                        label.getY() + e.getY()));
             }
         });
         return label;
@@ -413,7 +431,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("-");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
@@ -441,7 +459,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -449,7 +467,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),
+                        label.getY() + e.getY()));
             }
         });
         return label;
@@ -461,7 +480,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("Pabunot Matrix Preview");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
@@ -475,7 +494,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("Width");
         label.setFont(createFont(25));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
@@ -521,7 +540,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(e.getX() + label.getX(), e.getY() + label.getY()));
+                InitialFrame.parallaxMove(new Point(e.getX() + label.getX(),
+                        e.getY() + label.getY()));
             }
         });
         return label;
@@ -539,7 +559,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("Save Pabunot");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
@@ -563,13 +583,13 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseEntered(MouseEvent e)
             {
-                label.setForeground(yellow);
+                label.setForeground(Color.yellow);
             }
 
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -577,7 +597,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(e.getX() + label.getX(), e.getY() + label.getY()));
+                InitialFrame.parallaxMove(new Point(e.getX() + label.getX(),
+                        e.getY() + label.getY()));
             }
         });
         return label;
@@ -589,7 +610,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("Height");
         label.setFont(createFont(25));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
         int height = metrics.getHeight();
@@ -623,7 +644,7 @@ public class PabunotMakingPane extends JPanel
                             if(n >= 5)
                             {
                                 x = Integer.parseInt(field.getText());
-                                field.setForeground(white);
+                                field.setForeground(Color.white);
                                 setContent();
                             }
                         }
@@ -649,7 +670,7 @@ public class PabunotMakingPane extends JPanel
                             if(n >= 5)
                             {
                                 x = Integer.parseInt(field.getText());
-                                field.setForeground(white);
+                                field.setForeground(Color.white);
                             }
                         }
                         else
@@ -675,7 +696,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),
+                        field.getY() + e.getY()));
             }
         });
 
@@ -723,7 +745,7 @@ public class PabunotMakingPane extends JPanel
                             if(n >= 5)
                             {
                                 y = Integer.parseInt(field.getText());
-                                field.setForeground(white);
+                                field.setForeground(Color.white);
                             }
                         }
                         else
@@ -751,7 +773,7 @@ public class PabunotMakingPane extends JPanel
                             if(n >= 5)
                             {
                                 y = Integer.parseInt(field.getText());
-                                field.setForeground(white);
+                                field.setForeground(Color.white);
                             }
                         }
                         else
@@ -790,7 +812,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),
+                        field.getY() + e.getY()));
             }
         });
 
@@ -823,7 +846,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),
+                        field.getY() + e.getY()));
             }
         });
         return field;
@@ -835,7 +859,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("Add Prize");
         label.setFont(createFont(40));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText());
         int height = metrics.getHeight();
@@ -847,8 +871,13 @@ public class PabunotMakingPane extends JPanel
             {
                 if(!letterLimitField.getText().equals("0 / 25"))
                 {
-                    String s = letterLimitDesc.getText().equals("0 / 75")? "no description added..." : prizeDescription.getText();
-                    pane.list.addFirst(new Prize(prizeTitle.getText(), s));
+                    String s = letterLimitDesc.getText().equals("0 / 75")?
+                            "no description added..." : prizeDescription.getText();
+                    pane.list.addFirst(new Prize(
+                            prizeTitle.getText(),
+                            s
+                        )
+                    );
                     pane.restore();
 
                     prizeTitle.setText("");
@@ -873,7 +902,7 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseExited(MouseEvent e)
             {
-                label.setForeground(white);
+                label.setForeground(Color.white);
             }
         });
         label.addMouseMotionListener(new MouseMotionAdapter()
@@ -881,7 +910,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),  label.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(label.getX() + e.getX(),
+                        label.getY() + e.getY()));
             }
         });
         return label;
@@ -893,7 +923,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("0 / 25");
         label.setFont(createFont(20));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth("100 / 100");
         int height = metrics.getHeight();
@@ -908,7 +938,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText("0 / 75");
         label.setFont(createFont(20));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         label.setDoubleBuffered(true);
         label.setOpaque(false);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
@@ -925,7 +955,7 @@ public class PabunotMakingPane extends JPanel
         label.setLayout(null);
         label.setText(s);
         label.setFont(createFont(20));
-        label.setForeground(white);
+        label.setForeground(Color.white);
         label.setDoubleBuffered(true);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
         int width = metrics.stringWidth(label.getText().toUpperCase());
@@ -944,7 +974,7 @@ public class PabunotMakingPane extends JPanel
         area.setBounds(20, 200, 300, 80);
         area.setSelectionColor(new Color(243, 164, 104));
         area.setForeground(new Color(255, 255, 255, 127));
-        area.setBorder(new LineBorder(white));
+        area.setBorder(new LineBorder(Color.white));
         area.setLineWrap(true);
         area.setDoubleBuffered(true);
         area.setOpaque(false);
@@ -959,7 +989,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = area.getText().isEmpty() ? 0 : area.getText().length();
                 letterLimitDesc.setText(chars + " / 75");
-                area.setForeground(white);
+                area.setForeground(Color.white);
 
             }
 
@@ -968,7 +998,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = area.getText().isEmpty() ? 0 : area.getText().length();
                 letterLimitDesc.setText(chars + " / 75");
-                area.setForeground(white);
+                area.setForeground(Color.white);
             }
 
             @Override
@@ -976,7 +1006,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = area.getText().isEmpty() ? 0 : area.getText().length();
                 letterLimitDesc.setText(chars + " / 75");
-                area.setForeground(white);
+                area.setForeground(Color.white);
             }
         });
 
@@ -997,7 +1027,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(area.getX() + e.getX(),  area.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(area.getX() + e.getX(),
+                        area.getY() + e.getY()));
             }
         });
 
@@ -1052,10 +1083,10 @@ public class PabunotMakingPane extends JPanel
         };
         JComboBox<String> combo = new JComboBox<>(themes);
         combo.setLayout(null);
-        combo.setBackground(white);
+        combo.setBackground(Color.white);
         combo.setBounds(400, 350, 150, 30);
         combo.setFont(createFont(20));
-        combo.setForeground(black);
+        combo.setForeground(Color.black);
         combo.addActionListener(new AbstractAction()
         {
             @Override
@@ -1071,7 +1102,13 @@ public class PabunotMakingPane extends JPanel
             {
                 theme = Palabunot.valueOf(e.getItem().toString());
                 try {
-                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
+                    pabunotThemeImage = ImageIO.read(
+                            Objects.requireNonNull(
+                                    Palabunot.selectTheme(
+                                            theme
+                                    )
+                            )
+                    );
                 }
                 catch(IOException ex) {
                     throw new RuntimeException(ex);
@@ -1085,7 +1122,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(combo.getX() + e.getX(),  combo.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(combo.getX() + e.getX(),
+                        combo.getY() + e.getY()));
             }
         });
         return combo;
@@ -1101,7 +1139,13 @@ public class PabunotMakingPane extends JPanel
         {
             {
                 try {
-                    pabunotThemeImage = ImageIO.read(Objects.requireNonNull(Palabunot.selectTheme(theme)));
+                    pabunotThemeImage = ImageIO.read(
+                            Objects.requireNonNull(
+                                    Palabunot.selectTheme(
+                                            theme
+                                    )
+                            )
+                    );
                 }
                 catch(IOException e) {
                     throw new RuntimeException(e);
@@ -1117,7 +1161,11 @@ public class PabunotMakingPane extends JPanel
                 setSize(width[0], height[0]);
                 setLocation((int) ((matrixPanel.getWidth() - width[0]) * .6),
                             (int) ((matrixPanel.getHeight() - height[0]) * .6));
-                Image io = pabunotThemeImage.getScaledInstance(paperLength, paperLength, Image.SCALE_FAST);
+                Image io = pabunotThemeImage.getScaledInstance(
+                        paperLength,
+                        paperLength,
+                        Image.SCALE_FAST
+                );
                 for(int i = 0; i < x; i++)
                 {
                     for(int j = 0; j < y; j++)
@@ -1192,7 +1240,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = field.getText().isEmpty() ? 0 : field.getText().length();
                 letterLimitField.setText(chars + " / 25");
-                field.setForeground(white);
+                field.setForeground(Color.white);
             }
 
             @Override
@@ -1200,7 +1248,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = field.getText().isEmpty() ? 0 : field.getText().length();
                 letterLimitField.setText(chars + " / 25");
-                field.setForeground(white);
+                field.setForeground(Color.white);
             }
 
             @Override
@@ -1208,7 +1256,7 @@ public class PabunotMakingPane extends JPanel
             {
                 int chars = field.getText().isEmpty() ? 0 : field.getText().length();
                 letterLimitField.setText(chars + " / 25");
-                field.setForeground(white);
+                field.setForeground(Color.white);
             }
         });
 
@@ -1228,7 +1276,8 @@ public class PabunotMakingPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),  field.getY() + e.getY()));
+                InitialFrame.parallaxMove(new Point(field.getX() + e.getX(),
+                        field.getY() + e.getY()));
             }
         });
 
@@ -1284,7 +1333,6 @@ public class PabunotMakingPane extends JPanel
 
         addMouseMotionListener(new MouseMotionAdapter()
         {
-
             @Override
             public void mouseMoved(MouseEvent e)
             {

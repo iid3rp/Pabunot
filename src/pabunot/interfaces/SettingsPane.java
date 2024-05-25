@@ -35,15 +35,18 @@ public class SettingsPane extends JScrollPane
 {
     public static boolean fpsCountVisibility;
     public static boolean parallax;
-    public static boolean fpsUnlocker;
+    public static boolean fpsUnlock;
+    public static boolean waveTrail;
+    public static boolean snowVisible;
     public static String graphicsQuality;
+    public JTextField fpsField;
     public PrizeList list;
     private JPanel container;
     private int size;
     private int width = (int) (InitialFrame.WIDTH * 0.8);
     private int height = 100;
-    private boolean fpsUnlock = false;
     public JPanel countCap;
+    public int fpsCap;
     private boolean nothing;
     @Intention public InitialFrame frame;
 
@@ -126,9 +129,11 @@ public class SettingsPane extends JScrollPane
         countCap = fpsCounterAmount();
         container.add(fpsCounter(fpsCountVisibility));
         container.add(parallaxOption(parallax));
-        container.add(fpsUnlocker(fpsUnlocker));
+        container.add(fpsUnlocker(fpsUnlock));
         container.add(countCap);
         container.add(graphicsQuality(graphicsQuality));
+        container.add(waveTrail(waveTrail));
+        container.add(snowVisibility(snowVisible));
 
         nothing = false;
         container.repaint();
@@ -148,7 +153,7 @@ public class SettingsPane extends JScrollPane
 
     public JPanel fpsCounter(boolean fpsCountVisibility)
     {
-        final boolean[] toggle = new boolean[] {false};
+        final boolean[] toggle = new boolean[] {fpsCountVisibility};
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setSize(width, 100);
@@ -181,8 +186,8 @@ public class SettingsPane extends JScrollPane
 
         // Create and configure the checkbox
         JLabel checker = new JLabel();
-        checker.setText("off");
-        checker.setForeground(new Color(200, 50, 50));
+        checker.setText(fpsCountVisibility? "on" : "off");
+        checker.setForeground(fpsCountVisibility? new Color(50, 200, 50) : new Color(200, 50, 50));
         checker.setFont(AndyBold.createFont(50));
         checker.setHorizontalAlignment(SwingConstants.CENTER);
         checker.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
@@ -196,12 +201,14 @@ public class SettingsPane extends JScrollPane
                     toggle[0] = false;
                     checker.setText("off");
                     checker.setForeground(new Color(200, 50, 50));
+                    InitialFrame.setFPSCountVisibility(toggle[0]);
                     System.out.println("h");
                 }
                 else
                 {
                     toggle[0] = true;
                     checker.setForeground(new Color(50, 200, 50));
+                    InitialFrame.setFPSCountVisibility(toggle[0]);
                     checker.setText("on");
                 }
             }
@@ -216,7 +223,7 @@ public class SettingsPane extends JScrollPane
 
     public JPanel parallaxOption(boolean parallax)
     {
-        final boolean[] toggle = new boolean[] {true};
+        final boolean[] toggle = new boolean[] {parallax};
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setSize(width, 100);
@@ -249,8 +256,8 @@ public class SettingsPane extends JScrollPane
 
         // Create and configure the checkbox
         JLabel checker = new JLabel();
-        checker.setText("on");
-        checker.setForeground(new Color(50, 205, 50));
+        checker.setText(parallax? "on" : "off");
+        checker.setForeground(parallax? new Color(50, 200, 50) : new Color(200, 50, 50));
         checker.setFont(AndyBold.createFont(50));
         checker.setHorizontalAlignment(SwingConstants.CENTER);
         checker.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
@@ -264,13 +271,14 @@ public class SettingsPane extends JScrollPane
                     toggle[0] = false;
                     checker.setText("off");
                     checker.setForeground(new Color(200, 50, 50));
-                    System.out.println("h");
+                    InitialFrame.setParallax(toggle[0]);
                 }
                 else
                 {
                     toggle[0] = true;
                     checker.setForeground(new Color(50, 200, 50));
                     checker.setText("on");
+                    InitialFrame.setParallax(toggle[0]);
                 }
             }
         });
@@ -284,7 +292,7 @@ public class SettingsPane extends JScrollPane
 
     public JPanel fpsUnlocker(boolean fpsUnlocker)
     {
-        final boolean[] toggle = new boolean[] {false};
+        final boolean[] toggle = new boolean[] {fpsUnlocker};
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setSize(width, 100);
@@ -317,8 +325,8 @@ public class SettingsPane extends JScrollPane
 
         // Create and configure the checkbox
         JLabel checker = new JLabel();
-        checker.setText("off");
-        checker.setForeground(new Color(200, 50, 50));
+        checker.setText(fpsUnlock? "on" : "off");
+        checker.setForeground(fpsUnlock? new Color(50, 200, 50) : new Color(200, 50, 50));
         checker.setFont(AndyBold.createFont(50));
         checker.setHorizontalAlignment(SwingConstants.CENTER);
         checker.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
@@ -333,6 +341,8 @@ public class SettingsPane extends JScrollPane
                     fpsUnlock = false;
                     verifyFPSCounterCap();
                     checker.setText("off");
+                    InitialFrame.refreshRate = InitialFrame.mode.getRefreshRate();
+                    fpsField.setText(InitialFrame.refreshRate + "");
                     checker.setForeground(new Color(200, 50, 50));
                     System.out.println("h");
                 }
@@ -397,7 +407,7 @@ public class SettingsPane extends JScrollPane
         };
         JComboBox<String> comboBox = new JComboBox<>(quality);
         comboBox.setFont(AndyBold.createFont(50));
-        comboBox.setSelectedIndex(2);
+        comboBox.setSelectedItem(graphicsQuality);
         metrics = comboBox.getFontMetrics(metrics.getFont());
         height = metrics.getHeight();
         comboBox.setBounds(this.width - 250 - 20, (this.height - height - 20) / 2, 250, height + 20);
@@ -419,7 +429,6 @@ public class SettingsPane extends JScrollPane
 
     public JPanel fpsCounterAmount()
     {
-        final boolean[] toggle = new boolean[] {false};
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setEnabled(fpsUnlock);
@@ -453,16 +462,17 @@ public class SettingsPane extends JScrollPane
         height = metrics.getHeight();
         description.setBounds(20, 70, width,  height);
 
-        JTextField field = new JTextField();
-        field.setFont(AndyBold.createFont(50));
-        field.setOpaque(false);
-        field.setEnabled(fpsUnlock);
-        field.setForeground(Color.white);
-        field.setText(InitialFrame.refreshRate + "");
-        field.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
-        PlainDocument document = (PlainDocument) field.getDocument();
+        // the fps handler
+        fpsField = new JTextField();
+        fpsField.setFont(AndyBold.createFont(50));
+        fpsField.setOpaque(false);
+        fpsField.setEnabled(fpsUnlock);
+        fpsField.setForeground(Color.white);
+        fpsField.setText(InitialFrame.refreshRate + "");
+        fpsField.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
+        PlainDocument document = (PlainDocument) fpsField.getDocument();
         document.setDocumentFilter(new TextFilter(DataType.TYPE_NUMERICAL, 5));
-        field.addFocusListener(new FocusListener()
+        fpsField.addFocusListener(new FocusListener()
         {
             @Override
             public void focusGained(FocusEvent ignored) {}
@@ -470,27 +480,165 @@ public class SettingsPane extends JScrollPane
             @Override
             public void focusLost(FocusEvent e)
             {
-                int x = Integer.parseInt(field.getText());
+                int x = Integer.parseInt(fpsField.getText());
                 x = Math.max(x, 60);
                 InitialFrame.refreshRate = x;
-                field.setText(x + "");
+                fpsField.setText(x + "");
             }
         });
-        field.addKeyListener(new KeyAdapter()
+        fpsField.addKeyListener(new KeyAdapter()
         {
             @Override
             public void keyPressed(KeyEvent e)
             {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER)
                 {
-                    InitialFrame.refreshRate = Integer.parseInt(field.getText());
+                    fpsField.transferFocus();
                 }
             }
         });
 
         panel.add(title);
         panel.add(description);
-        panel.add(field);
+        panel.add(fpsField);
+
+        return panel;
+    }
+
+    public JPanel waveTrail(boolean waveTrail)
+    {
+        final boolean[] toggle = new boolean[] {waveTrail};
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        panel.setSize(width, 100);
+        panel.setLocation(0, 500);
+        panel.setBackground(new Color(0, 0, 0,120));
+        panel.setDoubleBuffered(true);
+        panel.setBorder(new LineBorder(Color.white));
+
+        JLabel title = new JLabel();
+        title.setLayout(null);
+        title.setDoubleBuffered(true);
+        title.setText("Trail Label Waving");
+        title.setFont(AndyBold.createFont(50));
+        title.setForeground(Color.white);
+        FontMetrics metrics = title.getFontMetrics(title.getFont());
+        int width = metrics.stringWidth(title.getText() + "a");
+        int height = metrics.getHeight();
+        title.setBounds(15, 15, width,  height);
+
+        JLabel description = new JLabel();
+        description.setLayout(null);
+        description.setDoubleBuffered(true);
+        description.setText("The trail labels are having wave animations.");
+        description.setFont(AndyBold.createFont(20));
+        description.setForeground(Color.gray);
+        metrics = description.getFontMetrics(description.getFont());
+        width = metrics.stringWidth(description.getText().toUpperCase());
+        height = metrics.getHeight();
+        description.setBounds(20, 70, width,  height);
+
+        // Create and configure the checkbox
+        JLabel checker = new JLabel();
+        checker.setText(waveTrail? "on" : "off");
+        checker.setForeground(waveTrail? new Color(50, 200, 50) : new Color(200, 50, 50));
+        checker.setFont(AndyBold.createFont(50));
+        checker.setHorizontalAlignment(SwingConstants.CENTER);
+        checker.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
+        checker.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if(toggle[0])
+                {
+                    toggle[0] = false;
+                    SettingsPane.waveTrail = false;
+                    checker.setText("off");
+                    checker.setForeground(new Color(200, 50, 50));
+                    System.out.println("h");
+                }
+                else
+                {
+                    toggle[0] = true;
+                    SettingsPane.waveTrail = true;
+                    checker.setForeground(new Color(50, 200, 50));
+                    checker.setText("on");
+                }
+            }
+        });
+
+        panel.add(title);
+        panel.add(description);
+        panel.add(checker);
+
+        return panel;
+    }
+
+    public JPanel snowVisibility(boolean snowVisible)
+    {
+        final boolean[] toggle = new boolean[] {snowVisible};
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        panel.setSize(width, 100);
+        panel.setLocation(0, 600);
+        panel.setBackground(new Color(0, 0, 0, 120));
+        panel.setDoubleBuffered(true);
+        panel.setBorder(new LineBorder(Color.white));
+
+        JLabel title = new JLabel();
+        title.setLayout(null);
+        title.setDoubleBuffered(true);
+        title.setText("Snow Animation Visibility");
+        title.setFont(AndyBold.createFont(50));
+        title.setForeground(Color.white);
+        FontMetrics metrics = title.getFontMetrics(title.getFont());
+        int width = metrics.stringWidth(title.getText() + "a");
+        int height = metrics.getHeight();
+        title.setBounds(15, 15, width, height);
+
+        JLabel description = new JLabel();
+        description.setLayout(null);
+        description.setDoubleBuffered(true);
+        description.setText("Snow effect animations are showing on background.");
+        description.setFont(AndyBold.createFont(20));
+        description.setForeground(Color.gray);
+        metrics = description.getFontMetrics(description.getFont());
+        width = metrics.stringWidth(description.getText().toUpperCase());
+        height = metrics.getHeight();
+        description.setBounds(20, 70, width, height);
+
+        // Create and configure the checkbox
+        JLabel checker = new JLabel();
+        checker.setText(snowVisible ? "on" : "off");
+        checker.setForeground(snowVisible ? new Color(50, 200, 50) : new Color(200, 50, 50));
+        checker.setFont(AndyBold.createFont(50));
+        checker.setHorizontalAlignment(SwingConstants.CENTER);
+        checker.setBounds(this.width - 120, (this.height - 60) / 2, 100, 60);
+        checker.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if(toggle[0]) {
+                    toggle[0] = false;
+                    checker.setText("off");
+                    SettingsPane.snowVisible = false;
+                    checker.setForeground(new Color(200, 50, 50));
+                    System.out.println("h");
+                }
+                else {
+                    toggle[0] = true;
+                    SettingsPane.snowVisible = true;
+                    checker.setForeground(new Color(50, 200, 50));
+                    checker.setText("on");
+                }
+            }
+        });
+
+        panel.add(title);
+        panel.add(description);
+        panel.add(checker);
 
         return panel;
     }

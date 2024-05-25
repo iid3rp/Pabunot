@@ -15,21 +15,27 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * This class is responsible for creating and managing the Pabunot game setup.
- * It handles the generation of prize numbers and the writing of game configurations to a file.
+ * This class is responsible for creating and
+ * managing the Pabunot game setup.
+ * It handles the generation of prize numbers and the
+ * writing of game configurations to a file.
  */
 public class PabunotMaker
 {
-    public static final String pabunotDir = System.getProperty("user.home") + File.separator + "Pabunot";
+    public static final String pabunotDir =
+            System.getProperty("user.home") + File.separator + "Pabunot";
     public File fileName;
     private static Random r = new Random();
     private @Intention PalabunotGrid pb;
 
     /**
      * Constructor for PabunotMaker.
-     * Initializes the game grid and starts the process of generating prize numbers and writing the game setup to a file.
+     * Initializes the game grid and starts the
+     * process of generating prize numbers and writing
+     * the game setup to a file.
      *
-     * @param p The PalabunotGrid object that contains the game grid and prize list.
+     * @param p The PalabunotGrid object that contains
+     *          the game grid and prize list.
      */
     public PabunotMaker(PalabunotGrid p)
     {
@@ -64,7 +70,9 @@ public class PabunotMaker
                 writer.write("parallax:true\n");
                 writer.write("fpsUnlocker:false\n");
                 writer.write("fpsFrameCap:" + InitialFrame.refreshRate + "\n");
-                writer.write("graphicsQuality:Medium");
+                writer.write("graphicsQuality:Medium\n");
+                writer.write("trailWave:true\n");
+                writer.write("snowVisible:true\n");
                 writer.close();
             }
             catch(IOException e) {
@@ -75,10 +83,14 @@ public class PabunotMaker
 
     /**
      * Shuffles the elements in the `pb.grid`
-     * array and assigns each element's value to the corresponding `Prize` object in the `pb.list`.
-     * This method first generates a random number to determine the number of times the grid array will be shuffled.
-     * Then, it shuffles the grid array that many times to randomize the order of elements.
-     * Finally, it iterates through the `pb.list` of prizes, assigning each prize a number from the shuffled grid.
+     * array and assigns each element's value to the
+     * corresponding `Prize` object in the `pb.list`.
+     * This method first generates a random number to determine
+     * the number of times the grid array will be shuffled.
+     * Then, it shuffles the grid array that many times to randomize
+     * the order of elements.
+     * Finally, it iterates through the `pb.list` of prizes,
+     * assigning each prize a number from the shuffled grid.
      */
     public void generatePrizeNumbers()
     {
@@ -97,11 +109,14 @@ public class PabunotMaker
     }
 
     /**
-     * Shuffles the elements in the {@code pb.grid} array and assigns each element's value to the corresponding {@code Prize}
+     * Shuffles the elements in the {@code pb.grid} array and assigns
+     * each element's value to the corresponding {@code Prize}
      * object in the {@code pb.list}.
-     * This method first generates a random number to determine the number of times the grid array will be shuffled.
+     * This method first generates a random number to determine the number of
+     * times the grid array will be shuffled.
      * Then, it shuffles the grid array that many times to randomize the order of elements.
-     * Finally, it iterates through the {@code pb.list} of prizes, assigning each prize a number from the shuffled grid.
+     * Finally, it iterates through the {@code pb.list} of prizes, assigning each
+     * prize a number from the shuffled grid.
      */
     public void writePabunot()
     {
@@ -122,7 +137,10 @@ public class PabunotMaker
             if(pb.prizeList != null) {
                 for(Prize p : pb.prizeList)
                 {
-                    writer.write(p.getTitle() + ":" + p.getDescription() + ":" + p.getNumber() + "\n");
+                    writer.write(
+                            p.getTitle() + ":" +
+                            p.getDescription() + ":" +
+                                    p.getNumber() + "\n");
                 }
             }
 
@@ -137,13 +155,16 @@ public class PabunotMaker
     }
 
     /**
-     * Provides a string representation of the object, indicating where the game configuration file was saved.
+     * Provides a string representation of the object,
+     * indicating where the game configuration file was saved.
      *
-     * @return A string detailing the save location of the game configuration.
+     * @return A string detailing the save location of the
+     * game configuration.
      */
     @Override
     public String toString()
     {
-        return "Saved file to " + pabunotDir + File.separator + pb.getSerial() + File.separator + "Pabunot.ini";
+        return "Saved file to " + pabunotDir + File.separator + pb.getSerial() +
+                File.separator + "Pabunot.ini";
     }
 }

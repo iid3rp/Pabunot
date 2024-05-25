@@ -3,8 +3,9 @@ package pabunot.graphics;
 import pabunot.InitialFrame;
 import pabunot.util.AndyBold;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.FontMetrics;
 import java.util.ArrayList;
 
 /**
@@ -134,8 +135,8 @@ public class TrailLabel extends ArrayList<JLabel>
         int width = metrics.stringWidth(s.toUpperCase() + 10);
         int height = metrics.getHeight();
 
-        this.startX = startX == Short.MAX_VALUE? (int) (InitialFrame.WIDTH - metrics.stringWidth(
-                stringSequence)) / 2 : startX;
+        this.startX = startX == Short.MAX_VALUE? (InitialFrame.WIDTH -
+                metrics.stringWidth(stringSequence)) / 2 : startX;
 
         label.setBounds(startX + letterLength, startY + letterDepth, width, height);
         letterLength += metrics.stringWidth(s) + 1;
@@ -183,4 +184,14 @@ public class TrailLabel extends ArrayList<JLabel>
     {
         return size;
     }
+    public String getText()
+    {
+        StringBuilder builder = new StringBuilder();
+        for(char c : sequence)
+        {
+            builder.append(c);
+        }
+        return  builder.toString();
+    }
+
 }

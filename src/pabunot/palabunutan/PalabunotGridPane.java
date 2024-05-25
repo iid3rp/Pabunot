@@ -21,6 +21,12 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+/**
+ * Represents a JPanel for displaying a grid of papers in a Palabunot game.
+ * This class handles the rendering of papers based on the provided grid or a random range.
+ * It allows users to interact with the papers by clicking on them, revealing prizes.
+ * The class also validates the selection of papers and triggers events accordingly.
+ */
 public class PalabunotGridPane extends JPanel
 {
     @Intention InitialFrame frame;
@@ -41,7 +47,8 @@ public class PalabunotGridPane extends JPanel
         this.frame = frame;
         initializeComponent(x, y);
         addPapers(new RandomRange(1, x * y));
-        setLocation((InitialFrame.WIDTH  - getWidth()) / 2, (InitialFrame.HEIGHT - getHeight()) / 2);
+        setLocation((InitialFrame.WIDTH  - getWidth()) / 2,
+                (InitialFrame.HEIGHT - getHeight()) / 2);
 
     }
 
@@ -60,12 +67,14 @@ public class PalabunotGridPane extends JPanel
     private void addPapers(PalabunotGrid grid)
     {
         try {
-            Palabunot.image = ImageIO.read(Palabunot.selectTheme(grid.currentTheme));
+            Palabunot.image = ImageIO.read(
+                    Palabunot.selectTheme(grid.currentTheme));
         }
         catch(IOException e) {
             throw new RuntimeException(e);
         }
-        Palabunot.image = Palabunot.image.getScaledInstance(paperLength, paperLength, Image.SCALE_SMOOTH);
+        Palabunot.image = Palabunot.image.getScaledInstance(
+                paperLength, paperLength, Image.SCALE_SMOOTH);
         int index = 0;
         for(int i = 0; i < x; i++)
         {
@@ -111,7 +120,12 @@ public class PalabunotGridPane extends JPanel
                 try {
                     JLabel paper = createPaper(index, range.get(index++));
 
-                    paper.setBounds(i * paperLength, j * paperLength, paperLength, paperLength);
+                    paper.setBounds(
+                            i * paperLength,
+                            j * paperLength,
+                            paperLength,
+                            paperLength
+                    );
                     // System.out.println(i * paperLength + " " + j * paperLength); // debuggers
                     add(paper);
                 }
@@ -123,7 +137,10 @@ public class PalabunotGridPane extends JPanel
     private JLabel createPaper(int index, int value)
     {
         final boolean[] isEntered = {false};
-        final BufferedImage x = new BufferedImage(paperLength, paperLength, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage x = new BufferedImage(
+                paperLength,
+                paperLength,
+                BufferedImage.TYPE_INT_ARGB);
         JLabel label = new JLabel()
         {
             @Override
@@ -133,7 +150,8 @@ public class PalabunotGridPane extends JPanel
                 {
                     Graphics2D g2d = x.createGraphics();
                     g2d.drawImage(Palabunot.image, 0, 0, null);
-                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN, 0.5f));
+                    g2d.setComposite(AlphaComposite.getInstance(
+                            AlphaComposite.DST_IN, 0.5f));
                     g2d.setColor(Color.white);
                     g2d.fillRect(0, 0, paperLength, paperLength);
                     g2d.dispose();
@@ -193,7 +211,12 @@ public class PalabunotGridPane extends JPanel
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                InitialFrame.parallaxMove(new Point(panel.getX() + label.getX() + e.getX(), panel.getY() + label.getY() + e.getY()));
+                InitialFrame.parallaxMove(
+                        new Point(
+                                panel.getX() + label.getX() + e.getX(),
+                                panel.getY() + label.getY() + e.getY()
+                        )
+                );
             }
         });
         return label;
@@ -206,15 +229,15 @@ public class PalabunotGridPane extends JPanel
         {
             if(p.getNumber() == palabunot.getValue())
             {
-                frame.prizePicked = new PrizePicked(frame, grid, palabunot, p);
-                System.out.println("YOU WON");
                 reference = p;
             }
         }
-        if(reference != null) 
+        if(reference != null)
         {
             grid.prizeList.remove(reference);
             frame.section.prizeListPane.restore();
+            frame.prizePicked = new PrizePicked(frame, grid, palabunot, reference);
+            System.out.println("YOU WON");
         }
         if(frame.prizePicked == null)
         {
@@ -223,7 +246,7 @@ public class PalabunotGridPane extends JPanel
         }
 
         frame.section.setVisible(false);
-        frame.contentPanel.add(frame.prizePicked);
+        InitialFrame.contentPanel.add(frame.prizePicked);
         frame.prizePicked.setVisible(true);
         frame.repaint();
     }

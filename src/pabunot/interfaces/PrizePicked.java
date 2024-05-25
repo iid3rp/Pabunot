@@ -1,6 +1,7 @@
 package pabunot.interfaces;
 
 import pabunot.InitialFrame;
+import pabunot.controls.PrizePickedKey;
 import pabunot.graphics.Snow;
 import pabunot.graphics.TrailLabel;
 import pabunot.palabunutan.Palabunot;
@@ -9,10 +10,16 @@ import pabunot.prize.Prize;
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class PrizePicked extends JPanel
 {
@@ -38,7 +45,7 @@ public class PrizePicked extends JPanel
         this.grid = grid;
         paint = true;
         this.frame = frame;
-        snow = new Snow(InitialFrame.HEIGHT + 1);
+        snow = new Snow(InitialFrame.HEIGHT + 20);
         int half = (InitialFrame.HEIGHT - getFontMetrics(AndyBold.createFont(100)).getHeight()) / 2;
         infoLabel = new TrailLabel("Won: " + prize.getTitle(), 100, half - 10, half + 10, TrailLabel.rainbow);
         this.palabunot = palabunot;
@@ -48,6 +55,10 @@ public class PrizePicked extends JPanel
         addComponents();
         snowThread = new Thread(snow);
         snowThread.start();
+        frame.removeAllKeyListeners();
+        frame.addKeyListener(new PrizePickedKey(frame));
+        add(clickAnywhere("Type a key to continue"));
+        validatePrizes();
     }
 
     private JLabel createDescription(String description)
@@ -80,6 +91,7 @@ public class PrizePicked extends JPanel
         winLoseLabel  = createLoseLabel();
         numberReveal = createNumberReveal(palabunot.getValue());
         addComponents();
+        add(clickAnywhere("Click Anywhere to continue..."));
     }
 
     private JLabel createLoseLabel()
@@ -116,15 +128,14 @@ public class PrizePicked extends JPanel
         {
             add(label);
         }
-        add(clickAnywhere());
         add(numberReveal);
     }
 
-    private JLabel clickAnywhere()
+    private JLabel clickAnywhere(String s)
     {
         JLabel label = new JLabel();
         label.setLayout(null);
-        label.setText("Click anywhere to continue");
+        label.setText(s);
         label.setFont(AndyBold.createFont(50));
         label.setForeground(Color.gray);
         FontMetrics metrics = label.getFontMetrics(label.getFont());
@@ -146,22 +157,12 @@ public class PrizePicked extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                panel.setVisible(false);
-                frame.contentPanel.remove(panel);
-                if(frame.section.grid.prizeList.isEmpty())
+                if(snow == null)
                 {
-                    frame.ended = new PabunotEnding(frame, grid);
-                    frame.contentPanel.add(frame.ended);
-                    frame.ended.setVisible(true);
-                }
-                else
-                {
+                    panel.setVisible(false);
+                    InitialFrame.contentPanel.remove(panel);
                     frame.section.setVisible(true);
                     frame.prizePicked = null;
-                    if(snow != null)
-                    {
-                        snow.isRunning = false;
-                    }
                 }
             }
         });
@@ -173,9 +174,48 @@ public class PrizePicked extends JPanel
     {
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0 , getWidth(), getHeight());
-        if(snow != null)
+        if(snow != null && SettingsPane.snowVisible)
         {
-            g.drawImage(PrizePicked.snow.particle, 0 ,0, getWidth(), getHeight(), null);
+            BufferedImage x = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = x.createGraphics();
+            g2d.drawImage(snow.particle, 0, 0, (int) (getWidth() * InitialFrame.scaleFactor), (int) (getHeight() * InitialFrame.scaleFactor), null);
+            g2d.dispose();
+            g.drawImage(x, 0 ,0, getWidth(), getHeight(), null);
+        }
+    }
+
+    public void validatePrizes()
+    {
+        if(frame.section.grid.prizeList.isEmpty())
+        {
+            grid.deletePabunot();
+            InitialFrame.contentPanel.remove(frame.picker);
+            frame.picker = new PabunotPickerPanel(frame);
+            InitialFrame.contentPanel.add(frame.picker);
+        }
+    }
+
+    public void winPress()
+    {
+        panel.setVisible(false);
+        InitialFrame.contentPanel.remove(panel);
+        if(frame.section.grid.prizeList.isEmpty())
+        {
+            frame.ended = new PabunotEnding(frame, grid);
+            InitialFrame.contentPanel.add(frame.ended);
+            frame.ended.setVisible(true);
+        }
+        else
+        {
+            panel.setVisible(false);
+            InitialFrame.contentPanel.remove(panel);
+
+            frame.section.setVisible(true);
+            frame.prizePicked = null;
+            if(snow != null)
+            {
+                snow.isRunning = false;
+            }
         }
     }
 }

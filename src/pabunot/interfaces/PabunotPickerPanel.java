@@ -10,8 +10,12 @@ import pabunot.streamio.PabunotReader;
 import pabunot.util.AndyBold;
 import pabunot.util.Intention;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -130,9 +134,9 @@ public class PabunotPickerPanel extends JPanel
 
     private void addComponents()
     {
-        for(JLabel l : title)
+        for(JLabel label : title)
         {
-            add(l);
+            add(label);
         }
         add(pane);
         add(addLabel);
@@ -185,6 +189,7 @@ public class PabunotPickerPanel extends JPanel
                 picker.setVisible(false);
                 frame.typeEvent = new TitleTyping(frame);
                 frame.addKeyListener(frame.typeEvent);
+                frame.requestFocus();
                 frame.titlePanel.setVisible(true);
                 frame.titlePanel.resetTitle();
                 frame.typeEvent.string = "";

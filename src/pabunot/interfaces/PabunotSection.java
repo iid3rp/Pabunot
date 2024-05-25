@@ -122,20 +122,6 @@ public class PabunotSection extends JPanel
         addMouseMotionListener(new MouseMotionAdapter()
         {
             @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                if(InitialFrame.isDragging)
-                {
-                    Point currentMouse = e.getLocationOnScreen();
-
-                    int deltaX = currentMouse.x - InitialFrame.offset.x;
-                    int deltaY = currentMouse.y - InitialFrame.offset.y;
-
-                    frame.setLocation(deltaX, deltaY);
-                }
-            }
-
-            @Override
             public void mouseMoved(MouseEvent e)
             {
                 InitialFrame.parallaxMove(e.getPoint());
