@@ -20,9 +20,9 @@ to a more sustainable and strategic game.
 Players would develop a great, catchy, vibrant graphical, animated
 affect the overall structure, adding a new layer of digital touch to the traditional gameplay.
 
-!["Alt Text"](https://cdn.discordapp.com/attachments/1077845118888972328/1242498044763836416/image.png?ex=664e0dfa&is=664cbc7a&hm=772a96492b2caec9262e8f71df57e1a12bdb1f6d1655110e9f6e35638fae3faf&) Main Menu
-!["Alt Text"](https://cdn.discordapp.com/attachments/1077845118888972328/1242498785154699375/image.png?ex=664e0eaa&is=664cbd2a&hm=c045b1ed1c6e77abab7f7911294810baa756709122445c41807450480fbe0752&) Main Game
-!["Alt Text"](https://cdn.discordapp.com/attachments/1077845118888972328/1242499530767859743/image.png?ex=664e0f5c&is=664cbddc&hm=38d9ad537df73d3ee204c2d8531f8003091496eedcbc2fe3ab9758aa0c0dbd98&) 
+!["Alt Text"](https://i.imgur.com/7JNgSAg.png) Main Menu
+!["Alt Text"](https://i.imgur.com/cSPCw4Q.png) Main Game
+!["Alt Text"](https://i.imgur.com/CEvetVe.png) 
 Plz play hehez
 
 ### will be released for beta soon :3
