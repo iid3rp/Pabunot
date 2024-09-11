@@ -90,7 +90,6 @@ public class PabunotEnding extends JPanel
             {
                 InitialFrame.contentPanel.remove(panel);
                 frame.mainMenu.setVisible(true);
-
                 PrizePicked.snow.isRunning = false;
                 frame.prizePicked = null;
             }

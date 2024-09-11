@@ -126,7 +126,7 @@ public class PabunotReader
             {
                 String[] s = line.split(":");
 
-                System.out.println(line);
+                //System.out.println(line);
                 line = reader.readLine();
             }
 
@@ -193,7 +193,7 @@ public class PabunotReader
                 String[] s = line.split(":");
                 int num = Integer.parseInt(s[2]);
                 list.add(new Prize(s[0], s[1], num));
-                System.out.println(line);
+                //System.out.println(line);
                 line = reader.readLine();
             }
 

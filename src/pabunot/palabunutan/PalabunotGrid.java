@@ -139,6 +139,6 @@ public class PalabunotGrid
             new File(PabunotMaker.pabunotDir + File.separator + getSerial() + File.separator + "Pabunot.ini").delete(),
             new File(PabunotMaker.pabunotDir + File.separator + getSerial()).delete()
         };
-        System.out.println(PabunotMaker.pabunotDir + File.separator + getSerial() + " " + x[0] + " " + x[1]);
+        //System.out.println(PabunotMaker.pabunotDir + File.separator + getSerial() + " " + x[0] + " " + x[1]);
     }
 }

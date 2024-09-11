@@ -80,7 +80,7 @@ public class PrizePicked extends JPanel
     {
         super();
         initializeComponent();
-        System.out.println("Hello World!");
+        //System.out.println("Hello World!");
         this.grid = grid;
         snow = null;
         this.frame = frame;
@@ -188,10 +188,14 @@ public class PrizePicked extends JPanel
     {
         if(frame.section.grid.prizeList.isEmpty())
         {
-            grid.deletePabunot();
-            InitialFrame.contentPanel.remove(frame.picker);
-            frame.picker = new PabunotPickerPanel(frame);
-            InitialFrame.contentPanel.add(frame.picker);
+            var x = new Thread(() ->
+            {
+                grid.deletePabunot();
+                InitialFrame.contentPanel.remove(frame.picker);
+                frame.picker = new PabunotPickerPanel(frame);
+                InitialFrame.contentPanel.add(frame.picker);
+            });
+            x.start();
         }
     }
 
@@ -201,7 +205,6 @@ public class PrizePicked extends JPanel
         InitialFrame.contentPanel.remove(panel);
         if(frame.section.grid.prizeList.isEmpty())
         {
-            frame.ended = new PabunotEnding(frame, grid);
             InitialFrame.contentPanel.add(frame.ended);
             frame.ended.setVisible(true);
         }

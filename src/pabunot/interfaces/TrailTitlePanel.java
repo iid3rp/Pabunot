@@ -184,7 +184,6 @@ public class TrailTitlePanel extends JPanel
     public void cont()
     {
         frame.createPabunot = new PabunotMakingPane(frame, frame.typeEvent.string);
-        System.out.println("dfsa");
         frame.createPabunot.setVisible(true);
         frame.getContentPane().add(frame.createPabunot);
         frame.removeKeyListener(frame.typeEvent);

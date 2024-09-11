@@ -202,7 +202,7 @@ public class SettingsPane extends JScrollPane
                     checker.setText("off");
                     checker.setForeground(new Color(200, 50, 50));
                     InitialFrame.setFPSCountVisibility(toggle[0]);
-                    System.out.println("h");
+                    //System.out.println("h");
                 }
                 else
                 {
@@ -344,7 +344,7 @@ public class SettingsPane extends JScrollPane
                     InitialFrame.refreshRate = InitialFrame.mode.getRefreshRate();
                     fpsField.setText(InitialFrame.refreshRate + "");
                     checker.setForeground(new Color(200, 50, 50));
-                    System.out.println("h");
+                    //System.out.println("h");
                 }
                 else
                 {
@@ -556,7 +556,7 @@ public class SettingsPane extends JScrollPane
                     SettingsPane.waveTrail = false;
                     checker.setText("off");
                     checker.setForeground(new Color(200, 50, 50));
-                    System.out.println("h");
+                    //System.out.println("h");
                 }
                 else
                 {
@@ -625,7 +625,7 @@ public class SettingsPane extends JScrollPane
                     checker.setText("off");
                     SettingsPane.snowVisible = false;
                     checker.setForeground(new Color(200, 50, 50));
-                    System.out.println("h");
+                    //System.out.println("h");
                 }
                 else {
                     toggle[0] = true;

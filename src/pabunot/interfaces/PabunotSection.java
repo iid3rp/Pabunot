@@ -43,8 +43,9 @@ public class PabunotSection extends JPanel
         {
             add(label);
         }
-        // setting the prize here:
 
+        frame.ended = new PabunotEnding(frame, grid);
+        // setting the prize here:
 
     }
 

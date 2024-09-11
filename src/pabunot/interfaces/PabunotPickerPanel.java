@@ -103,22 +103,22 @@ public class PabunotPickerPanel extends JPanel
         File[] matchingFolders = directory.listFiles((dir, name) -> new File(dir, name).isDirectory());
 
         if(matchingFolders == null) {
-            System.out.println("empty");
+            //System.out.println("empty");
             return new ArrayList<>();
         }
 
         String[] folderNames = matchingFolders.length == 0 ? null : new String[matchingFolders.length];
         for(int i = 0; i < matchingFolders.length; i++) {
             folderNames[i] = matchingFolders[i].getPath();
-            System.out.println(folderNames[i]);
+            //System.out.println(folderNames[i]);
         }
 
         if(folderNames != null) {
-            System.out.println("its not empty");
+            //System.out.println("its not empty");
             for(String s : folderNames) {
                 PalabunotGrid pbn = PabunotReader.createPalabunotFromFile(s + File.separator + "Pabunot.ini");
 
-                System.out.println(s + File.separator + "Pabunot.ini");
+                //System.out.println(s + File.separator + "Pabunot.ini");
                 if(pbn != null) {
                     PabunotInterface inter = new PabunotInterface(frame, pbn);
                     reference.add(inter);

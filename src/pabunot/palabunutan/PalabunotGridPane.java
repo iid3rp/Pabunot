@@ -81,7 +81,7 @@ public class PalabunotGridPane extends JPanel
             for(int j = 0; j < y; j++)
             {
                 try {
-                    System.out.println(index);
+                    //System.out.println(index);
                     if(!grid.grid.get(index).isPicked())
                     {
                         JLabel paper = createPaper(index, grid.grid.get(index).getValue());
@@ -107,7 +107,7 @@ public class PalabunotGridPane extends JPanel
         setDoubleBuffered(true);
         setSize(width, height);
         setBackground(new Color(0, 0,0, 127));
-        System.out.println("rendering...");
+        //System.out.println("rendering...");
     }
 
     private void addPapers(RandomRange range)
@@ -237,12 +237,12 @@ public class PalabunotGridPane extends JPanel
             grid.prizeList.remove(reference);
             frame.section.prizeListPane.restore();
             frame.prizePicked = new PrizePicked(frame, grid, palabunot, reference);
-            System.out.println("YOU WON");
+            //System.out.println("YOU WON");
         }
         if(frame.prizePicked == null)
         {
             frame.prizePicked = new PrizePicked(frame, grid, palabunot);
-            System.out.println("YOU LOST");
+            //System.out.println("YOU LOST");
         }
 
         frame.section.setVisible(false);

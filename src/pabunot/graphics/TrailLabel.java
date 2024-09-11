@@ -2,6 +2,7 @@ package pabunot.graphics;
 
 import pabunot.InitialFrame;
 import pabunot.util.AndyBold;
+import pabunot.util.Intention;
 
 import javax.swing.JLabel;
 import java.awt.Color;
@@ -31,6 +32,7 @@ public class TrailLabel extends ArrayList<JLabel>
     private int letterLength;
     private int letterDepth;
 
+    @Deprecated
     public TrailLabel(String s, int size, int startY, int endY)
     {
         //the default color will be rainbow :3
@@ -61,6 +63,7 @@ public class TrailLabel extends ArrayList<JLabel>
      * @param endY      the ending Y position
      * @param colors    the array of colors
      */
+    @Intention(design = "more popular")
     public TrailLabel(String s, int size, int startY, int endY, Color[] colors)
     {
         letterLength = 0;

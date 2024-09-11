@@ -88,6 +88,7 @@ import java.util.Random;
  *
  * @author Francis (iid3rp) Madanlo
  */
+@Intention
 public class
 InitialFrame extends JFrame implements Runnable
 {
@@ -267,7 +268,7 @@ InitialFrame extends JFrame implements Runnable
             mainMiddleGround = image2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             mainMiddleBackGround = image3.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-            System.out.println(scaleFactor);
+            //System.out.println(scaleFactor);
         }
         catch(IOException e) {
             throw new RuntimeException(e);
@@ -835,6 +836,17 @@ InitialFrame extends JFrame implements Runnable
         return label;
     }
 
+    public void startTime()
+    {
+        javax.swing.Timer timer = new javax.swing.Timer(1000, e ->
+        {
+            // didto ibutang ang decreasing sa clock here
+            // find ways to alter the addSecond, addMinutes, etc.. methods to decrease
+            // good luck :3
+        });
+        timer.start();
+    }
+
     private JLabel createSettings()
     {
         JLabel label = new JLabel();
@@ -988,7 +1000,7 @@ InitialFrame extends JFrame implements Runnable
      */
     public static void main(String[] a)
     {
-        System.out.println("hello World!");
+        //System.out.println("hello World!");
         try {
             SwingUtilities.invokeLater(() ->
             {
@@ -997,6 +1009,7 @@ InitialFrame extends JFrame implements Runnable
                 PabunotReader.readInitialization();
                 InitialFrame frame = new InitialFrame();
                 frame.start();
+                System.out.println("starting");
             });
         }
         catch(Exception e) {
